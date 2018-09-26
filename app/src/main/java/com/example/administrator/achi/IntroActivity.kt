@@ -2,10 +2,8 @@ package com.example.administrator.achi
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
-import android.view.View
-import kotlinx.android.synthetic.main.activity_intro.*
+import android.widget.ImageView
 
 class IntroActivity : AppCompatActivity(){
     private val TAG = this::class.java.simpleName
@@ -17,7 +15,8 @@ class IntroActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        var logoImage = this.logoimage
+        var logoImage = findViewById<ImageView>(R.id.logoimage)
+        logoImage.setImageResource(R.drawable.achi_shadow)
         logoImage.setOnClickListener{view ->
             var intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
