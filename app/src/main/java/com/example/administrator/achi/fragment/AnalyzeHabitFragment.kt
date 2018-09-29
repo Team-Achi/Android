@@ -6,11 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ExpandableListAdapter
+import android.widget.ExpandableListView
+import android.widget.TextView
 import com.example.administrator.achi.R
+import kotlinx.android.synthetic.main.fragment_analyzehabit.view.*
 
 class AnalyzeHabitFragment : Fragment(){
     private val TAG = "AnalyzeHabitFragment"
     private var thisView: View? = null
+
+    private lateinit var tv_weeklyScore : TextView
+    private lateinit var lv_weeklyHabbit : ExpandableListView
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -27,11 +34,15 @@ class AnalyzeHabitFragment : Fragment(){
 
         if(thisView == null) {
             thisView = inflater.inflate(R.layout.fragment_analyzehabit, container, false)
-
         }
-        return thisView
 
+        tv_weeklyScore = thisView!!.findViewById(R.id.tvWeeklyScore)
+        lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
+
+        return thisView
     }
+
+
 
     companion object {
         @JvmStatic

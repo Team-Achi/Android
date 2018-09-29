@@ -58,7 +58,7 @@
             android:layout_gravity="center"
             android:text="Start" />
 
-        
+
 
         <Button
             android:id="@+id/btnRecord"
@@ -68,5 +68,20 @@
             android:text="Record" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/model"
+        android:layout_width="match_parent"
+        android:layout_height="320dp" />
+
+    <TextView
+        android:id="@+id/tvFact"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:text="하루에 양치를 3번 해야해~~~~"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="17dp"
+        android:background="@drawable/tv_fact_border"/>
 
 </LinearLayout>

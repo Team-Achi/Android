@@ -15,6 +15,7 @@ import android.widget.Chronometer
 
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import java.util.*
 import kotlin.math.min
 
 private const val INIT :Int = 0
@@ -25,9 +26,9 @@ class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
     private var thisView: View? = null
 
-
+    // Stopwatch
     private var handler : Handler = Handler()
-//    private lateinit var runnable : Runnable
+    private lateinit var runnable : Runnable
 
     private var minute : Int = 0
     private var second : Int = 0
@@ -42,6 +43,10 @@ class MonitoringFragment : Fragment(){
     private lateinit var btn_start : Button
     private lateinit var btn_record : Button
 
+    // Fact
+    private val facts = ArrayList<String>()
+
+    private lateinit var tv_fact : TextView
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -60,7 +65,20 @@ class MonitoringFragment : Fragment(){
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
 
-        val runnable = object : Runnable {
+        stopWatch()
+
+        tv_fact = thisView!!.findViewById(R.id.tvFact)
+        addFacts()
+        printFacts()
+
+
+        return thisView
+
+    }
+
+    // StopWatch
+    fun stopWatch() {
+        runnable = object : Runnable {
             override fun run() {
                 second = getElapsedTime()
                 minute = second / 60
@@ -140,9 +158,6 @@ class MonitoringFragment : Fragment(){
                 handler.removeCallbacks(runnable)
             }
         }
-
-        return thisView
-
     }
 
     fun getElapsedTime() : Int {
@@ -150,6 +165,23 @@ class MonitoringFragment : Fragment(){
         var resultTime : Long = curTime - baseTime
         var sec = (resultTime / 1000).toInt()
         return sec
+    }
+
+    // Facts
+    fun addFacts() {
+        var i : Int = 0
+        for( i in 0..1000) {
+            facts.add("아치 " + i.toString())
+        }
+    }
+
+    fun printFacts() {
+        val random = Random()
+        val num = random.nextInt(facts.size)
+
+        tv_fact.text = facts.get(num)
+        handler.postDelayed(runnable, 10000)
+
     }
 
     companion object {
