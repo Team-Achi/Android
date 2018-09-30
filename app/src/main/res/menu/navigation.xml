@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_analyzehabit"
+        android:icon="@mipmap/habit"
         android:title="습관분석" />
 
     <item
         android:id="@+id/navigation_monitoring"
+        android:icon="@mipmap/monitoring"
         android:title="모니터링" />
 
     <item
         android:id="@+id/navigation_calendar"
+        android:icon="@mipmap/calendar"
         android:title="캘린더" />
 
 </menu>
