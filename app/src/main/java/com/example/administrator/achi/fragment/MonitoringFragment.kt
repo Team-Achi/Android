@@ -182,7 +182,6 @@ class MonitoringFragment : Fragment(){
         val num = random.nextInt(facts.size)
 
         tv_fact.text = facts.get(num)
-        handler.postDelayed(runnable, 10000)
 
     }
 

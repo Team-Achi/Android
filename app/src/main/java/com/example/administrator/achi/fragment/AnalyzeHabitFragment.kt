@@ -70,7 +70,7 @@ class AnalyzeHabitFragment : Fragment(){
         val random = Random()
         val num = random.nextInt(100)
 
-        tv_weeklyScore.text = num.toString() + " 점"
+        tv_weeklyScore.text = num.toString() + " / 100"
     }
 
     fun getDate(){
@@ -92,13 +92,14 @@ class AnalyzeHabitFragment : Fragment(){
         var j : Int = 0
 
         var time =  arrayOf("3:00", "2:30", "3:25", "2:17")    // 양치 시간, 나중에 받아오기
-        var analysis = arrayOf("Excellent", "Good", "So so", "Bad")     // 분석 내용, 나중에 받아오기
+        var analysis = arrayOf("양치의 정석", "굿!!", "왼쪽을 더 열심히 닦도록,,", "엉망이야!",
+                "가만히 서서 닦으세요", "너무 오래 닦음", "오른 쪽을 더 열심히 닦도록!!")     // 분석 내용, 나중에 받아오기
 
         // ArrayList에  값 저장
         for (i in 0..6) {       // 일주일
             var content = ArrayList<String>()
             for (j in 0..2) {   // 하루하루 양치 횟수...? - 일단은 모두 3번
-                content.add(time[(i+j)%4].toString() + "\n" + analysis[(i+j)%4])
+                content.add(time[(i+j)%4].toString() + "\n" + analysis[(i*j + i + j)%7])
 //                childListContent[i][j] = times[(i*j)%4].toString() + "\n" + analysis[(i+j)%4]
             }
             childListContent.add(content)
