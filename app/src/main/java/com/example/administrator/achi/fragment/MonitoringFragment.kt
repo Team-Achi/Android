@@ -15,6 +15,8 @@ import android.widget.Chronometer
 
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.math.min
 

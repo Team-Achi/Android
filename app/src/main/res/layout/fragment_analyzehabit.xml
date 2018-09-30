@@ -23,6 +23,11 @@
         android:textColor="@android:color/black"
         android:textSize="50sp" />
 
+    <TextView
+        android:id="@+id/blank"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" />
+
     <ExpandableListView
         android:id="@+id/lvWeeklyHabbit"
         android:layout_width="match_parent"
