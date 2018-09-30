@@ -1,5 +1,6 @@
 package com.example.administrator.achi
 
+import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var frameLayout : FrameLayout
     lateinit var active : Fragment
     lateinit var fragmentManager: FragmentManager
-
+    lateinit var mainViewModel : MainViewModel
     lateinit var analyzeHabitFragment: AnalyzeHabitFragment
     lateinit var monitoringFragment: MonitoringFragment
     lateinit var calendarFragment: CalendarFragment
@@ -63,7 +64,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         fragmentManager = supportFragmentManager
+        mainViewModel.fragmentManager = fragmentManager
 
         calendarFragment = CalendarFragment.newInstance()
         analyzeHabitFragment = AnalyzeHabitFragment.newInstance()
