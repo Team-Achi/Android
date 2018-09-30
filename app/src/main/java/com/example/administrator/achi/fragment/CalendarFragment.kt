@@ -1,20 +1,24 @@
 package com.example.administrator.achi.fragment
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.administrator.achi.MainViewModel
 import com.example.administrator.achi.R
 
 class CalendarFragment : Fragment(){
 
     private val TAG = "CalendarFragment"
     private var thisView: View? = null
+    private lateinit var mainViewModel : MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
+        mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
 
     }
 
