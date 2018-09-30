@@ -5,13 +5,9 @@
     android:id="@+id/monitoring_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/monitoring"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="Monitoring" />
 
 
     <LinearLayout
@@ -72,7 +68,8 @@
     <ImageView
         android:id="@+id/model"
         android:layout_width="match_parent"
-        android:layout_height="330dp" />
+        android:layout_height="330dp"
+        tools:srcCompat="@mipmap/teeth_model" />
 
     <TextView
         android:id="@+id/tvFact"
