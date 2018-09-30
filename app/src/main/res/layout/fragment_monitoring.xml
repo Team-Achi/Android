@@ -72,16 +72,16 @@
     <ImageView
         android:id="@+id/model"
         android:layout_width="match_parent"
-        android:layout_height="320dp" />
+        android:layout_height="330dp" />
 
     <TextView
         android:id="@+id/tvFact"
         android:layout_width="match_parent"
         android:layout_height="65dp"
-        android:text="하루에 양치를 3번 해야해~~~~"
+        android:background="@drawable/tv_weeklyscore_border"
         android:gravity="center"
+        android:text="하루에 양치를 3번 해야해~~~~"
         android:textColor="@android:color/black"
-        android:textSize="17dp"
-        android:background="@drawable/tv_fact_border"/>
+        android:textSize="17dp" />
 
 </LinearLayout>

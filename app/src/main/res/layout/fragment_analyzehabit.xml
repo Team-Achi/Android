@@ -10,17 +10,17 @@
     <TextView
         android:id="@+id/analyzehabit"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:text="AnalyzeHabit" />
 
     <TextView
         android:id="@+id/tvWeeklyScore"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:background="@drawable/tv_weeklyscore_border"
+        android:gravity="center"
         android:text="100 점"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="#4e4e50"
         android:textSize="50sp" />
 
     <TextView

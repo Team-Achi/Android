@@ -68,7 +68,7 @@ class AnalyzeHabitFragment : Fragment(){
     // TODO 점수 받아와서 보여주기
     fun getScore() {
         val random = Random()
-        val num = random.nextInt(100)
+        val num = random.nextInt(101)
 
         tv_weeklyScore.text = num.toString() + " / 100"
     }

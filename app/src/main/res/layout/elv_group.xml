@@ -8,19 +8,14 @@
         android:id="@+id/tv_lvGroupTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ffe0dc"
         android:paddingStart="?android:attr/expandableListPreferredItemPaddingLeft"
         android:paddingTop="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
+        android:textAlignment="gravity"
         android:textColor="@android:color/black"
         android:textSize="20dp"
         android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="wrap_content"
-        android:layout_height="?android:attr/listPreferredItemHeight"
-        android:scaleType="centerInside"
-        android:layout_weight="0" />
 
 </android.support.constraint.ConstraintLayout>
