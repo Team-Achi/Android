@@ -70,7 +70,7 @@
         android:id="@+id/model"
         android:layout_width="match_parent"
         android:layout_height="330dp"
-        tools:srcCompat="@mipmap/teeth_model" />
+        android:src="@mipmap/teeth_model" />
 
     <TextView
         android:id="@+id/tvFact"
