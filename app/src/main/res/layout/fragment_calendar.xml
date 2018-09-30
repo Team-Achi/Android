@@ -43,6 +43,7 @@
         android:background="@color/colorAccent"
         android:text="좀 더 열심히!!\n ★★★☆☆"
         android:textAlignment="center"
+        android:gravity="center"
         android:maxLines="2"
         android:textSize="50dp" />
 
