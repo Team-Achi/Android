@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/achi_shadow"
+        android:icon="@drawable/achi_pink"
         android:label="@string/app_name"
         android:roundIcon="@drawable/achi_shadow"
         android:supportsRtl="true"

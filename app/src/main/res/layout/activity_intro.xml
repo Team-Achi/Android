@@ -22,7 +22,8 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="ACHI\n아름다운 치아"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:layout_marginTop="30dp"/>
 
 
 </LinearLayout>
