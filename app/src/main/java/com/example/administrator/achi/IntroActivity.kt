@@ -17,7 +17,7 @@ class IntroActivity : AppCompatActivity(){
     override fun onResume() {
         super.onResume()
         var logoImage = findViewById<ImageView>(R.id.logoimage)
-        logoImage.setImageResource(R.drawable.achi_shadow)
+        logoImage.setImageResource(R.drawable.achi_pink)
         val handler = Handler()
         handler.postDelayed(Runnable {
             //startActivity(Intent(this, LoginActivity::class.java))

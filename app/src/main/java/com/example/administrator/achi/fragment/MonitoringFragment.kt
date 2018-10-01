@@ -145,7 +145,7 @@ class MonitoringFragment : Fragment(){
                 minute = second / 60
                 second = second % 60
 
-                handler.postDelayed(runnable, 0)
+//                handler.postDelayed(runnable, 0)
                 // Later TODO : 기록하는 textView
             }
             else if (curState == PAUSE) {   // Rset

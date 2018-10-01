@@ -70,7 +70,7 @@ class AnalyzeHabitFragment : Fragment(){
         val random = Random()
         val num = random.nextInt(101)
 
-        tv_weeklyScore.text = num.toString() + " / 100"
+        tv_weeklyScore.text = num.toString() + " / 100점"
     }
 
     fun getDate(){

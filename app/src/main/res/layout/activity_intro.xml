@@ -18,7 +18,7 @@
     <TextView
         android:id="@+id/achi"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="ACHI\n아름다운 치아"
