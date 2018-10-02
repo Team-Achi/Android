@@ -23,6 +23,7 @@ class AnalyzeHabitFragment : Fragment(){
     private var thisView: View? = null
 
     private lateinit var tv_weeklyScore : TextView
+    private lateinit var tv_weelyComment : TextView
     private lateinit var lv_weeklyHabbit : ExpandableListView
 
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
@@ -51,7 +52,10 @@ class AnalyzeHabitFragment : Fragment(){
         }
 
         tv_weeklyScore = thisView!!.findViewById(R.id.tvWeeklyScore)
+        tv_weelyComment = thisView!!. findViewById(R.id.tvWeeklyComment)
         lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
+
+        init()
 
         getScore()
 
@@ -63,6 +67,14 @@ class AnalyzeHabitFragment : Fragment(){
         lv_weeklyHabbit.setAdapter(expandableListAdapter)
 
         return thisView
+    }
+
+    fun init() {
+        groupList = ArrayList<String>()                         // 그룹 이름(item), header
+        childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body
+        childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들
+
+        weekDates = ArrayList<String>()
     }
 
     // TODO 점수 받아와서 보여주기

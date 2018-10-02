@@ -20,12 +20,24 @@
     <TextView
         android:id="@+id/tvWeeklyScore"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:background="@drawable/tv_weeklyscore_border"
         android:gravity="center"
         android:text="100 점"
         android:textColor="#4e4e50"
         android:textSize="50sp" />
+
+    <TextView
+        android:id="@+id/tvWeeklyComment"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@android:color/white"
+        android:elevation="1dp"
+        android:gravity="center"
+        android:text="올바른 양치 횟수가 점점 늘고 있어요!\n 올바른 양치 방식이 하얗고 아름다운 치아를 만들어 준답니다."
+        android:textColor="@android:color/black"
+        android:textSize="15dp" />
+
 
     <ExpandableListView
         android:id="@+id/lvWeeklyHabbit"

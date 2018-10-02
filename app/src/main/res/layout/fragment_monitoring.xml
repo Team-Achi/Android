@@ -22,7 +22,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
 
         <TextView
             android:id="@+id/tvMinute"
@@ -30,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="00"
             android:textColor="@android:color/black"
-            android:textSize="60sp" />
+            android:textSize="80sp" />
 
         <TextView
             android:id="@+id/tvSemi1"
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text=":"
             android:textColor="@android:color/black"
-            android:textSize="60sp" />
+            android:textSize="80sp" />
 
         <TextView
             android:id="@+id/tvSecond"
@@ -46,47 +47,27 @@
             android:layout_height="wrap_content"
             android:text="00"
             android:textColor="@android:color/black"
-            android:textSize="60sp" />
+            android:textSize="80sp" />
     </LinearLayout>
 
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center">
-
-        <Button
-            android:id="@+id/btnStart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Start" />
-
-
-
-        <Button
-            android:id="@+id/btnRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Record" />
-
-    </LinearLayout>
 
     <ImageView
         android:id="@+id/model"
         android:layout_width="match_parent"
         android:layout_height="330dp"
-        android:src="@mipmap/teeth_model" />
+        android:src="@mipmap/teeth_model"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"/>
 
     <TextView
         android:id="@+id/tvFact"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="100dp"
         android:background="@drawable/tv_fact_border"
         android:gravity="center"
         android:text="하루에 양치를 3번 해야해~~~~"
         android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
         android:textSize="17dp" />
 
 </LinearLayout>
