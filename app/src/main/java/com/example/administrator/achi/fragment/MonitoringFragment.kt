@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.administrator.achi.R
 import android.widget.Chronometer
+import android.widget.ImageView
 
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_monitoring.*
@@ -38,9 +39,8 @@ class MonitoringFragment : Fragment(){
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
 
-    private lateinit var tv_minute : TextView
-    private lateinit var tv_second : TextView
-    private lateinit var tv_semi1 : TextView
+    private lateinit var tv_time : TextView
+    private lateinit var iv_model : ImageView
 
 //    private lateinit var btn_start : Button
 //    private lateinit var btn_record : Button
@@ -67,17 +67,24 @@ class MonitoringFragment : Fragment(){
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
 
+        tv_time = thisView!!.findViewById<TextView>(R.id.tvTime)
+        iv_model = thisView!!.findViewById<ImageView>(R.id.model)
+        tv_fact = thisView!!.findViewById(R.id.tvFact)
+
+//        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>curState : " + curState)
+        if (curState == INIT)
+            tv_time.setText("00:00")
+
         stopWatch()
 
-        tv_fact = thisView!!.findViewById(R.id.tvFact)
         addFacts()
         printFacts()
 
 
         return thisView
-
     }
 
+    // Error : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
     // StopWatch
     fun stopWatch() {
         runnable = object : Runnable {
@@ -86,28 +93,69 @@ class MonitoringFragment : Fragment(){
                 minute = second / 60
                 second = second % 60
 
+                var strMin : String
+                var strSecond : String
+
                 if (minute < 10)
-                    tv_minute.setText("0" + minute.toString())
+                    strMin = "0" + minute.toString()
                 else
-                    tv_minute.setText(minute.toString())
+                    strMin = minute.toString()
 
                 if (second < 10)
-                    tv_second.setText("0" + second.toString())
+                    strSecond = "0" + second.toString()
                 else
-                    tv_second.setText(second.toString())
+                    strSecond = second.toString()
+                tv_time.setText(strMin + ":" + strSecond)
 
                 handler.postDelayed(this, 0)
             }
         }
 
-//        btn_start = thisView!!.findViewById<Button>(R.id.btnStart)
-//        btn_start = thisView!!.findViewById<Button>(R.id.btnStart)
-//        btn_record = thisView!!.findViewById<Button>(R.id.btnRecord)
-        //        btn_pasue = thisView!!.findViewById<Button>(R.id.btnPause)
+        iv_model.setOnClickListener() {
+            if (curState == INIT) {
+                baseTime = SystemClock.elapsedRealtime()
+                curState = RUN
 
-        tv_minute = thisView!!.findViewById<TextView>(R.id.tvMinute)
-        tv_second = thisView!!.findViewById<TextView>(R.id.tvSecond)
-        tv_semi1 = thisView!!.findViewById<TextView>(R.id.tvSemi1)
+                handler.postDelayed(runnable, 0)
+            }
+
+            else if (curState == RUN) {
+                pauseTime = SystemClock.elapsedRealtime()
+                curState = INIT
+
+                handler.removeCallbacks(runnable)
+            }
+        }
+    }
+
+    fun getElapsedTime() : Int {
+        var curTime : Long = SystemClock.elapsedRealtime()
+        var resultTime : Long = curTime - baseTime
+        var sec = (resultTime / 1000).toInt()
+        return sec
+    }
+
+    // Facts
+    fun addFacts() {
+        facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
+        facts.add("아치의  꿀팁 2: 탄삼음료, 커피 등을 마신 후 30분 후에 양치하기!  음료에 포함왼 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
+        facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기! 그리고 엽으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 느낌으로 양치질하는 것이 좋습니다.")
+
+    }
+
+    fun printFacts() {
+        val random = Random()
+        val num = random.nextInt(facts.size)
+
+        tv_fact.text = facts.get(num)
+
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MonitoringFragment()
+    }
+}
 
 //        btn_start.setOnClickListener() {thisView->
 //
@@ -148,7 +196,7 @@ class MonitoringFragment : Fragment(){
 ////                handler.postDelayed(runnable, 0)
 //                // Later TODO : 기록하는 textView
 //            }
-//            else if (curState == PAUSE) {   // Rset
+//            else if (curState == PAUSE) {   // Reset
 //                btn_start.setText("START")
 //                btn_record.setText("RECORD")
 //
@@ -160,35 +208,3 @@ class MonitoringFragment : Fragment(){
 //                handler.removeCallbacks(runnable)
 //            }
 //        }
-    }
-
-    fun getElapsedTime() : Int {
-        var curTime : Long = SystemClock.elapsedRealtime()
-        var resultTime : Long = curTime - baseTime
-        var sec = (resultTime / 1000).toInt()
-        return sec
-    }
-
-    // Facts
-    fun addFacts() {
-        var i : Int = 0
-
-        facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
-        facts.add("아치의  꿀팁 2: 탄삼음료, 커피 등을 마신 후 30분 후에 양치하기!  음료에 포함왼 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
-        facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기! 그리고 엽으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 느낌으로 양치질하는 것이 좋습니다.")
-
-    }
-
-    fun printFacts() {
-        val random = Random()
-        val num = random.nextInt(facts.size)
-
-        tv_fact.text = facts.get(num)
-
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = MonitoringFragment()
-    }
-}

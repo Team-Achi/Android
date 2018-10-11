@@ -55,7 +55,7 @@ class AnalyzeHabitFragment : Fragment(){
         tv_weelyComment = thisView!!. findViewById(R.id.tvWeeklyComment)
         lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
 
-        init()
+        init_elv()
 
         getScore()
 
@@ -66,10 +66,15 @@ class AnalyzeHabitFragment : Fragment(){
         val expandableListAdapter = com.example.administrator.achi.fragment.ExpandableListAdapter(this.context!!, lv_weeklyHabbit, groupList, childList)
         lv_weeklyHabbit.setAdapter(expandableListAdapter)
 
+        var i : Int = 0
+        for (i in 0..expandableListAdapter.getGroupCount()-1)
+            lv_weeklyHabbit.expandGroup(i)
+
+
         return thisView
     }
 
-    fun init() {
+    fun init_elv() {
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
         childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body
         childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들

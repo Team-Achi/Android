@@ -17,38 +17,16 @@
         android:textAlignment="center"
         android:text="모니터링" />
 
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp">
-
-        <TextView
-            android:id="@+id/tvMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textColor="@android:color/black"
-            android:textSize="80sp" />
-
-        <TextView
-            android:id="@+id/tvSemi1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=":"
-            android:textColor="@android:color/black"
-            android:textSize="80sp" />
-
-        <TextView
-            android:id="@+id/tvSecond"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00"
-            android:textColor="@android:color/black"
-            android:textSize="80sp" />
-    </LinearLayout>
+        android:layout_marginTop="30dp"
+        android:text="00:00"
+        android:textColor="@android:color/black"
+        android:textSize="80dp"
+        />
 
 
     <ImageView
@@ -57,7 +35,8 @@
         android:layout_height="330dp"
         android:src="@mipmap/teeth_model"
         android:layout_marginBottom="30dp"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp"
+        android:clickable="true"/>
 
     <TextView
         android:id="@+id/tvFact"
