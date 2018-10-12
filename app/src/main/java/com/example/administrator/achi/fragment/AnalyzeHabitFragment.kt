@@ -114,7 +114,7 @@ class AnalyzeHabitFragment : Fragment(){
 
         // ArrayList에  값 저장
         for (i in 0..6) {       // 일주일
-            var content = ArrayList<String>()
+            var content = ArrayList<String>()   // 하루
             for (j in 0..2) {   // 하루하루 양치 횟수...? - 일단은 모두 3번
                 content.add(time[(i+j)%4].toString() + "\n" + analysis[(i*j + i + j)%7])
 //                childListContent[i][j] = times[(i*j)%4].toString() + "\n" + analysis[(i+j)%4]

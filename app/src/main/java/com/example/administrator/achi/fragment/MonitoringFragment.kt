@@ -38,6 +38,7 @@ class MonitoringFragment : Fragment(){
     private var curState : Int = INIT
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
+    private var elapsedTime : String = "00:00"
 
     private lateinit var tv_time : TextView
     private lateinit var iv_model : ImageView
@@ -71,7 +72,6 @@ class MonitoringFragment : Fragment(){
         iv_model = thisView!!.findViewById<ImageView>(R.id.model)
         tv_fact = thisView!!.findViewById(R.id.tvFact)
 
-//        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>curState : " + curState)
         if (curState == INIT)
             tv_time.setText("00:00")
 
@@ -80,11 +80,10 @@ class MonitoringFragment : Fragment(){
         addFacts()
         printFacts()
 
-
         return thisView
     }
 
-    // Error : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
+    // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
     // StopWatch
     fun stopWatch() {
         runnable = object : Runnable {
@@ -124,6 +123,12 @@ class MonitoringFragment : Fragment(){
                 curState = INIT
 
                 handler.removeCallbacks(runnable)
+
+                second = getElapsedTime()
+                minute = second / 60
+                second = second % 60
+
+                elapsedTime = minute.toString() + ":" + second.toString()
             }
         }
     }
