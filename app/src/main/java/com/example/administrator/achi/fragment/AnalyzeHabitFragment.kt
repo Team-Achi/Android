@@ -1,6 +1,7 @@
 package com.example.administrator.achi.fragment
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.widget.ExpandableListView
 import android.widget.TextView
 import com.example.administrator.achi.R
 import kotlinx.android.synthetic.main.fragment_analyzehabit.view.*
+import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -28,10 +30,8 @@ class AnalyzeHabitFragment : Fragment(){
     private lateinit var lv_weeklyHabbit : ExpandableListView
 
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
-    private var childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body
-    private var childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들
-
-    private var weekDates = ArrayList<String>()
+    private var childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
+    private var childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들, record 하나
 
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -56,22 +56,21 @@ class AnalyzeHabitFragment : Fragment(){
         lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
 
 
-        //        dataCenter = DataCenter.getInstance()
         var sample_record : Record = Record()
-        DataCenter.addRecord(sample_record)
+        DataCenter.records.add(0,sample_record)
 
         init()
 
         getScore()
 
-        getDate()
+//        getDate()
         addToList()
 
         // Expandable List View
         val expandableListAdapter = com.example.administrator.achi.fragment.ExpandableListAdapter(this.context!!, lv_weeklyHabbit, groupList, childList)
         lv_weeklyHabbit.setAdapter(expandableListAdapter)
 
-        for (i in 0..expandableListAdapter.getGroupCount()-1)
+        for (i in 0 until expandableListAdapter.getGroupCount())
             lv_weeklyHabbit.expandGroup(i)
 
 
@@ -82,8 +81,6 @@ class AnalyzeHabitFragment : Fragment(){
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
         childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body
         childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들
-
-        weekDates = ArrayList<String>()
     }
 
     // TODO 점수 받아와서 보여주기
@@ -92,22 +89,36 @@ class AnalyzeHabitFragment : Fragment(){
         val num = random.nextInt(101)
 
         tv_weeklyScore.text = num.toString() + " / 100 점"
+
+
+
     }
 
-    fun getDate(){
-        var today = LocalDateTime.now()
-        var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)      // ISO_LOCAL_DATE
+//    fun getDate(){
+//        var today = LocalDateTime.now()
+//        var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)      // ISO_LOCAL_DATE
+//
+//        var dates = ArrayList<LocalDateTime>()
+//
+//        for (i in 0..6) {
+//            dates.add(today.minusDays(i.toLong()))
+//            weekDates.add(dates[i].format(formatter))
+//        }
+//    }
+
+    // TODO
+    fun addToList() {
 
         var dates = ArrayList<LocalDateTime>()
+        var weekDates = ArrayList<String>()
+
+        var today = LocalDateTime.now()
+        var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)      // ISO_LOCAL_DATE
 
         for (i in 0..6) {
             dates.add(today.minusDays(i.toLong()))
             weekDates.add(dates[i].format(formatter))
         }
-    }
-
-    // TODO
-    fun addToList() {
 
         var time =  arrayOf("3:00", "2:30", "3:25", "2:17")    // 양치 시간, 나중에 받아오기
         var analysis = arrayOf("양치의 정석", "굿!!", "왼쪽을 더 열심히 닦도록,,", "엉망이야!",
@@ -123,6 +134,13 @@ class AnalyzeHabitFragment : Fragment(){
             childListContent.add(content)
             childList.add(childListContent[i])
         }
+
+//        // 오늘부터 일주일 전까지 날짜 찾아서 그에 해당하는 기록들 저장
+//        for (i in 0 until DataCenter.records.size) {
+//            var record = DataCenter.records[i]
+//            var curDate = today.minusDays(i.toLong())
+//
+//        }
 
         for (i in 0..6)
             groupList.add(weekDates[i])

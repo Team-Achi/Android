@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class Record {
-    var date : String
+    var date : LocalDateTime
         private set
     var duration : Int = -1
         private set
@@ -20,7 +20,7 @@ class Record {
     constructor() {
         val random : Random = Random()
 
-        this.date = LocalDateTime.now().toString()
+        this.date = LocalDateTime.now()
         this.duration = random.nextInt(300000)
 //        this.sec_per_tooth = spt
         this.bad_pressure = random.nextInt(29)
@@ -28,7 +28,7 @@ class Record {
 //        this.comment = comment
     }
 
-    constructor(date : String, time : Int, spt : Array<Int>, bp : Int, score : Int, comment : String) {
+    constructor(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int, score : Int, comment : String) {
         this.date = date
         this.duration = time
         this.sec_per_tooth = spt
@@ -40,7 +40,7 @@ class Record {
     // just for test
     fun printRecord() {
         println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-        println(this.date)
+        println(this.date.toString())
         println(this.duration)
         println(this.sec_per_tooth[20])
         println(this.bad_pressure)

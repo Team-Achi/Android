@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 object Analyzer{
 
-    private var today : String = "2018-10-27"
+    private lateinit var today : LocalDateTime
     private var duration : Int = -1
     private var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var bad_pressure : Int = 0
@@ -16,14 +16,8 @@ object Analyzer{
     private const val numOfTeeth : Int = 28
     private var diff_time_per_tooth : Array<Int> = Array<Int>(50,{0})
 
-    /***
-     * 필요한 함수
-     * 1. 날짜 저장
-     * 2. 한 이빨 양치한 시간과 치아 번호 받아서 add
-     * 3. bad pressure 횟수 더하는 함수
-     * 4. 최종 분석하는 함수
-     */
 
+    // TODO Analyzer에서 각각 이빨 하나하나 시간 측정
     fun secPerTooth(time : Int, tooth_num : Int) {      // 치아 하나하나 접근
         this.sec_per_tooth[tooth_num] = time
     }
@@ -33,17 +27,10 @@ object Analyzer{
     }
 
 
-//    fun setVariables(date : String, time : Int, spt : Array<Int>) {
-//        this.today = date
-//        this.duration = time
-//        this.sec_per_tooth = spt
-//    }
-
     // TODO 각 이빨 계산과 코멘트 저장
-    fun analyze(date : String, time : Int, spt : Array<Int>) {
+    fun analyze(date : LocalDateTime, time : Int) {
         this.today = date
         this.duration = time
-        this.sec_per_tooth = spt
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
@@ -58,6 +45,7 @@ object Analyzer{
         calculate_pressure()
 
         // comment 저장
+//        set_comment()
 
 
         if (score < 0)
@@ -66,7 +54,7 @@ object Analyzer{
 
         // record를 Record와 DataCenter에 저장
         var record = Record(today, duration, sec_per_tooth, bad_pressure, score, comment)
-        DataCenter.addRecord(record)
+        DataCenter.records.add(0, record)
 
 
         init()
@@ -102,8 +90,12 @@ object Analyzer{
             score = 0
     }
 
+    private fun set_comment() {
+
+    }
+
     private fun init() {
-        today = "2018-10-27"
+        today = LocalDateTime.now()
         duration = -1
         sec_per_tooth = Array<Int>(50,{0})
         bad_pressure = 0

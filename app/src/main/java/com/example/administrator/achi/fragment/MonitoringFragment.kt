@@ -31,8 +31,7 @@ class MonitoringFragment : Fragment(){
     private var thisView: View? = null
 
     // Analyze
-    private lateinit var today : String
-    private var time_per_tooth = Array<Int>(50,{0})   // 이 하나당 시간
+    private lateinit var today : LocalDateTime
 
     // Stopwatch
     private var handler : Handler = Handler()
@@ -132,7 +131,7 @@ class MonitoringFragment : Fragment(){
                 pauseTime = baseTime
                 curState = RUN
 
-                today = LocalDateTime.now().toString()
+                today = LocalDateTime.now()
 
             }
 
@@ -142,7 +141,7 @@ class MonitoringFragment : Fragment(){
 
 
                 // Analyzer에 최종 전달
-                Analyzer.analyze(today, getElapsedTime(), time_per_tooth)
+                Analyzer.analyze(today, getElapsedTime())
 
             }
         }
@@ -154,9 +153,7 @@ class MonitoringFragment : Fragment(){
                 var resultTime : Long = curTime - pauseTime
                 var tooth_num : Int = 0
 
-                // TODO sec_per_tooth를 하나하나 할 때마다 보낼지, 양치 다 하고 보낼 지 정해야함
                 pauseTime = curTime
-//                time_per_tooth[tooth_num] = resultTime.toInt()
 
                 tv_record.setText(resultTime.toString())
                 Analyzer.pressure()
@@ -176,7 +173,7 @@ class MonitoringFragment : Fragment(){
     // Facts
     fun addFacts() {
         facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
-        facts.add("아치의  꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기!  음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
+        facts.add("아치의 꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기!  음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
         facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기! 그리고 옆으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 느낌으로 양치질하는 것이 좋습니다.")
 
     }
