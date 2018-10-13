@@ -29,6 +29,10 @@ class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
     private var thisView: View? = null
 
+    // Analyze
+    private lateinit var today : LocalDateTime
+    private var time_per_tooth = Array<Int>(50,{0})   // 이 하나당 시간
+
     // Stopwatch
     private var handler : Handler = Handler()
     private lateinit var runnable : Runnable
@@ -39,18 +43,12 @@ class MonitoringFragment : Fragment(){
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
 
-    private var time_per_tooth = ArrayList<Int>()   // 이 하나당 시간
-    private var time_tooth : Int = 0
-
     private lateinit var tv_time : TextView
     private lateinit var iv_model : ImageView
 
     // just for test- stopwatch
     private lateinit var btn_record : Button
     private lateinit var tv_record : TextView
-
-//    private lateinit var btn_start : Button
-//    private lateinit var btn_record : Button
 
     // Fact
     private val facts = ArrayList<String>()
@@ -126,19 +124,26 @@ class MonitoringFragment : Fragment(){
         }
 
         iv_model.setOnClickListener() {
-            if (curState == INIT) {
+            if (curState == INIT) {                         // 시작
                 baseTime = SystemClock.elapsedRealtime()
-                curState = RUN
+                handler.postDelayed(runnable, 0)
 
                 pauseTime = baseTime
+                curState = RUN
 
-                handler.postDelayed(runnable, 0)
+                today = LocalDateTime.now()
+
             }
 
-            else if (curState == RUN) {
+            else if (curState == RUN) {                    // 끝
                 curState = INIT
-
                 handler.removeCallbacks(runnable)
+
+
+                // Analyzer에 최종 전달
+//                Analyzer.today = today
+//                Analyzer.duration = getElapsedTime()
+//                Analyzer.sec_per_tooth = time_per_tooth
 
             }
         }
@@ -148,12 +153,10 @@ class MonitoringFragment : Fragment(){
             if (curState == RUN) {
                 var curTime = SystemClock.elapsedRealtime()
                 var resultTime : Long = curTime - pauseTime
+                var tooth_num : Int = 0
+
                 pauseTime = curTime
-
-                time_per_tooth.add(resultTime.toInt())         // 요거 analyzer로 넘겨주면 됨
-                time_tooth = resultTime.toInt()
-
-//                analyzer.secPerTooth(time_tooth, tooth_num)
+//                time_per_tooth[tooth_num] = resultTime.toInt()
 
                 tv_record.setText(resultTime.toString())
             }

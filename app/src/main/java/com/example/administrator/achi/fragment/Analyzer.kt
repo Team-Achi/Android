@@ -4,30 +4,30 @@ import android.os.Handler
 import android.os.SystemClock
 import java.time.LocalDateTime
 
-class Analyzer{
+object Analyzer{
 
-    private var today : LocalDateTime = LocalDateTime.now()
-    private var score : Int = 100
-    private var duration : Int = -1
-    private var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
+    var today : LocalDateTime = LocalDateTime.now()
+        set(today : LocalDateTime) {this.today = today}
+    var duration : Int = -1
+        set(duration : Int) {this.duration = duration}
+    var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
+        set(sec_per_tooth : Array<Int>) {this.sec_per_tooth = sec_per_tooth}
     private var bad_pressure : Int = 0
+    private var score : Int = 100
     private var comment : String = "comment"
 
-    private var numOfTeeth : Int = 28
-    private var diff_per_tooth : Array<Int> = Array<Int>(50,{0})
-
-    constructor(today : LocalDateTime) {
-        this.today = today
-    }
+    private const val numOfTeeth : Int = 28
+    private var diff_time_per_tooth : Array<Int> = Array<Int>(50,{0})
 
     /***
      * 필요한 함수
+     * 날짜 저장
      * 1. 한 이빨 양치한 시간과 치아 번호 받아서 add
      * 2. bad pressure 횟수 더하는 함수
      * 3. 최종 분석하는 함수
      */
 
-    fun secPerTooth(time : Int, tooth_num : Int) {
+    fun secPerTooth(time : Int, tooth_num : Int) {      // 치아 하나하나 접근
         this.sec_per_tooth[tooth_num] = time
     }
 
@@ -35,9 +35,7 @@ class Analyzer{
         bad_pressure++
     }
 
-    fun finalAnalysis(duration : Int) {
-        this.duration = duration
-
+    fun finalAnalysis() {
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
@@ -53,8 +51,8 @@ class Analyzer{
         // comment 저장
 
 
-        // record를 Record와 Day와 DataCenter에 저장
-        var record = Record(today, score, duration, sec_per_tooth, bad_pressure, comment)
+        // record를 Record와 DataCenter에 저장
+        var record = Record(today, score, sec_per_tooth, bad_pressure, duration, comment)
         DataCenter.addRecord(record)
         // TODO Day를 어떻게 알고 저장하지???
 
@@ -79,8 +77,8 @@ class Analyzer{
     private fun calculate_sec_per_tooth() {
         var expected_sec_per_tooth : Int = duration / numOfTeeth
 
-        for (i in 0..49) {
-            diff_per_tooth[i] = sec_per_tooth[i] - expected_sec_per_tooth
+        for (i in 0..sec_per_tooth.size - 1) {
+            diff_time_per_tooth[i] = sec_per_tooth[i] - expected_sec_per_tooth
         }
     }
 

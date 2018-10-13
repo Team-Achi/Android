@@ -34,7 +34,6 @@ class AnalyzeHabitFragment : Fragment(){
     private var weekDates = ArrayList<String>()
 
 
-
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
@@ -61,8 +60,7 @@ class AnalyzeHabitFragment : Fragment(){
         var sample_record : Record = Record()
         DataCenter.addRecord(sample_record)
 
-
-        init_elv()
+        init()
 
         getScore()
 
@@ -80,7 +78,7 @@ class AnalyzeHabitFragment : Fragment(){
         return thisView
     }
 
-    fun init_elv() {
+    fun init() {
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
         childList = ArrayList<ArrayList<String>>()              // 그룹 리스트 (subitem 목록), body
         childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들
