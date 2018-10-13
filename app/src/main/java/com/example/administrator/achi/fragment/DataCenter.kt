@@ -10,6 +10,13 @@ object DataCenter {
     }
     fun addRecord(record: Record) {
         records.add(0,record)
+        printRecord()
+    }
+
+    // just for test
+    fun printRecord() {
+        for (i in 0..records.size-1)
+            records[i].printRecord()
     }
 
 

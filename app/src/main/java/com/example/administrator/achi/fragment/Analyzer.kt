@@ -6,12 +6,9 @@ import java.time.LocalDateTime
 
 object Analyzer{
 
-    var today : LocalDateTime = LocalDateTime.now()
-        set(today : LocalDateTime) {this.today = today}
-    var duration : Int = -1
-        set(duration : Int) {this.duration = duration}
-    var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
-        set(sec_per_tooth : Array<Int>) {this.sec_per_tooth = sec_per_tooth}
+    private var today : String = "2018-10-27"
+    private var duration : Int = -1
+    private var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var bad_pressure : Int = 0
     private var score : Int = 100
     private var comment : String = "comment"
@@ -21,10 +18,10 @@ object Analyzer{
 
     /***
      * 필요한 함수
-     * 날짜 저장
-     * 1. 한 이빨 양치한 시간과 치아 번호 받아서 add
-     * 2. bad pressure 횟수 더하는 함수
-     * 3. 최종 분석하는 함수
+     * 1. 날짜 저장
+     * 2. 한 이빨 양치한 시간과 치아 번호 받아서 add
+     * 3. bad pressure 횟수 더하는 함수
+     * 4. 최종 분석하는 함수
      */
 
     fun secPerTooth(time : Int, tooth_num : Int) {      // 치아 하나하나 접근
@@ -35,15 +32,27 @@ object Analyzer{
         bad_pressure++
     }
 
-    fun finalAnalysis() {
+
+//    fun setVariables(date : String, time : Int, spt : Array<Int>) {
+//        this.today = date
+//        this.duration = time
+//        this.sec_per_tooth = spt
+//    }
+
+    // TODO 각 이빨 계산과 코멘트 저장
+    fun analyze(date : String, time : Int, spt : Array<Int>) {
+        this.today = date
+        this.duration = time
+        this.sec_per_tooth = spt
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
+
         // 총 양치 시간
         calculate_duration()
 
         // 각 이빨 계산
-        calculate_sec_per_tooth()
+//        calculate_sec_per_tooth()
 
         // 압력
         calculate_pressure()
@@ -51,11 +60,16 @@ object Analyzer{
         // comment 저장
 
 
-        // record를 Record와 DataCenter에 저장
-        var record = Record(today, score, sec_per_tooth, bad_pressure, duration, comment)
-        DataCenter.addRecord(record)
-        // TODO Day를 어떻게 알고 저장하지???
+        if (score < 0)
+            score = 0
 
+
+        // record를 Record와 DataCenter에 저장
+        var record = Record(today, duration, sec_per_tooth, bad_pressure, score, comment)
+        DataCenter.addRecord(record)
+
+
+        init()
     }
 
     private fun calculate_duration() {
@@ -86,6 +100,16 @@ object Analyzer{
         score -= bad_pressure * 5
         if (score < 0)
             score = 0
+    }
+
+    private fun init() {
+        today = "2018-10-27"
+        duration = -1
+        sec_per_tooth = Array<Int>(50,{0})
+        bad_pressure = 0
+        score = 100
+        comment = "comment"
+        diff_time_per_tooth = Array<Int>(50, {0})
     }
 
 
