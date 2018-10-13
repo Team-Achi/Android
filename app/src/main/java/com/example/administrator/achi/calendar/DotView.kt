@@ -22,12 +22,10 @@ class DotView : View {
             val paint = Paint()
             paint.isAntiAlias = true
             paint.color = agenda.color
-        /*    var bitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.achi_pink)
-            var scaledBitmap : Bitmap = Bitmap.createBitmap(bitmap, 0,0, bitmap.width,bitmap.height, matrix,false)
-            canvas.drawBitmap(scaledBitmap,canvas.width / 4 - bitmap.width/2, paint)
-*/
-            canvas.drawCircle(width.toFloat() / (count + 1) * (index + 1),
-                5 * height.toFloat() / 6, (width + height).toFloat() / 32, paint)
+          /*  var bitmap : Bitmap = BitmapFactory.decodeResource(resources, R.drawable.achi_pink_two)
+            canvas.drawBitmap(bitmap, width.toFloat() / (count + 1) * (index + 1),5 * height.toFloat() / 6, null);*/
+
+          canvas.drawCircle(width.toFloat() / (count + 1) * (index + 1),5 * height.toFloat() / 6, (width + height).toFloat() / 32, paint)
         }
     }
 }
