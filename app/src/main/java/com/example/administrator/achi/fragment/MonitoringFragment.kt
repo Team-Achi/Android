@@ -38,10 +38,16 @@ class MonitoringFragment : Fragment(){
     private var curState : Int = INIT
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
-    private var elapsedTime : String = "00:00"
+
+    private var time_per_tooth = ArrayList<Int>()   // 이 하나당 시간
+    private var time_tooth : Int = 0
 
     private lateinit var tv_time : TextView
     private lateinit var iv_model : ImageView
+
+    // just for test- stopwatch
+    private lateinit var btn_record : Button
+    private lateinit var tv_record : TextView
 
 //    private lateinit var btn_start : Button
 //    private lateinit var btn_record : Button
@@ -72,8 +78,17 @@ class MonitoringFragment : Fragment(){
         iv_model = thisView!!.findViewById<ImageView>(R.id.model)
         tv_fact = thisView!!.findViewById(R.id.tvFact)
 
-        if (curState == INIT)
-            tv_time.setText("00:00")
+        // for test
+        btn_record = thisView!!.findViewById<Button>(R.id.btnRecord)
+        tv_record = thisView!!.findViewById<TextView>(R.id.tvRecord)
+
+//        if (curState == INIT)
+//            tv_time.setText("00:00")
+        if (curState == RUN) {
+            handler.removeCallbacks(runnable)
+            curState = INIT
+        }
+        tv_time.setText("00:00")
 
         stopWatch()
 
@@ -88,7 +103,7 @@ class MonitoringFragment : Fragment(){
     fun stopWatch() {
         runnable = object : Runnable {
             override fun run() {
-                second = getElapsedTime()
+                second = getElapsedTime() / 1000
                 minute = second / 60
                 second = second % 60
 
@@ -115,20 +130,32 @@ class MonitoringFragment : Fragment(){
                 baseTime = SystemClock.elapsedRealtime()
                 curState = RUN
 
+                pauseTime = baseTime
+
                 handler.postDelayed(runnable, 0)
             }
 
             else if (curState == RUN) {
-                pauseTime = SystemClock.elapsedRealtime()
                 curState = INIT
 
                 handler.removeCallbacks(runnable)
 
-                second = getElapsedTime()
-                minute = second / 60
-                second = second % 60
+            }
+        }
 
-                elapsedTime = minute.toString() + ":" + second.toString()
+        // for test
+        btn_record.setOnClickListener() {           // record
+            if (curState == RUN) {
+                var curTime = SystemClock.elapsedRealtime()
+                var resultTime : Long = curTime - pauseTime
+                pauseTime = curTime
+
+                time_per_tooth.add(resultTime.toInt())         // 요거 analyzer로 넘겨주면 됨
+                time_tooth = resultTime.toInt()
+
+//                analyzer.secPerTooth(time_tooth, tooth_num)
+
+                tv_record.setText(resultTime.toString())
             }
         }
     }
@@ -136,7 +163,7 @@ class MonitoringFragment : Fragment(){
     fun getElapsedTime() : Int {
         var curTime : Long = SystemClock.elapsedRealtime()
         var resultTime : Long = curTime - baseTime
-        var sec = (resultTime / 1000).toInt()
+        var sec = resultTime.toInt()
         return sec
     }
 

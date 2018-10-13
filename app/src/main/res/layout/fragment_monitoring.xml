@@ -28,14 +28,27 @@
         android:textSize="80dp"
         />
 
+    <Button
+        android:id="@+id/btnRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="record"/>
+
+    <TextView
+        android:id="@+id/tvRecord"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:textSize="17dp"
+        android:text=""/>
+
 
     <ImageView
         android:id="@+id/model"
         android:layout_width="match_parent"
-        android:layout_height="330dp"
+        android:layout_height="250dp"
         android:src="@mipmap/teeth_model"
         android:layout_marginBottom="30dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="20dp"
         android:clickable="true"/>
 
     <TextView
