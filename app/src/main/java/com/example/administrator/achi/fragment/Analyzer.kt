@@ -55,12 +55,13 @@ class Analyzer{
 
         // record를 Record와 Day와 DataCenter에 저장
         var record = Record(today, score, duration, sec_per_tooth, bad_pressure, comment)
+        DataCenter.addRecord(record)
         // TODO Day를 어떻게 알고 저장하지???
 
     }
 
     private fun calculate_duration() {
-        var minusScore : Int = 0
+        var minusScore : Int
         if (duration < 170000) { // 2분 50초
             minusScore = (170000 - duration) / 1000     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
@@ -77,14 +78,13 @@ class Analyzer{
 
     private fun calculate_sec_per_tooth() {
         var expected_sec_per_tooth : Int = duration / numOfTeeth
-        var i : Int = 0
+
         for (i in 0..49) {
             diff_per_tooth[i] = sec_per_tooth[i] - expected_sec_per_tooth
         }
     }
 
     private fun calculate_pressure() {
-        var minusScore : Int = 0
         score -= bad_pressure * 5
         if (score < 0)
             score = 0

@@ -22,6 +22,7 @@ class AnalyzeHabitFragment : Fragment(){
     private val TAG = "AnalyzeHabitFragment"
     private var thisView: View? = null
 
+
     private lateinit var tv_weeklyScore : TextView
     private lateinit var tv_weelyComment : TextView
     private lateinit var lv_weeklyHabbit : ExpandableListView
@@ -55,6 +56,12 @@ class AnalyzeHabitFragment : Fragment(){
         tv_weelyComment = thisView!!. findViewById(R.id.tvWeeklyComment)
         lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
 
+
+        //        dataCenter = DataCenter.getInstance()
+        var sample_record : Record = Record()
+        DataCenter.addRecord(sample_record)
+
+
         init_elv()
 
         getScore()
@@ -66,7 +73,6 @@ class AnalyzeHabitFragment : Fragment(){
         val expandableListAdapter = com.example.administrator.achi.fragment.ExpandableListAdapter(this.context!!, lv_weeklyHabbit, groupList, childList)
         lv_weeklyHabbit.setAdapter(expandableListAdapter)
 
-        var i : Int = 0
         for (i in 0..expandableListAdapter.getGroupCount()-1)
             lv_weeklyHabbit.expandGroup(i)
 
@@ -96,7 +102,6 @@ class AnalyzeHabitFragment : Fragment(){
 
         var dates = ArrayList<LocalDateTime>()
 
-        var i : Int = 0
         for (i in 0..6) {
             dates.add(today.minusDays(i.toLong()))
             weekDates.add(dates[i].format(formatter))
@@ -105,8 +110,6 @@ class AnalyzeHabitFragment : Fragment(){
 
     // TODO
     fun addToList() {
-        var i : Int = 0
-        var j : Int = 0
 
         var time =  arrayOf("3:00", "2:30", "3:25", "2:17")    // 양치 시간, 나중에 받아오기
         var analysis = arrayOf("양치의 정석", "굿!!", "왼쪽을 더 열심히 닦도록,,", "엉망이야!",
