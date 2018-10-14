@@ -101,7 +101,7 @@ class MonitoringFragment : Fragment(){
     fun stopWatch() {
         runnable = object : Runnable {
             override fun run() {
-                second = getElapsedTime() / 1000
+                second = getElapsedTime()
                 minute = second / 60
                 second = second % 60
 
@@ -164,7 +164,7 @@ class MonitoringFragment : Fragment(){
     fun getElapsedTime() : Int {
         var curTime : Long = SystemClock.elapsedRealtime()
         var resultTime : Long = curTime - baseTime
-        var sec = resultTime.toInt()
+        var sec = (resultTime / 1000).toInt()
         return sec
     }
 

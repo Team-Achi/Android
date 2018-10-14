@@ -3,6 +3,10 @@ package com.example.administrator.achi.fragment
 object DataCenter {
     var records = ArrayList<Record>()
 
+    // for sample data
+    var i = 0
+    var j = 0
+
 
     fun saveData () {
         // 데이터 저장

@@ -20,12 +20,18 @@ class Record {
     constructor() {
         val random : Random = Random()
 
-        this.date = LocalDateTime.now()
-        this.duration = random.nextInt(300000)
+        DataCenter.j++
+        if (DataCenter.j > 2) {
+            DataCenter.i++
+            DataCenter.j = 0
+        }
+
+        this.date = LocalDateTime.now().minusDays(DataCenter.i.toLong())
+        this.duration = random.nextInt(300)
 //        this.sec_per_tooth = spt
         this.bad_pressure = random.nextInt(29)
         this.score = random.nextInt(101)
-//        this.comment = comment
+        this.comment = date.toString() + "\t\t\t" + DataCenter.j.toString()
     }
 
     constructor(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int, score : Int, comment : String) {

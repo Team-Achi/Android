@@ -45,7 +45,7 @@ object Analyzer{
         calculate_pressure()
 
         // comment 저장
-//        set_comment()
+        set_comment()
 
 
         if (score < 0)
@@ -62,14 +62,14 @@ object Analyzer{
 
     private fun calculate_duration() {
         var minusScore : Int
-        if (duration < 170000) { // 2분 50초
-            minusScore = (170000 - duration) / 1000     // 초 차이
+        if (duration < 170) { // 2분 50초
+            minusScore = (170 - duration)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
         }
-        else if (duration > 190000) {   // 3분 10초
-            minusScore = (duration - 190000) / 1000     // 초 차이
+        else if (duration > 190) {   // 3분 10초
+            minusScore = (duration - 190)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
@@ -91,7 +91,7 @@ object Analyzer{
     }
 
     private fun set_comment() {
-
+        comment +=  today.toString()
     }
 
     private fun init() {
