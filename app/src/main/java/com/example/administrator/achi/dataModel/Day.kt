@@ -1,4 +1,4 @@
-package com.example.administrator.achi.fragment
+package com.example.administrator.achi.dataModel
 
 class Day() : ArrayList<Record>() {
     init {

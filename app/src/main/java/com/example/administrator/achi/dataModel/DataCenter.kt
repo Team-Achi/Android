@@ -1,4 +1,4 @@
-package com.example.administrator.achi.fragment
+package com.example.administrator.achi.dataModel
 
 object DataCenter {
     var records = ArrayList<Record>()

@@ -1,20 +1,16 @@
 package com.example.administrator.achi.fragment
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseExpandableListAdapter
-import android.widget.ExpandableListAdapter
 import android.widget.ExpandableListView
 import android.widget.TextView
 import com.example.administrator.achi.R
-import kotlinx.android.synthetic.main.fragment_analyzehabit.view.*
-import java.time.Duration
-import java.time.LocalDate
+import com.example.administrator.achi.dataModel.DataCenter
+import com.example.administrator.achi.dataModel.Record
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -88,7 +84,6 @@ class AnalyzeHabitFragment : Fragment(){
         childListContent = ArrayList<ArrayList<String>>()     // subitem 내용들
     }
 
-    // TODO 점수 받아와서 보여주기
     fun getScore() {
         var lastWeekDate = today.minusDays(7)
         var avg = 0
@@ -107,7 +102,6 @@ class AnalyzeHabitFragment : Fragment(){
         tv_weeklyScore.text = avg.toString() + " / 100 점"
     }
 
-    // TODO
     fun addToList() {
 
         var dates = ArrayList<LocalDateTime>()
@@ -127,13 +121,7 @@ class AnalyzeHabitFragment : Fragment(){
         for (i in 0 until DataCenter.records.size) {
             var record = DataCenter.records[i]
 
-            println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-            println(record.date.format(checkFormatter) + "\t\t" +record.duration)
-            println(curDateFormat)
-            println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-
             if (record.date.format(checkFormatter).compareTo(curDateFormat) != 0) {
-                println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
                 curDate = curDate.minusDays(1)
                 curDateFormat =curDate.format(checkFormatter)
 
@@ -142,12 +130,17 @@ class AnalyzeHabitFragment : Fragment(){
                 childList.add(childListContent[j])
                 j++
                 content = ArrayList<String>()
-
-                println("_______________________________")
-                println(curDateFormat)
-                println("_______________________________")
             }
-            content.add((record.duration/60).toString() + ":" + (record.duration%60).toString() +
+
+            // second 표현하는 방법 간단하게 찾기
+            var second = record.duration % 60
+            var strSecond : String
+            if (second < 10)
+                strSecond = "0" + second.toString()
+            else
+                strSecond = second.toString()
+
+            content.add((record.duration/60).toString() + ":" + strSecond +
                     "\t\t\t\t\t\t\t\t점수 : " + record.score.toString() + "\n" + record.comment)
         }
         childListContent.add(content)

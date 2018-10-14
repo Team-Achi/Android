@@ -1,7 +1,7 @@
 package com.example.administrator.achi.fragment
 
-import android.os.Handler
-import android.os.SystemClock
+import com.example.administrator.achi.dataModel.DataCenter
+import com.example.administrator.achi.dataModel.Record
 import java.time.LocalDateTime
 
 object Analyzer{
