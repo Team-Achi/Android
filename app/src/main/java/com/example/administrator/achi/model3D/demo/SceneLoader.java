@@ -62,8 +62,8 @@ public class SceneLoader implements LoaderTask.Callback {
     /**
      * Whether to draw using textures
      */
-    private boolean drawTextures = true;
-    /**
+    private boolean drawTextures = false;
+     /**
      * Light toggle feature: we have 3 states: no light, light, light + rotation
      */
     private boolean rotatingLight = true;
@@ -111,6 +111,8 @@ public class SceneLoader implements LoaderTask.Callback {
      */
     private long startTime;
 
+    private ArrayList<Object3DData> boxes;
+
     public SceneLoader(MonitoringFragment main) {
         this.parent = main;
     }
@@ -123,6 +125,8 @@ public class SceneLoader implements LoaderTask.Callback {
         if (parent.getParamUri() == null){
             return;
         }
+
+        boxes = new ArrayList<Object3DData>();
 
         startTime = SystemClock.uptimeMillis();
         ProgressDialog dialog = new ProgressDialog((MainActivity)parent.getActivity());
@@ -138,9 +142,10 @@ public class SceneLoader implements LoaderTask.Callback {
                 String fileName;
                 for (int i = 11; i < 47; i++) {
                     fileName = new String("teeth" + i + ".obj");
-                    addNewObject(fileName);
+                    addteethObject(fileName, i);
                 }
-                addNewObject("gum_and_tongue.obj");
+                addteethObject("gum_and_tongue.obj", -1);
+//                addGumAndTongueObjct();
             } catch (Exception ex) {
                 errors.add(ex);
             }
@@ -154,15 +159,40 @@ public class SceneLoader implements LoaderTask.Callback {
 
     }
 
-    private void addNewObject(String name) {
+    private void addteethObject(String name, int i) {
         try {
-            Object3DData box11 = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + name));
-            float[] a = box11.getDimensions().getCenter3f();
-            box11.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-            addObject(box11);
+            Object3DData box = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + name));
+
+            box.setScale(new float[]{3f, 2.5f, 2.5f});
+
+            if (i != -1)
+                box.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
+            else {
+                box.setColor(new float[]{1.0f, 0.639f, 0.639f, 1.0f});
+            }
+            addObject(box);
+
+            // add this in susan's array
+            boxes.add(i, box);
         } catch (Exception e) {
             e.printStackTrace();
             return;
+        }
+    }
+
+    private void addGumAndTongueObjct() {
+        try {
+            Object3DData box = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + "gum_and_tongue.obj"));
+            box.setColor(new float[]{1.0f, 0.639f, 0.639f});
+            box.setScale(new float[]{2.5f, 2.5f, 2.5f});
+            addObject(box);
+
+            // add this in susan's array
+            boxes.add(100, box);
+
+        } catch (Exception e) {
+             e.printStackTrace();
+             return;
         }
     }
 
