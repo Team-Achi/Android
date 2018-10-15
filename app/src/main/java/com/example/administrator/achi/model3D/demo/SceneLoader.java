@@ -111,7 +111,7 @@ public class SceneLoader implements LoaderTask.Callback {
      */
     private long startTime;
 
-    private ArrayList<Object3DData> boxes;
+    private Object3DData[] boxes;
 
     public SceneLoader(MonitoringFragment main) {
         this.parent = main;
@@ -126,7 +126,7 @@ public class SceneLoader implements LoaderTask.Callback {
             return;
         }
 
-        boxes = new ArrayList<Object3DData>();
+        boxes = new Object3DData[48];
 
         startTime = SystemClock.uptimeMillis();
         ProgressDialog dialog = new ProgressDialog((MainActivity)parent.getActivity());
@@ -165,34 +165,17 @@ public class SceneLoader implements LoaderTask.Callback {
 
             box.setScale(new float[]{3f, 2.5f, 2.5f});
 
-            if (i != -1)
+            if (i != -1) {  // teeth
                 box.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-            else {
+                boxes[i] = box;
+            } else {    // gum
                 box.setColor(new float[]{1.0f, 0.639f, 0.639f, 1.0f});
+                boxes[0] = box;
             }
             addObject(box);
-
-            // add this in susan's array
-            boxes.add(i, box);
         } catch (Exception e) {
             e.printStackTrace();
             return;
-        }
-    }
-
-    private void addGumAndTongueObjct() {
-        try {
-            Object3DData box = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + "gum_and_tongue.obj"));
-            box.setColor(new float[]{1.0f, 0.639f, 0.639f});
-            box.setScale(new float[]{2.5f, 2.5f, 2.5f});
-            addObject(box);
-
-            // add this in susan's array
-            boxes.add(100, box);
-
-        } catch (Exception e) {
-             e.printStackTrace();
-             return;
         }
     }
 
