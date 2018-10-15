@@ -105,7 +105,7 @@ class AnalyzeHabitFragment : Fragment(){
 
         var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)      // ISO_LOCAL_DATE
         var checkFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        var timeFormatter = DateTimeFormatter.ofPattern("hh:mm")
 
 
         // 전체 기록 날짜별로 저장

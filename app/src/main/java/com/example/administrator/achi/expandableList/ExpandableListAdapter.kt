@@ -74,7 +74,7 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
         val childTitle = convertView!!.findViewById<TextView>(R.id.tvChildTitle)
         val childStarTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
         var content = getChild(groupPosition, childPosition)
-        childTitle?.text = "${content.elapsedTime}\t\t\t\t점수:${content.score}\n${content.comment}"
+        childTitle?.text = "${content.elapsedTime}\t\t\t\t점수 : ${content.score}\n\n${content.comment}"
         childStarTime?.text = content.startTime
 
 
