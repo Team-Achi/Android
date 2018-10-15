@@ -42,11 +42,10 @@
         android:text=""/>
 
 
-    <ImageView
+    <com.example.administrator.achi.model3D.MyGLSurfaceView
         android:id="@+id/model"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:src="@mipmap/teeth_model"
         android:layout_marginBottom="30dp"
         android:layout_marginTop="20dp"
         android:clickable="true"/>

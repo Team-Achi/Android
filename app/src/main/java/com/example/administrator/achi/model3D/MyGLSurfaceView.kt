@@ -1,7 +1,8 @@
-package com.susan.openglpractice
+package com.example.administrator.achi.model3D
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.util.AttributeSet
 import android.view.MotionEvent
 import java.security.AccessControlContext
 
@@ -24,6 +25,10 @@ class MyGLSurfaceView(context: Context) : GLSurfaceView(context) {
 
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(mRenderer)
+    }
+
+    constructor(context: Context, attributeSet: AttributeSet) : this(context){
+
     }
 
     override fun onTouchEvent(e: MotionEvent): Boolean {

@@ -1,5 +1,6 @@
 package com.example.administrator.achi.fragment
 
+import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.administrator.achi.R
+import com.example.administrator.achi.model3D.MyGLSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
 import java.time.LocalDateTime
@@ -36,6 +38,8 @@ class MonitoringFragment : Fragment(){
     private var curState : Int = INIT
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
+
+    private lateinit var mGLView : GLSurfaceView
 
     // Fact
     private val facts = ArrayList<String>()
@@ -67,6 +71,8 @@ class MonitoringFragment : Fragment(){
             handler.removeCallbacks(runnable)
             curState = INIT
         }
+
+//        mGLView = MyGLSurfaceView(this.context!!)
 
         tvTime.setText("00:00")
 
@@ -103,28 +109,28 @@ class MonitoringFragment : Fragment(){
             }
         }
 
-        model.setOnClickListener() {
-            if (curState == INIT) {                         // 시작
-                baseTime = SystemClock.elapsedRealtime()
-                handler.postDelayed(runnable, 0)
-
-                pauseTime = baseTime
-                curState = RUN
-
-                today = LocalDateTime.now()
-
-            }
-
-            else if (curState == RUN) {                    // 끝
-                curState = INIT
-                handler.removeCallbacks(runnable)
-
-
-                // Analyzer에 최종 전달
-                Analyzer.analyze(today, getElapsedTime())
-
-            }
-        }
+//        model.setOnClickListener() {
+//            if (curState == INIT) {                         // 시작
+//                baseTime = SystemClock.elapsedRealtime()
+//                handler.postDelayed(runnable, 0)
+//
+//                pauseTime = baseTime
+//                curState = RUN
+//
+//                today = LocalDateTime.now()
+//
+//            }
+//
+//            else if (curState == RUN) {                    // 끝
+//                curState = INIT
+//                handler.removeCallbacks(runnable)
+//
+//
+//                // Analyzer에 최종 전달
+//                Analyzer.analyze(today, getElapsedTime())
+//
+//            }
+//        }
 
         // for test
         btnRecord.setOnClickListener() {           // record
