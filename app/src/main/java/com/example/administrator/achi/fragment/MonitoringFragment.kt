@@ -1,5 +1,7 @@
 package com.example.administrator.achi.fragment
 
+import android.content.Intent.getIntent
+import android.net.Uri
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
@@ -13,6 +15,8 @@ import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.MyGLSurfaceView
+import com.example.administrator.achi.model3D.demo.SceneLoader
+import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
 import java.time.LocalDateTime
@@ -43,6 +47,9 @@ class MonitoringFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
+        this.paramUri = Uri.parse("dsfkj")
+
+
     }
 
     override fun onResume(){
@@ -69,6 +76,14 @@ class MonitoringFragment : Fragment(){
         }
 
 //        mGLView = MyGLSurfaceView(this.context!!)
+
+
+        // Create a 3D scenario
+        scene = SceneLoader(this)
+        scene.init()
+//
+//        // Create a GLSurfaceView instance
+//        gLView.setParent(this);
 
         tvTime.setText("00:00")
 
@@ -156,6 +171,42 @@ class MonitoringFragment : Fragment(){
         @JvmStatic
         fun newInstance() = MonitoringFragment()
     }
+
+
+    //////////////////////////////////////////////////////////////
+    // OpenGL Related                                           //
+    //////////////////////////////////////////////////////////////
+    /**
+     * The file to load. Passed as input parameter
+     */
+    private lateinit var paramUri: Uri
+    /**
+     * Background GL clear color. Default is light gray
+     */
+    private var backgroundColor = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
+
+    private lateinit var gLView: ModelSurfaceView
+
+
+    private lateinit var scene: SceneLoader
+
+    fun getParamUri(): Uri {
+        return paramUri
+    }
+
+    fun getBackgroundColor(): FloatArray {
+        return backgroundColor
+    }
+
+    fun getScene(): SceneLoader {
+        return scene
+    }
+
+    fun getGLView(): ModelSurfaceView {
+        return gLView
+    }
+
+
 }
 
 

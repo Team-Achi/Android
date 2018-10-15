@@ -30,7 +30,7 @@
 
 
     <com.example.administrator.achi.model3D.MyGLSurfaceView
-        android:id="@+id/model"
+        android:id="@+id/gLView"
         android:layout_width="match_parent"
         android:layout_height="400dp"
         android:layout_marginBottom="10dp"
