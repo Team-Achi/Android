@@ -179,6 +179,29 @@ public class SceneLoader implements LoaderTask.Callback {
         }
     }
 
+    /**
+     * Call this method to color a specific tooth.
+     * @param toothNumberString
+     * @param colorString
+     */
+    public void colorTeeth(String toothNumberString, String colorString) {
+        int toothNumber = Integer.parseInt(toothNumberString);
+        int a = toothNumber%10;     // 10's
+        int b = toothNumber/10;     // 1's
+
+        int index = (a-1)*7 + (b-1);
+        Log.i("Scene", "index: " + index);
+        float[] color;
+        if(colorString.equals("YELLOW"))
+            color = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
+        else if (colorString.equals("BLUE"))
+            color = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
+        else
+            color = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+
+        objects.get(index).setColor(color);
+    }
+
     public Camera getCamera() {
         return camera;
     }
