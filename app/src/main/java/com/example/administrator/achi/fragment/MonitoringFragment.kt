@@ -8,17 +8,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import com.example.administrator.achi.R
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
 import java.time.LocalDateTime
 import java.util.*
 
-private const val INIT :Int = 0
-private const val RUN : Int = 1
-private const val PAUSE : Int = 2
+private const val INIT : Boolean = true
+private const val RUN : Boolean = false
 
 class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
@@ -33,7 +30,7 @@ class MonitoringFragment : Fragment(){
 
     private var minute : Int = 0
     private var second : Int = 0
-    private var curState : Int = INIT
+    private var curState : Boolean = INIT
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
 

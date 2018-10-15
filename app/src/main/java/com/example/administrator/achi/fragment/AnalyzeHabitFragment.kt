@@ -6,11 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
-import android.widget.TextView
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.dataModel.Record
+import kotlinx.android.synthetic.main.fragment_analyzehabit.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -21,9 +20,6 @@ class AnalyzeHabitFragment : Fragment(){
     private var thisView: View? = null
 
 
-    private lateinit var tv_weeklyScore : TextView
-    private lateinit var tv_weelyComment : TextView
-    private lateinit var lv_weeklyHabbit : ExpandableListView
     private lateinit var expandableListAdapter : com.example.administrator.achi.fragment.ExpandableListAdapter
 
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
@@ -43,7 +39,7 @@ class AnalyzeHabitFragment : Fragment(){
         Log.d(TAG, "onResume()")
 
         for (i in 0 until expandableListAdapter.getGroupCount())
-            lv_weeklyHabbit.expandGroup(i)
+            lvWeeklyHabbit.expandGroup(i)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -53,10 +49,11 @@ class AnalyzeHabitFragment : Fragment(){
             thisView = inflater.inflate(R.layout.fragment_analyzehabit, container, false)
         }
 
-        tv_weeklyScore = thisView!!.findViewById(R.id.tvWeeklyScore)
-        tv_weelyComment = thisView!!. findViewById(R.id.tvWeeklyComment)
-        lv_weeklyHabbit = thisView!!.findViewById(R.id.lvWeeklyHabbit)
+        return thisView
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         var sample_record : Record = Record()
         DataCenter.records.add(sample_record)
@@ -64,18 +61,15 @@ class AnalyzeHabitFragment : Fragment(){
         init()
 
         getScore()
-
         addToList()
 
         // Expandable List View
-        expandableListAdapter = com.example.administrator.achi.fragment.ExpandableListAdapter(this.context!!, lv_weeklyHabbit, groupList, childList)
-        lv_weeklyHabbit.setAdapter(expandableListAdapter)
+        expandableListAdapter = com.example.administrator.achi.fragment.ExpandableListAdapter(this.context!!, lvWeeklyHabbit, groupList, childList)
+        lvWeeklyHabbit.setAdapter(expandableListAdapter)
 
         for (i in 0 until expandableListAdapter.getGroupCount())
-            lv_weeklyHabbit.expandGroup(i)
+            lvWeeklyHabbit.expandGroup(i)
 
-
-        return thisView
     }
 
     fun init() {
@@ -99,7 +93,7 @@ class AnalyzeHabitFragment : Fragment(){
                 break
         }
         avg = avg / num
-        tv_weeklyScore.text = avg.toString() + " / 100 점"
+        tvWeeklyScore.text = avg.toString() + " / 100 점"
     }
 
     fun addToList() {
