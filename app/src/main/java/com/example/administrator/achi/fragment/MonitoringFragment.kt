@@ -1,7 +1,6 @@
 package com.example.administrator.achi.fragment
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Handler
 import android.os.SystemClock
 import android.support.v4.app.Fragment
@@ -12,15 +11,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import com.example.administrator.achi.R
-import android.widget.Chronometer
-import android.widget.ImageView
 
-import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_monitoring.*
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.math.min
 
 private const val INIT :Int = 0
 private const val RUN : Int = 1
@@ -43,17 +37,8 @@ class MonitoringFragment : Fragment(){
     private var baseTime : Long = 0
     private var pauseTime : Long = 0
 
-    lateinit var tv_time : TextView
-    private lateinit var iv_model : ImageView
-
-    // just for test- stopwatch
-    private lateinit var btn_record : Button
-    private lateinit var tv_record : TextView
-
     // Fact
     private val facts = ArrayList<String>()
-
-    private lateinit var tv_fact : TextView
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -72,28 +57,23 @@ class MonitoringFragment : Fragment(){
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
 
-        tv_time = thisView!!.findViewById<TextView>(R.id.tvTime)
-        iv_model = thisView!!.findViewById<ImageView>(R.id.model)
-        tv_fact = thisView!!.findViewById(R.id.tvFact)
+        return thisView
+    }
 
-        // for test
-        btn_record = thisView!!.findViewById<Button>(R.id.btnRecord)
-        tv_record = thisView!!.findViewById<TextView>(R.id.tvRecord)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-//        if (curState == INIT)
-//            tv_time.setText("00:00")
         if (curState == RUN) {
             handler.removeCallbacks(runnable)
             curState = INIT
         }
-        tv_time.setText("00:00")
+
+        tvTime.setText("00:00")
 
         stopWatch()
 
         addFacts()
         printFacts()
-
-        return thisView
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
@@ -117,13 +97,13 @@ class MonitoringFragment : Fragment(){
                     strSecond = "0" + second.toString()
                 else
                     strSecond = second.toString()
-                tv_time.setText(strMin + ":" + strSecond)
+                tvTime.setText(strMin + ":" + strSecond)
 
                 handler.postDelayed(this, 0)
             }
         }
 
-        iv_model.setOnClickListener() {
+        model.setOnClickListener() {
             if (curState == INIT) {                         // 시작
                 baseTime = SystemClock.elapsedRealtime()
                 handler.postDelayed(runnable, 0)
@@ -147,7 +127,7 @@ class MonitoringFragment : Fragment(){
         }
 
         // for test
-        btn_record.setOnClickListener() {           // record
+        btnRecord.setOnClickListener() {           // record
             if (curState == RUN) {
                 var curTime = SystemClock.elapsedRealtime()
                 var resultTime : Long = curTime - pauseTime
@@ -155,7 +135,7 @@ class MonitoringFragment : Fragment(){
 
                 pauseTime = curTime
 
-                tv_record.setText(resultTime.toString())
+                tvRecord.setText(resultTime.toString())
                 Analyzer.pressure()
             }
         }
@@ -182,7 +162,7 @@ class MonitoringFragment : Fragment(){
         val random = Random()
         val num = random.nextInt(facts.size)
 
-        tv_fact.text = facts.get(num)
+        tvFact.text = facts.get(num)
 
     }
 
