@@ -156,11 +156,12 @@ public class SceneLoader implements LoaderTask.Callback {
 
     private void addNewObject(String name) {
         try {
-            Object3DData box11 = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/models/" + name));
+            Object3DData box11 = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + name));
             float[] a = box11.getDimensions().getCenter3f();
             box11.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
             addObject(box11);
         } catch (Exception e) {
+            e.printStackTrace();
             return;
         }
     }

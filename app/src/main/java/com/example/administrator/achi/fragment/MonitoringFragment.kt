@@ -1,5 +1,7 @@
 package com.example.administrator.achi.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.content.Intent.getIntent
 import android.net.Uri
 import android.opengl.GLSurfaceView
@@ -19,6 +21,7 @@ import com.example.administrator.achi.model3D.demo.SceneLoader
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import org.andresoviedo.util.android.ContentUtils
 import java.time.LocalDateTime
 import java.util.*
 
@@ -75,7 +78,9 @@ class MonitoringFragment : Fragment(){
             curState = INIT
         }
 
-//        mGLView = MyGLSurfaceView(this.context!!)
+        mGLView = MyGLSurfaceView(this.context!!)
+
+
 
 
         // Create a 3D scenario
@@ -83,7 +88,8 @@ class MonitoringFragment : Fragment(){
         scene.init()
 //
 //        // Create a GLSurfaceView instance
-//        gLView.setParent(this);
+        gLView = ModelSurfaceView(context, this)
+        layout.addView(gLView)
 
         tvTime.setText("00:00")
 
@@ -205,7 +211,6 @@ class MonitoringFragment : Fragment(){
     fun getGLView(): ModelSurfaceView {
         return gLView
     }
-
 
 }
 

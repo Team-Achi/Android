@@ -36,11 +36,12 @@ public class ModelSurfaceView extends GLSurfaceView {
 		// Render the view only when there is a change in the drawing data
 		// TODO: enable this?
 		// setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+
 	}
 
 
-	public ModelSurfaceView(MonitoringFragment parent) {
-		super((MainActivity)parent.getActivity());
+	public ModelSurfaceView(Context context, MonitoringFragment parent) {
+		super(context);
 
 		// parent component
 		this.parent = parent;
