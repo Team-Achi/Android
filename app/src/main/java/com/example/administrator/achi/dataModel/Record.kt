@@ -31,7 +31,7 @@ class Record {
 //        this.sec_per_tooth = spt
         this.bad_pressure = random.nextInt(29)
         this.score = random.nextInt(101)
-        this.comment = date.toString() + "\t\t\t" + DataCenter.j.toString()
+        this.comment = date.toString()
     }
 
     constructor(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int, score : Int, comment : String) {
