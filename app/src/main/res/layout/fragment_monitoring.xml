@@ -22,24 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:text="00:00"
         android:textColor="@android:color/black"
         android:textSize="80dp"
         />
-
-    <Button
-        android:id="@+id/btnRecord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="record"/>
-
-    <TextView
-        android:id="@+id/tvRecord"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:textSize="17dp"
-        android:text=""/>
 
 
     <ImageView

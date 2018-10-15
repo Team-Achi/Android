@@ -124,18 +124,18 @@ class MonitoringFragment : Fragment(){
         }
 
         // for test
-        btnRecord.setOnClickListener() {           // record
-            if (curState == RUN) {
-                var curTime = SystemClock.elapsedRealtime()
-                var resultTime : Long = curTime - pauseTime
-                var tooth_num : Int = 0
-
-                pauseTime = curTime
-
-                tvRecord.setText(resultTime.toString())
-                Analyzer.pressure()
-            }
-        }
+//        btnRecord.setOnClickListener() {           // record
+//            if (curState == RUN) {
+//                var curTime = SystemClock.elapsedRealtime()
+//                var resultTime : Long = curTime - pauseTime
+//                var tooth_num : Int = 0
+//
+//                pauseTime = curTime
+//
+//                tvRecord.setText(resultTime.toString())
+//                Analyzer.pressure()
+//            }
+//        }
     }
 
     fun getElapsedTime() : Int {
