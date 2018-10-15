@@ -19,7 +19,7 @@
         android:layout_marginBottom="10dp"
         android:text="월별 아치 캘린더"
         android:textAlignment="center"
-        android:textSize="18dp" />
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,7 +55,7 @@
                 android:paddingTop="5dp"
                 android:text="1일 3회 양치 횟수 : 8회\n1일 2회 양치 횟수 : 6회\n총 양치횟수 36회\n평균 양치시간 : 2분 33초\n\n평균 양치 시간이 짧습니다^_^\n반드시 규칙적으로 일 3회 양치하시기 바랍니다."
                 android:textColor="#000000"
-                android:textSize="16dp" />
+                android:textSize="16sp" />
 
 
             <LinearLayout
@@ -75,7 +75,7 @@
                     android:padding="5dp"
                     android:text="이번달에는 조금 아쉬워요! 다음달에는 화이팅!"
                     android:textColor="#000000"
-                    android:textSize="12dp" />
+                    android:textSize="12sp" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/like_but"

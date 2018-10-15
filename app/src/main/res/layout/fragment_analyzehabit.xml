@@ -15,7 +15,7 @@
         android:layout_marginBottom="10dp"
         android:text="습관 분석"
         android:textAlignment="center"
-        android:textSize="18dp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tvWeeklyScore"
@@ -36,7 +36,7 @@
         android:gravity="center"
         android:text="올바른 양치 횟수가 점점 늘고 있어요!\n 올바른 양치 방식이 하얗고 아름다운 치아를 만들어 준답니다."
         android:textColor="@android:color/black"
-        android:textSize="15dp" />
+        android:textSize="15sp" />
 
 
     <ExpandableListView

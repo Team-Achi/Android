@@ -10,7 +10,6 @@ import android.widget.*
 import com.example.administrator.achi.R
 
 
-
 class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, var groupList : ArrayList<String>, var childList : ArrayList<ArrayList<ChildContentFormat>>) : BaseExpandableListAdapter() {
     override fun getGroup(groupPosition: Int): String {
         //To change body of created functions use File | Settings | File Templates.
@@ -68,14 +67,19 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
         var convertView = convertView
         if (convertView == null) {
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = inflater.inflate(R.layout.elv_child, null)
+            convertView = inflater.inflate(R.layout.elv_child, null, false)
         }
 
-        val childTitle = convertView!!.findViewById<TextView>(R.id.tvChildTitle)
-        val childStarTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
         var content = getChild(groupPosition, childPosition)
-        childTitle?.text = "${content.elapsedTime}\t\t\t\t점수 : ${content.score}\n\n${content.comment}"
-        childStarTime?.text = content.startTime
+
+        val startTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
+        val duration = convertView!!.findViewById<TextView>(R.id.tvDuration)
+        val score = convertView!!.findViewById<TextView>(R.id.tvScore)
+
+        startTime.text = content.startTime
+        duration.text = content.elapsedTime
+        score.text = "${content.score.toString()} 점"
+
 
 
         return convertView
