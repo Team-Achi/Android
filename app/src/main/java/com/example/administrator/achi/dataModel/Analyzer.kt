@@ -1,7 +1,5 @@
-package com.example.administrator.achi.fragment
+package com.example.administrator.achi.dataModel
 
-import com.example.administrator.achi.dataModel.DataCenter
-import com.example.administrator.achi.dataModel.Record
 import java.time.LocalDateTime
 
 object Analyzer{
@@ -17,9 +15,30 @@ object Analyzer{
     private var diff_time_per_tooth : Array<Int> = Array<Int>(50,{0})
 
 
+    // 이 함수는 어디에다가 넣어야 좋을까,,,,
+    fun timeToString(time : Int) : String {
+        var min = time / 60
+        var sec =  time % 60
+
+        var strMin : String
+        var strSecond : String
+
+        if (min < 10)
+            strMin = "0" + min.toString()
+        else
+            strMin = min.toString()
+
+        if (sec < 10)
+            strSecond = "0" + sec.toString()
+        else
+            strSecond = sec.toString()
+
+        return "$strMin : $strSecond"
+    }
+
     // TODO Analyzer에서 각각 이빨 하나하나 시간 측정
     fun secPerTooth(time : Int, tooth_num : Int) {      // 치아 하나하나 접근
-        this.sec_per_tooth[tooth_num] = time
+        sec_per_tooth[tooth_num] = time
     }
 
     fun pressure() {
@@ -29,8 +48,8 @@ object Analyzer{
 
     // TODO 각 이빨 계산과 코멘트 저장
     fun analyze(date : LocalDateTime, time : Int) {
-        this.today = date
-        this.duration = time
+        today = date
+        duration = time
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */

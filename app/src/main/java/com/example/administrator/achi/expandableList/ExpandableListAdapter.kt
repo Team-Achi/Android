@@ -1,4 +1,4 @@
-package com.example.administrator.achi.fragment
+package com.example.administrator.achi.expandableList
 
 import android.content.Context
 import android.graphics.Color
@@ -11,7 +11,7 @@ import com.example.administrator.achi.R
 
 
 
-class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, var groupList : ArrayList<String>, var childList : ArrayList<ArrayList<String>>) : BaseExpandableListAdapter() {
+class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, var groupList : ArrayList<String>, var childList : ArrayList<ArrayList<ChildContentFormat>>) : BaseExpandableListAdapter() {
     override fun getGroup(groupPosition: Int): String {
         //To change body of created functions use File | Settings | File Templates.
         return groupList[groupPosition]
@@ -53,7 +53,7 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
         return childList[groupPosition]. size
     }
 
-    override fun getChild(groupPosition: Int, childPosition: Int): String {
+    override fun getChild(groupPosition: Int, childPosition: Int): ChildContentFormat {
         //To change body of created functions use File | Settings | File Templates.
         return childList[groupPosition][childPosition]
     }
@@ -72,7 +72,10 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
         }
 
         val childTitle = convertView!!.findViewById<TextView>(R.id.tvChildTitle)
-        childTitle?.text = getChild(groupPosition, childPosition)
+        val childStarTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
+        var content = getChild(groupPosition, childPosition)
+        childTitle?.text = "${content.elapsedTime}\t\t\t\t점수:${content.score}\n${content.comment}"
+        childStarTime?.text = content.startTime
 
 
         return convertView

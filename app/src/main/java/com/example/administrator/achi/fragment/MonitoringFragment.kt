@@ -10,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.administrator.achi.R
+import com.example.administrator.achi.dataModel.Analyzer
+import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.MyGLSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
@@ -30,11 +32,8 @@ class MonitoringFragment : Fragment(){
     private var handler : Handler = Handler()
     private lateinit var runnable : Runnable
 
-    private var minute : Int = 0
-    private var second : Int = 0
     private var curState : Boolean = INIT
     private var baseTime : Long = 0
-    private var pauseTime : Long = 0
 
     private lateinit var mGLView : GLSurfaceView
 
@@ -84,23 +83,7 @@ class MonitoringFragment : Fragment(){
     fun stopWatch() {
         runnable = object : Runnable {
             override fun run() {
-                second = getElapsedTime()
-                minute = second / 60
-                second = second % 60
-
-                var strMin : String
-                var strSecond : String
-
-                if (minute < 10)
-                    strMin = "0" + minute.toString()
-                else
-                    strMin = minute.toString()
-
-                if (second < 10)
-                    strSecond = "0" + second.toString()
-                else
-                    strSecond = second.toString()
-                tvTime.setText(strMin + ":" + strSecond)
+                tvTime.text = Analyzer.timeToString(getElapsedTime())
 
                 handler.postDelayed(this, 0)
             }
