@@ -18,7 +18,7 @@
         android:layout_marginLeft="10dp"/>
 
     <TextView
-        android:id="@+id/tv_lvChildTitle"
+        android:id="@+id/tvChildTitle"
         android:layout_width="280dp"
         android:layout_height="70dp"
         android:paddingLeft="20dp"

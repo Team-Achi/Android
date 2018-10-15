@@ -35,7 +35,7 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
             convertView = inflater.inflate(R.layout.elv_group, null)
         }
 
-        val groupTitle = convertView!!.findViewById<TextView>(R.id.tv_lvGroupTitle)
+        val groupTitle = convertView!!.findViewById<TextView>(R.id.tvGroupTitle)
         groupTitle?.text = getGroup(groupPosition)
 
         groupTitle?.setOnClickListener {
@@ -71,7 +71,7 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
             convertView = inflater.inflate(R.layout.elv_child, null)
         }
 
-        val childTitle = convertView!!.findViewById<TextView>(R.id.tv_lvChildTitle)
+        val childTitle = convertView!!.findViewById<TextView>(R.id.tvChildTitle)
         childTitle?.text = getChild(groupPosition, childPosition)
 
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/tv_lvGroupTitle"
+        android:id="@+id/tvGroupTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingEnd="10dp"
@@ -15,6 +15,7 @@
         android:textColor="@android:color/black"
         android:background="@android:color/transparent"
         android:textSize="15dp"
-        android:layout_marginBottom="10dp"/>
+        android:text="groupTitle"
+        android:layout_marginBottom="10dp" />
 
 </android.support.constraint.ConstraintLayout>
