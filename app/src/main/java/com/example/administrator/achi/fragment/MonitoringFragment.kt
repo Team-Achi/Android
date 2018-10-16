@@ -114,7 +114,7 @@ class MonitoringFragment : Fragment(){
             }
         }
 
-//        model.setOnClickListener() {
+//        layout.setOnClickListener() {
 //            if (curState == INIT) {                         // 시작
 //                baseTime = SystemClock.elapsedRealtime()
 //                handler.postDelayed(runnable, 0)

@@ -33,7 +33,7 @@ object Analyzer{
         else
             strSecond = sec.toString()
 
-        return "$strMin : $strSecond"
+        return "$strMin:$strSecond"
     }
 
     // TODO Analyzer에서 각각 이빨 하나하나 시간 측정
