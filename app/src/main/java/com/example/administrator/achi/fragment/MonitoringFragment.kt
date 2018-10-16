@@ -1,5 +1,9 @@
 package com.example.administrator.achi.fragment
 
+import android.app.Activity
+import android.content.Intent
+import android.content.Intent.getIntent
+import android.net.Uri
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
@@ -13,8 +17,11 @@ import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.MyGLSurfaceView
+import com.example.administrator.achi.model3D.demo.SceneLoader
+import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import org.andresoviedo.util.android.ContentUtils
 import java.time.LocalDateTime
 import java.util.*
 
@@ -43,6 +50,9 @@ class MonitoringFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
+        this.paramUri = Uri.parse("dsfkj")
+
+
     }
 
     override fun onResume(){
@@ -68,7 +78,18 @@ class MonitoringFragment : Fragment(){
             curState = INIT
         }
 
-//        mGLView = MyGLSurfaceView(this.context!!)
+        mGLView = MyGLSurfaceView(this.context!!)
+
+
+
+
+        // Create a 3D scenario
+        scene = SceneLoader(this)
+        scene.init()
+//
+//        // Create a GLSurfaceView instance
+        gLView = ModelSurfaceView(context, this)
+        layout.addView(gLView)
 
         tvTime.setText("00:00")
 
@@ -76,6 +97,10 @@ class MonitoringFragment : Fragment(){
 
         addFacts()
         printFacts()
+
+
+        scene.colorTeeth("11", "BLUE");
+        scene.colorTeeth("21", "YELLOW");
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
@@ -156,6 +181,41 @@ class MonitoringFragment : Fragment(){
         @JvmStatic
         fun newInstance() = MonitoringFragment()
     }
+
+
+    //////////////////////////////////////////////////////////////
+    // OpenGL Related                                           //
+    //////////////////////////////////////////////////////////////
+    /**
+     * The file to load. Passed as input parameter
+     */
+    private lateinit var paramUri: Uri
+    /**
+     * Background GL clear color. Default is light gray
+     */
+    private var backgroundColor = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
+
+    private lateinit var gLView: ModelSurfaceView
+
+
+    private lateinit var scene: SceneLoader
+
+    fun getParamUri(): Uri {
+        return paramUri
+    }
+
+    fun getBackgroundColor(): FloatArray {
+        return backgroundColor
+    }
+
+    fun getScene(): SceneLoader {
+        return scene
+    }
+
+    fun getGLView(): ModelSurfaceView {
+        return gLView
+    }
+
 }
 
 

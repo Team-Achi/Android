@@ -12,8 +12,15 @@ import com.example.administrator.achi.fragment.AnalyzeHabitFragment
 import com.example.administrator.achi.fragment.CalendarFragment
 import com.example.administrator.achi.fragment.MonitoringFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import org.andresoviedo.util.android.AndroidURLStreamHandlerFactory
+import java.net.URL
 
 class MainActivity : AppCompatActivity() {
+
+    init {
+        System.setProperty("java.protocol.handler.pkgs", "org.andresoviedo.util.android");
+        URL.setURLStreamHandlerFactory( AndroidURLStreamHandlerFactory());
+    }
 
     val TAG = "MainActivity"
     lateinit var frameLayout : FrameLayout
