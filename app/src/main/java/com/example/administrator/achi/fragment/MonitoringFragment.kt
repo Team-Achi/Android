@@ -1,10 +1,6 @@
 package com.example.administrator.achi.fragment
 
-import android.app.Activity
-import android.content.Intent
-import android.content.Intent.getIntent
 import android.net.Uri
-import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
@@ -15,13 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
-import com.example.administrator.achi.dataModel.DataCenter
-import com.example.administrator.achi.model3D.MyGLSurfaceView
 import com.example.administrator.achi.model3D.demo.SceneLoader
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
-import org.andresoviedo.util.android.ContentUtils
 import java.time.LocalDateTime
 import java.util.*
 
@@ -42,17 +35,13 @@ class MonitoringFragment : Fragment(){
     private var curState : Boolean = INIT
     private var baseTime : Long = 0
 
-    private lateinit var mGLView : GLSurfaceView
-
     // Fact
     private val facts = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
-        this.paramUri = Uri.parse("dsfkj")
-
-
+        this.paramUri = Uri.parse("nothing")
     }
 
     override fun onResume(){
@@ -78,26 +67,18 @@ class MonitoringFragment : Fragment(){
             curState = INIT
         }
 
-        mGLView = MyGLSurfaceView(this.context!!)
-
-
-
-
         // Create a 3D scenario
         scene = SceneLoader(this)
         scene.init()
-//
-//        // Create a GLSurfaceView instance
+
+        // Create a GLSurfaceView instance
         gLView = ModelSurfaceView(context, this)
         layout.addView(gLView)
 
-        tvTime.setText("00:00")
-
+        // Initialize view
         stopWatch()
-
         addFacts()
         printFacts()
-
 
         scene.colorTeeth("11", "BLUE");
         scene.colorTeeth("21", "YELLOW");
@@ -159,14 +140,16 @@ class MonitoringFragment : Fragment(){
         return sec
     }
 
-
-
     // Facts
     fun addFacts() {
-        facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
-        facts.add("아치의 꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기!  음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
-        facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기! 그리고 옆으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 느낌으로 양치질하는 것이 좋습니다.")
-
+        facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 " +
+                "세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
+        facts.add("아치의 꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기! " +
+                " 음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 " +
+                "약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
+        facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기!" +
+                " 그리고 옆으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 " +
+                "느낌으로 양치질하는 것이 좋습니다.")
     }
 
     fun printFacts() {
@@ -174,14 +157,12 @@ class MonitoringFragment : Fragment(){
         val num = random.nextInt(facts.size)
 
         tvFact.text = facts.get(num)
-
     }
 
     companion object {
         @JvmStatic
         fun newInstance() = MonitoringFragment()
     }
-
 
     //////////////////////////////////////////////////////////////
     // OpenGL Related                                           //
