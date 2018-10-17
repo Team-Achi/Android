@@ -115,7 +115,7 @@ public class SceneLoader implements LoaderTask.Callback {
             // test loading object
             try {
                 String fileName;
-                for (int i = 11; i < 47; i++) {
+                for (int i = 11; i < 48; i++) {
                     fileName = new String("teeth" + i + ".obj");
                     addteethObject(fileName, i);
                 }
