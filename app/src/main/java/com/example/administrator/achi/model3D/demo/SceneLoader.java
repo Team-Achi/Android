@@ -166,7 +166,7 @@ public class SceneLoader implements LoaderTask.Callback {
                 colorValues = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
                 break;
             case WHITE:
-                colorValues = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+                colorValues = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
                 break;
             default:
                 colorValues = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
