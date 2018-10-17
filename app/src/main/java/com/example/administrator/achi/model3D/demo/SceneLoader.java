@@ -159,8 +159,8 @@ public class SceneLoader implements LoaderTask.Callback {
     public void colorTeeth(String numString, Color color) {
         // Find out tooth's number
         int num = Integer.parseInt(numString);
-        int a = num % 10;     // 10's
-        int b = num / 10;     // 1's
+        int a = num / 10;     // 10's
+        int b = num % 10;     // 1's
 
         /**
          *      tooth number
@@ -171,8 +171,8 @@ public class SceneLoader implements LoaderTask.Callback {
          * {  6,  5,  4,  3,  2,  1,  0,  7,  8,  9, 10, 11, 12, 13,
          *      27, 26, 25, 24, 23, 22, 21, 14, 15, 16, 17, 18, 19, 20 }
          */
-        int toothNumber = (a - 1) * 7 + (b - 1);
-        Log.i("Scene", "index: " + toothNumber);
+        int toothIndex = (a - 1) * 7 + (b - 1);
+        Log.i("Scene", "index: " + toothIndex);
 
         // Color tooth
         float[] colorValues;
@@ -186,10 +186,17 @@ public class SceneLoader implements LoaderTask.Callback {
             default:
                 colorValues = COLOR_BLUE;
         }
-        objects.get(toothNumber).setColor(colorValues);
+        Log.i("SceneLoader", "Tooth index: " + toothIndex);
+        objects.get(toothIndex).setColor(colorValues);
 
         // Rotate camera from range -0.5 ~ 0.5
-
+//        if (toothIndex > 20 && toothIndex < 40) {     // right side of teeth
+//            float angle = -0.5f / (7 - b);
+//            camera.setHorizontalRotation(angle);
+//        } else {                                        // left side of teeth
+//            float angle = 0.5f / (7 - b);
+//            camera.setHorizontalRotation(angle);
+//        }
     }
 
     public Camera getCamera() {
