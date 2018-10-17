@@ -47,6 +47,11 @@ public class Camera {
 	private Object[] lastAction;
 	private boolean changed = false;
 
+	/**
+	 * Keeps track of how much the camera rotated horizontally
+	 */
+	private float horizontalPosition = 0.0f;
+
 	public Camera() {
 		// Initialize variables...
 		this(0, 0, 6, 0, 0, -1, 0, 1, 0);
@@ -67,6 +72,10 @@ public class Camera {
 		this.xUp = xUp;
 		this.yUp = yUp;
 		this.zUp = zUp;
+	}
+
+	public float getHorizontalPosition() {
+		return horizontalPosition;
 	}
 
 	public synchronized void animate(){
@@ -388,6 +397,15 @@ public class Camera {
 		// Rotate the camera.
 		RotateCamera(yRotation, xAxis, yAxis, zAxis);
 		RotateCamera(yDirection, 0, 1, 0);
+	}
+
+	public void setHorizontalRotation(float dX) {
+		float goalAngle = dX;
+		float currentAngle = horizontalPosition;
+
+		float rotate = goalAngle - currentAngle;
+		horizontalPosition = rotate;
+		translateCamera(rotate, 0);
 	}
 
 	/**

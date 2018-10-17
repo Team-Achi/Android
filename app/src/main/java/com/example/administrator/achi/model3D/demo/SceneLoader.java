@@ -152,19 +152,29 @@ public class SceneLoader implements LoaderTask.Callback {
     }
 
     /**
-     * Call this method to color a specific tooth.
-     * @param toothNumberString
+     * Colors a specific tooth and rotates camera to its angle.
+     * @param numString
      * @param color
      */
-    public void colorTeeth(String toothNumberString, Color color) {
-        int toothNumber = Integer.parseInt(toothNumberString);
-        int a = toothNumber%10;     // 10's
-        int b = toothNumber/10;     // 1's
+    public void colorTeeth(String numString, Color color) {
+        // Find out tooth's number
+        int num = Integer.parseInt(numString);
+        int a = num % 10;     // 10's
+        int b = num / 10;     // 1's
 
-        int index = (a-1)*7 + (b-1);
+        /**
+         *      tooth number
+         * { 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27,         // upper teeth
+         *      47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37 }     // lower teeth
+         *
+         *      converts to
+         * {  6,  5,  4,  3,  2,  1,  0,  7,  8,  9, 10, 11, 12, 13,
+         *      27, 26, 25, 24, 23, 22, 21, 14, 15, 16, 17, 18, 19, 20 }
+         */
+        int toothNumber = (a - 1) * 7 + (b - 1);
+        Log.i("Scene", "index: " + toothNumber);
 
-        Log.i("Scene", "index: " + index);
-
+        // Color tooth
         float[] colorValues;
         switch (color) {
             case YELLOW:
@@ -176,8 +186,10 @@ public class SceneLoader implements LoaderTask.Callback {
             default:
                 colorValues = COLOR_BLUE;
         }
+        objects.get(toothNumber).setColor(colorValues);
 
-        objects.get(index).setColor(colorValues);
+        // Rotate camera from range -0.5 ~ 0.5
+
     }
 
     public Camera getCamera() {
