@@ -34,6 +34,14 @@ public class SceneLoader implements LoaderTask.Callback {
     }
 
     /**
+     * Default shades for highlighting purpose.
+     */
+    final float[] COLOR_WHITE   = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
+    final float[] COLOR_YELLOW  = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
+    final float[] COLOR_BLUE    = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
+    final float[] COLOR_PINK    = new float[]{1.0f, 0.639f, 0.639f, 1.0f};
+
+    /**
      * Parent component
      */
     protected final MonitoringFragment parent;
@@ -129,13 +137,13 @@ public class SceneLoader implements LoaderTask.Callback {
         try {
             Object3DData box = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + name));
 
-            box.setScale(new float[]{3f, 2.5f, 2.5f});
+            box.setScale(new float[] {3.0f, 2.5f, 2.5f});
 
-            if (i != -1) {  // teeth
-                box.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-            } else {    // gum
-                box.setColor(new float[]{1.0f, 0.639f, 0.639f, 1.0f});
-            }
+            if (i != -1)   // teeth
+                box.setColor(COLOR_BLUE);
+            else           // gum
+                box.setColor(COLOR_PINK);
+
             addObject(box);
         } catch (Exception e) {
             e.printStackTrace();
@@ -159,18 +167,14 @@ public class SceneLoader implements LoaderTask.Callback {
 
         float[] colorValues;
         switch (color) {
-            case BLUE:
-                colorValues = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
-                break;
             case YELLOW:
-                colorValues = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
+                colorValues = COLOR_YELLOW;
                 break;
             case WHITE:
-                colorValues = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
+                colorValues = COLOR_WHITE;
                 break;
             default:
-                colorValues = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
-
+                colorValues = COLOR_BLUE;
         }
 
         objects.get(index).setColor(colorValues);
