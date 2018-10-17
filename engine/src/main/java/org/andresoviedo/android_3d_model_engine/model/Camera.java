@@ -28,6 +28,8 @@ public class Camera {
 	public static final float STRAFE_LEFT = -0.5f; // Left straft speed.
 	public static final float STRAFE_RIGHT = 0.5f; // Right straft speed.
 
+	public static final int ANIMATION_COUNTER = 50;
+
 	public static final int AIM = 10;
 	public static final int CAMERA_MAX_ZOOM = 40;
 
@@ -81,17 +83,17 @@ public class Camera {
 	public synchronized void animate(){
 		if (lastAction == null || animationCounter == 0){
 			lastAction = null;
-			animationCounter = 100;
+			animationCounter = ANIMATION_COUNTER;
 			return;
 		}
 		String method = (String) lastAction[0];
 		if (method.equals("translate")){
 			float dX = (Float) lastAction[1];
 			float dY = (Float) lastAction[2];
-			translateCameraImpl(dX*animationCounter/100, dY*animationCounter/100);
+			translateCameraImpl(dX*animationCounter/ANIMATION_COUNTER, dY*animationCounter/ANIMATION_COUNTER);
 		} else if (method.equals("rotate")){
 			float rotZ = (Float)lastAction[1];
-			RotateImpl(rotZ/100*animationCounter);
+			RotateImpl(rotZ/ANIMATION_COUNTER*animationCounter);
 		}
 		animationCounter--;
 	}
@@ -405,7 +407,10 @@ public class Camera {
 
 		float rotate = goalAngle - currentAngle;
 		horizontalPosition = rotate;
-		translateCamera(rotate, 0);
+
+		lastAction = new Object[]{"translate",dX/ANIMATION_COUNTER, 0f};
+		translateCameraImpl(rotate, 0);
+
 	}
 
 	/**

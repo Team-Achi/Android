@@ -86,21 +86,25 @@ class MonitoringFragment : Fragment(){
             testHighlight()
         })
     }
-    var ctr = 0;
+    var ctr = 11;
 
     /**
      * test code to see if teeth model rotates properly
+     * teeth model will rotate on clicking tvTime,
+     * in the order of the tooth number
      */
-    fun testHighlight() {
-        when (ctr) {
-            0 -> scene.colorTeeth("11", Color.YELLOW)
-            1 -> scene.colorTeeth("17", Color.YELLOW)
-            2 -> scene.colorTeeth("21", Color.YELLOW)
-            3 -> scene.colorTeeth("31", Color.WHITE)
-            4 -> scene.colorTeeth("41", Color.WHITE)
+    private fun testHighlight() {
+        Log.i("MonitoringFragment", "ctr1: $ctr)")
+        if (ctr in 11..47) {
 
-        }
-        ctr++;
+            if (ctr % 10 < 8 && ctr % 10 != 0) {
+
+                scene.colorTeeth(ctr.toString(), Color.WHITE)
+            }
+            else ctr += 3
+        } else ctr = 11
+
+        ctr++
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
