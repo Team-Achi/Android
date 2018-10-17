@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.model3D.demo.SceneLoader
+import com.example.administrator.achi.model3D.demo.SceneLoader.Color
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
@@ -80,8 +81,8 @@ class MonitoringFragment : Fragment(){
         addFacts()
         printFacts()
 
-        scene.colorTeeth("11", "BLUE");
-        scene.colorTeeth("21", "YELLOW");
+        scene.colorTeeth("11", Color.BLUE);
+        scene.colorTeeth("21", Color.BLUE);
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감

@@ -20,12 +20,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.administrator.achi.model3D.demo.SceneLoader.Color.BLUE;
+
 /**
  * This class loads a 3D scena as an example of what can be done with the app
  *
  * @author andresoviedo
  */
 public class SceneLoader implements LoaderTask.Callback {
+
+    public enum Color{
+        WHITE, YELLOW, BLUE
+    }
 
     /**
      * Parent component
@@ -140,24 +146,34 @@ public class SceneLoader implements LoaderTask.Callback {
     /**
      * Call this method to color a specific tooth.
      * @param toothNumberString
-     * @param colorString
+     * @param color
      */
-    public void colorTeeth(String toothNumberString, String colorString) {
+    public void colorTeeth(String toothNumberString, Color color) {
         int toothNumber = Integer.parseInt(toothNumberString);
         int a = toothNumber%10;     // 10's
         int b = toothNumber/10;     // 1's
 
         int index = (a-1)*7 + (b-1);
-        Log.i("Scene", "index: " + index);
-        float[] color;
-        if(colorString.equals("YELLOW"))
-            color = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
-        else if (colorString.equals("BLUE"))
-            color = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
-        else
-            color = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
 
-        objects.get(index).setColor(color);
+        Log.i("Scene", "index: " + index);
+
+        float[] colorValues;
+        switch (color) {
+            case BLUE:
+                colorValues = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
+                break;
+            case YELLOW:
+                colorValues = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
+                break;
+            case WHITE:
+                colorValues = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+                break;
+            default:
+                colorValues = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
+
+        }
+
+        objects.get(index).setColor(colorValues);
     }
 
     public Camera getCamera() {
