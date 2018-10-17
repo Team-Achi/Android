@@ -88,6 +88,9 @@ class MonitoringFragment : Fragment(){
     }
     var ctr = 0;
 
+    /**
+     * test code to see if teeth model rotates properly
+     */
     fun testHighlight() {
         when (ctr) {
             0 -> scene.colorTeeth("11", Color.YELLOW)
