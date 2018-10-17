@@ -81,8 +81,23 @@ class MonitoringFragment : Fragment(){
         addFacts()
         printFacts()
 
-        scene.colorTeeth("11", Color.BLUE);
-        scene.colorTeeth("17", Color.BLUE);
+        // test
+        tvTime.setOnClickListener({
+            testHighlight()
+        })
+    }
+    var ctr = 0;
+
+    fun testHighlight() {
+        when (ctr) {
+            0 -> scene.colorTeeth("11", Color.YELLOW)
+            1 -> scene.colorTeeth("17", Color.YELLOW)
+            2 -> scene.colorTeeth("21", Color.YELLOW)
+            3 -> scene.colorTeeth("31", Color.WHITE)
+            4 -> scene.colorTeeth("41", Color.WHITE)
+
+        }
+        ctr++;
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감

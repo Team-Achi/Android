@@ -15,7 +15,8 @@
         android:textSize="18sp"
         android:layout_marginBottom="10dp"
         android:textAlignment="center"
-        android:text="모니터링" />
+        android:text="모니터링"
+        android:clickable = "true"/>
 
     <TextView
         android:id="@+id/tvTime"
