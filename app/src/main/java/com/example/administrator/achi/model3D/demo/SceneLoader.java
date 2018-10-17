@@ -28,10 +28,6 @@ import java.util.List;
 public class SceneLoader implements LoaderTask.Callback {
 
     /**
-     * Default model color: yellow
-     */
-    private static float[] DEFAULT_COLOR = {1.0f, 1.0f, 0, 1.0f};
-    /**
      * Parent component
      */
     protected final MonitoringFragment parent;
@@ -44,21 +40,9 @@ public class SceneLoader implements LoaderTask.Callback {
      */
     private Camera camera;
     /**
-     * Whether to draw objects as wireframes
-     */
-    private boolean drawWireframe = false;
-    /**
      * Whether to draw using points
      */
     private boolean drawingPoints = false;
-    /**
-     * Whether to draw bounding boxes around objects
-     */
-    private boolean drawBoundingBox = false;
-    /**
-     * Whether to draw face normals. Normally used to debug models
-     */
-    private boolean drawNormals = false;
     /**
      * Whether to draw using textures
      */
@@ -75,22 +59,11 @@ public class SceneLoader implements LoaderTask.Callback {
      * Animate model (dae only) or not
      */
     private boolean animateModel = true;
-    /**
-     * Draw skeleton or not
-     */
-    private boolean drawSkeleton = false;
-    /**
-     * Toggle collision detection
-     */
-    private boolean isCollision = false;
+
     /**
      * Toggle 3d anaglyph
      */
     private boolean isAnaglyph = false;
-    /**
-     * Object selected by the user
-     */
-    private Object3DData selectedObject = null;
     /**
      * Initial light position
      */
@@ -99,13 +72,6 @@ public class SceneLoader implements LoaderTask.Callback {
      * Light bulb 3d data
      */
     private final Object3DData lightPoint = Object3DBuilder.buildPoint(lightPosition).setId("light");
-    /**
-     * Animator
-     */
-    /**
-     * Did the user touched the model for the first time?
-     */
-    private boolean userHasInteracted;
     /**
      * time when model loading has started (for stats)
      */
@@ -129,7 +95,7 @@ public class SceneLoader implements LoaderTask.Callback {
         boxes = new Object3DData[48];
 
         startTime = SystemClock.uptimeMillis();
-        ProgressDialog dialog = new ProgressDialog((MainActivity)parent.getActivity());
+//        ProgressDialog dialog = new ProgressDialog((MainActivity)parent.getActivity());
         List<Exception> errors = new ArrayList<>();
 
         try {
@@ -218,16 +184,8 @@ public class SceneLoader implements LoaderTask.Callback {
      * Hook for animating the objects before the rendering
      */
     public void onDrawFrame() {
-
-//        animateLight();
-
         // smooth camera transition
         camera.animate();
-
-        // initial camera animation. animate if user didn't touch the screen
-        if (!userHasInteracted) {
-//            animateCamera();
-        }
 
         if (objects.isEmpty()) return;
     }
