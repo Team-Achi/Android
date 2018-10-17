@@ -81,7 +81,7 @@ public class SceneLoader implements LoaderTask.Callback {
     /**
      * Initial light position
      */
-    private final float[] lightPosition = new float[]{0, 0, 6, 1};
+    private final float[] lightPosition = new float[]{0, 0, 8, 1};
     /**
      * Light bulb 3d data
      */
