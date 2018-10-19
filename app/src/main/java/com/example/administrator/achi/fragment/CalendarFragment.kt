@@ -62,29 +62,30 @@ class CalendarFragment : Fragment(){
                 threetime = 0;
                 alltime = 0;
 
-                for (i in 0 until agendaList.size)
-                if(agendaList[i].year == year && agendaList[i].month ==month){
-                    if(agendaList[i].color == Color.parseColor("#1ABC9D")){
-                        threetime++
-                    }
-                    if(agendaList[i].color == Color.parseColor("#3498DB")){
-                        twotime++
-                    }
-                    if(agendaList[i].color == Color.parseColor("#E74C3C")){
-                        onetime++
+                for (i in 0 until agendaList.size) {
+                    if (agendaList[i].year == year && agendaList[i].month == month) {
+                        if (agendaList[i].color == Color.parseColor("#1ABC9D")) {
+                            threetime++
+                        }
+                        if (agendaList[i].color == Color.parseColor("#3498DB")) {
+                            twotime++
+                        }
+                        if (agendaList[i].color == Color.parseColor("#E74C3C")) {
+                            onetime++
+                        }
                     }
                 }
-
                 twotime = twotime - threetime
-                onetime = twotime - threetime - twotime
-                alltime = onetime + twotime + threetime
+                onetime = onetime - threetime - twotime
+                alltime = onetime + (2*twotime) + (3*threetime)
 
                 var comment = thisView!!.findViewById<TextView>(R.id.calendarcoment)
                 var three = "1일 3회 양치 횟수 : "
                 var two = "\n1일 2회 양치 횟수 : "
                 var all = "\n총 양치횟수 : "
-                var comments = three + threetime.toString() + two + twotime.toString() + all + alltime.toString()
+                var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
                 comment.text = comments
+                calendarView.agendaList = agendaList
             }
         })
 
@@ -155,6 +156,35 @@ class CalendarFragment : Fragment(){
 
 
 */
+        onetime = 0;
+        twotime = 0;
+        threetime = 0;
+        alltime = 0;
+
+        for (i in 0 until agendaList.size) {
+            if (agendaList[i].year == calendarView.getCurrentYear() && agendaList[i].month == calendarView.getCurrentMonth()) {
+                if (agendaList[i].color == Color.parseColor("#1ABC9D")) {
+                    threetime++
+                }
+                if (agendaList[i].color == Color.parseColor("#3498DB")) {
+                    twotime++
+                }
+                if (agendaList[i].color == Color.parseColor("#E74C3C")) {
+                    onetime++
+                }
+            }
+        }
+        twotime = twotime - threetime
+        onetime = onetime - threetime - twotime
+        alltime = onetime + (2*twotime) + (3*threetime)
+
+        var comment = thisView!!.findViewById<TextView>(R.id.calendarcoment)
+        var three = "1일 3회 양치 횟수 : "
+        var two = "\n1일 2회 양치 횟수 : "
+        var all = "\n총 양치횟수 : "
+        var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
+        comment.text = comments
+
         calendarView.agendaList = agendaList
             return thisView
 
