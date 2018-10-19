@@ -401,16 +401,18 @@ public class Camera {
 		RotateCamera(yDirection, 0, 1, 0);
 	}
 
-	public void setHorizontalRotation(float dX) {
-		float goalAngle = dX;
-		float currentAngle = horizontalPosition;
+	public void setHorizontalRotation(float angle) {
+		float goalAngle = angle;
+		float currentAngle = this.horizontalPosition;
 
 		float rotate = goalAngle - currentAngle;
-		horizontalPosition = rotate;
+		this.horizontalPosition = goalAngle;
 
-		lastAction = new Object[]{"translate",dX/ANIMATION_COUNTER, 0f};
+		lastAction = new Object[]{"translate",angle/ANIMATION_COUNTER, 0f};
 		translateCameraImpl(rotate, 0);
 
+		Log.i("Camera", "Goal angle: " + goalAngle);
+		Log.i("Camera", "Rotate : " + rotate);
 	}
 
 	/**
