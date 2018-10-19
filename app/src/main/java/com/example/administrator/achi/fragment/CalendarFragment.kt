@@ -8,11 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.administrator.achi.MainViewModel
 import com.example.administrator.achi.R
 import com.example.administrator.achi.calendar.CalendarView
 import com.example.administrator.achi.calendar.Agenda
 import com.example.administrator.achi.dataModel.DataCenter
+import kotlinx.android.synthetic.main.fragment_calendar.*
 
 
 class CalendarFragment : Fragment(){
@@ -23,6 +25,10 @@ class CalendarFragment : Fragment(){
     private  var previousYear : Int = 0;
     private  var previousMonth : Int = 0;
     private  var previousDay : Int = 0;
+    private var onetime : Int = 0;
+    private var twotime : Int = 0;
+    private var threetime : Int = 0;
+    private var alltime : Int = 0;
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
@@ -46,10 +52,39 @@ class CalendarFragment : Fragment(){
 
 
         var calendarView = thisView!!.findViewById<CalendarView>(R.id.calendarView)
+        val agendaList = ArrayList<Agenda>()
 
         calendarView.onCalendarSwipedListener = (object : CalendarView.OnCalendarSwipedListener {
             override fun onCalendarSwiped(year: Int, month: Int) {
                 Log.i("swiped", year.toString() + "/" + month)
+                onetime = 0;
+                twotime = 0;
+                threetime = 0;
+                alltime = 0;
+
+                for (i in 0 until agendaList.size)
+                if(agendaList[i].year == year && agendaList[i].month ==month){
+                    if(agendaList[i].color == Color.parseColor("#1ABC9D")){
+                        threetime++
+                    }
+                    if(agendaList[i].color == Color.parseColor("#3498DB")){
+                        twotime++
+                    }
+                    if(agendaList[i].color == Color.parseColor("#E74C3C")){
+                        onetime++
+                    }
+                }
+
+                twotime = twotime - threetime
+                onetime = twotime - threetime - twotime
+                alltime = onetime + twotime + threetime
+
+                var comment = thisView!!.findViewById<TextView>(R.id.calendarcoment)
+                var three = "1일 3회 양치 횟수 : "
+                var two = "\n1일 2회 양치 횟수 : "
+                var all = "\n총 양치횟수 : "
+                var comments = three + threetime.toString() + two + twotime.toString() + all + alltime.toString()
+                comment.text = comments
             }
         })
 
@@ -73,7 +108,6 @@ class CalendarFragment : Fragment(){
                 }
             }
         })
-        val agendaList = ArrayList<Agenda>()
 
         for (i in 0 until DataCenter.records.size) {
             var record = DataCenter.records[i]
@@ -107,6 +141,8 @@ class CalendarFragment : Fragment(){
                     val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
                     agendaList.add(agenda);
                 }
+
+
 
             }
             //val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
