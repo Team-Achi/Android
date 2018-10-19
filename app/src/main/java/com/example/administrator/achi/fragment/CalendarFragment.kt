@@ -77,10 +77,48 @@ class CalendarFragment : Fragment(){
 
         for (i in 0 until DataCenter.records.size) {
             var record = DataCenter.records[i]
-            val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
-            agendaList.add(agenda);
+            if(i == 0){
+                val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                agendaList.add(agenda);
+            }
+            else if(i ==1){
+                var prevrecord = DataCenter.records[i-1];
+                if(prevrecord.date.year == record.date.year && prevrecord.date.monthValue == record.date.monthValue && prevrecord.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#3498DB"));
+                    agendaList.add(agenda);
+                }
+               else{
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                    agendaList.add(agenda);
+                }
+            }
+            else{
+                var prevrecord = DataCenter.records[i-1];
+                var prev2record = DataCenter.records[i-2];
+                if(prev2record.date.year == record.date.year && prev2record.date.monthValue == record.date.monthValue && prev2record.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#1ABC9D"));
+                    agendaList.add(agenda);
+                }
+                else if(prevrecord.date.year == record.date.year && prevrecord.date.monthValue == record.date.monthValue && prevrecord.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#3498DB"));
+                    agendaList.add(agenda);
+                }
+                else{
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                    agendaList.add(agenda);
+                }
+
+            }
+            //val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+            //agendaList.add(agenda);
         }
-   
+   /*
+        val agenda1 = Agenda(2018, 10, 1, Color.parseColor("#E74C3C"))
+        val agenda2 = Agenda(2018, 10, 1, Color.parseColor("#3498DB"))
+      //  val agenda3 = Agenda(2018, 10, 1, Color.parseColor("#1ABC9D"))
+
+
+*/
         calendarView.agendaList = agendaList
             return thisView
 
