@@ -2,6 +2,7 @@ package com.example.administrator.achi.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.dataModel.Record
 import com.example.administrator.achi.expandableList.ChildContentFormat
 import com.example.administrator.achi.expandableList.ExpandableListAdapter
+import com.example.administrator.achi.recyclerView.RecyclerAdapter
+import com.example.administrator.achi.recyclerView.RecyclerItem
 import kotlinx.android.synthetic.main.fragment_analyzehabit.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,8 +29,11 @@ class AnalyzeHabitFragment : Fragment(){
     private lateinit var expandableListAdapter : ExpandableListAdapter
 
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
-    private var childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
-    private var childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
+//    private var childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
+//    private var childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
+
+
+    private var dayList = ArrayList<RecyclerItem>()                     // 하루 record
 
     private var today = LocalDateTime.now()
 
@@ -61,27 +67,31 @@ class AnalyzeHabitFragment : Fragment(){
         var sample_record : Record = Record()
         DataCenter.records.add(sample_record)
 
-        init()
-
         getScore()
+
+        init()
         addToList()
 
         // Expandable List View
-        expandableListAdapter = ExpandableListAdapter(this.context!!, lvWeeklyHabbit, groupList, childList)
+        expandableListAdapter = ExpandableListAdapter(this.context!!, lvWeeklyHabbit, groupList, dayList)
         lvWeeklyHabbit.setAdapter(expandableListAdapter)
 
         for (i in 0 until expandableListAdapter.getGroupCount())
             lvWeeklyHabbit.expandGroup(i)
 
+//        rlvHabbit.adapter = RecyclerAdapter(dayList, context)
+//        rlvHabbit.layoutManager = LinearLayoutManager(context)
+
     }
 
-    fun init() {
+    private fun init() {
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
-        childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
-        childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
+//        childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
+//        childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
+        dayList = ArrayList<RecyclerItem>()                                 // 하루
     }
 
-    fun getScore() {
+    private fun getScore() {
         var lastWeekDate = today.minusDays(7)
         var avg = 0
         var num = 0
@@ -99,43 +109,54 @@ class AnalyzeHabitFragment : Fragment(){
         tvWeeklyScore.text = avg.toString() + " / 100 점"
     }
 
-    fun addToList() {
-
-        var weekDates = ArrayList<String>()
+    private fun addToList() {
 
         var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)      // ISO_LOCAL_DATE
         var checkFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 
         // 전체 기록 날짜별로 저장
         var j = 0
         var curDate = today
         var curDateFormat = curDate.format(checkFormatter)
-        var content = ArrayList<ChildContentFormat>()
-        weekDates.add(today.format(formatter))
+        var startIdx = 0
 
         for (i in 0 until DataCenter.records.size) {
             var record = DataCenter.records[i]
 
             if (record.date.format(checkFormatter).compareTo(curDateFormat) != 0) {
+                groupList.add(curDate.format(formatter))
+                dayList.add(RecyclerItem(startIdx, i - 1))
+
                 curDate = curDate.minusDays(1)
                 curDateFormat =curDate.format(checkFormatter)
-
-                weekDates.add(curDate.format(formatter))
-                childListContent.add(content)
-                childList.add(childListContent[j])
-                j++
-                content = ArrayList<ChildContentFormat>()
+                startIdx = i
             }
-
-            content.add(ChildContentFormat(Analyzer.timeToString(record.duration) , record.score, record.comment, record.date.format(timeFormatter)))
         }
-        childListContent.add(content)
-        childList.add(childListContent[j])
+        groupList.add(curDate.format(formatter))
+        dayList.add(RecyclerItem(startIdx, DataCenter.records.size-1))
+    }
 
-        for (i in 0 until weekDates.size)
-            groupList.add(weekDates[i])
+    private fun addToList2() {
+        var checkFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        dayList = ArrayList<RecyclerItem>()
+
+        var curDate = DataCenter.records[0].date
+        var curDateFormat = curDate.format(checkFormatter)
+        var startIdx = 0
+
+        DataCenter.printRecords()
+
+        for(i in 0 until DataCenter.records.size) {
+            if (DataCenter.records[i].date.format(checkFormatter).compareTo(curDateFormat) != 0) {
+                dayList.add(RecyclerItem(startIdx, i - 1))
+
+                curDate = curDate.minusDays(1)
+                curDateFormat =curDate.format(checkFormatter)
+                startIdx = i
+            }
+        }
+        dayList.add(RecyclerItem(startIdx, DataCenter.records.size-1))
     }
 
 

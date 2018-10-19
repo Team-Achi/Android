@@ -19,7 +19,7 @@ object DataCenter {
 //    }
 
     // just for test
-    fun printRecord() {
+    fun printRecords() {
         for (i in 0 until records.size)
             records[i].printRecord()
     }
