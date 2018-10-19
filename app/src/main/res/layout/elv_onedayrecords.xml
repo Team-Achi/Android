@@ -2,16 +2,33 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+    <!--<ListView-->
+        <!--android:id="@+id/lvOneDay"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="50dp"-->
+        <!--android:divider="@null"-->
+        <!--android:dividerHeight="10dp">-->
+
+    <!--</ListView>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/tvTest"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="제발 나와라"/>-->
 
     <ExpandableListView
         android:id="@+id/elvOneDay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="50dp"
         android:divider="@null"
         android:dividerHeight="10dp"
-        android:groupIndicator="@null">
+        android:groupIndicator="@null"
+        android:visibility="visible">
     </ExpandableListView>
 
 </android.support.constraint.ConstraintLayout>

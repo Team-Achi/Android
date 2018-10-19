@@ -7,9 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.administrator.achi.R
+import com.example.administrator.achi.expandableList.ExpandableRecords
 import kotlinx.android.synthetic.main.item_recyclerview.view.*
 
-class RecyclerAdapter(val items : ArrayList<RecyclerItem>, val context: Context?) : RecyclerView.Adapter<ViewHolder>() {
+class RecyclerAdapter(val items : ArrayList<ExpandableRecords>, val context: Context?) : RecyclerView.Adapter<ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_recyclerview, parent, false))
@@ -20,7 +21,7 @@ class RecyclerAdapter(val items : ArrayList<RecyclerItem>, val context: Context?
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        var dayItem : RecyclerItem = items[position]
+        var dayItem : ExpandableRecords = items[position]
         var indices = ArrayList<Int>()
 
         holder.tvDate.text = dayItem.date
@@ -30,9 +31,9 @@ class RecyclerAdapter(val items : ArrayList<RecyclerItem>, val context: Context?
 
         Log.i("RecyclerAdapter", "${indices[0]} ~ ${indices[indices.size - 1]}")
 
-        var elva = DayExpandableListAdapter(this.context!!, holder.elvOneDay, indices)
+//        var elva = DayExpandableListAdapter(this.context!!, holder.elvOneDay, indices)
 
-        holder.elvOneDay.setAdapter(elva)
+//        holder.elvOneDay.setAdapter(elva)
     }
 }
 

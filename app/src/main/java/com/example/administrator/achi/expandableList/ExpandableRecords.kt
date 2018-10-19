@@ -1,11 +1,11 @@
-package com.example.administrator.achi.recyclerView
+package com.example.administrator.achi.expandableList
 
 import com.example.administrator.achi.dataModel.DataCenter
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 // 하루 record
-class RecyclerItem {
+class ExpandableRecords {
     var date: String
         private set
     var startIdx : Int

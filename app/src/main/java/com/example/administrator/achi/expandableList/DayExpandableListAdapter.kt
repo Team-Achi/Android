@@ -1,6 +1,7 @@
-package com.example.administrator.achi.recyclerView
+package com.example.administrator.achi.expandableList
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.example.administrator.achi.dataModel.DataCenter
 import java.time.format.DateTimeFormatter
 
 //  record 한 개 : 한 expandableLV에는 하루의 기록이 들어 있다.
-class DayExpandableListAdapter (var context : Context, var delv : ExpandableListView, var groupList : ArrayList<Int>) : BaseExpandableListAdapter(){
+class DayExpandableListAdapter (var context : Context, var groupList : ArrayList<Int>) : BaseExpandableListAdapter(){
 
     override fun getGroup(groupPosition: Int): Int {
         //To change body of created functions use File | Settings | File Templates.
@@ -35,33 +36,43 @@ class DayExpandableListAdapter (var context : Context, var delv : ExpandableList
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = inflater.inflate(R.layout.elv_record, null)
         }
+        val groupTitle = convertView!!.findViewById<TextView>(R.id.tvTest)
+        groupTitle.text="나온다${groupPosition}"
 
-        var indexGroup = getGroup(groupPosition)
-        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-        var record = DataCenter.records[indexGroup]
+//        var indexGroup = getGroup(groupPosition)
+//        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+//        var record = DataCenter.records[indexGroup]
+//
+//        println("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+//        println("${record.date}, ${record.score}, ${record.duration}")
+//        println("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+//
+//        Log.i("ExpandableListAdapter", "${record.date}, ${record.score}, ${record.duration}")
+//        val comment = convertView!!.findViewById<TextView>(R.id.tvComment)
+//        comment.text = "${record.date}, ${record.score}, ${record.duration}"
 
-        val groupTitle = convertView!!.findViewById<LinearLayout>(R.id.layoutELV)
-        val startTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
-        val duration = convertView.findViewById<TextView>(R.id.tvDuration)
-        val score = convertView.findViewById<TextView>(R.id.tvScore)
+//        val groupTitle = convertView!!.findViewById<LinearLayout>(R.id.layoutELV)
+//        val startTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
+//        val duration = convertView.findViewById<TextView>(R.id.tvDuration)
+//        val score = convertView.findViewById<TextView>(R.id.tvScore)
+//
+//        startTime.text = record.date.format(timeFormatter)
+//        duration.text = Analyzer.timeToString(record.duration)
+//        score.text = "${record.score.toString()} 점"
 
-        groupTitle?.setOnClickListener {
-            if (delv.isGroupExpanded(groupPosition))
-                delv.collapseGroup(groupPosition)
-            else
-                delv.expandGroup(groupPosition)
-        }
-
-        startTime.text = record.date.format(timeFormatter)
-        duration.text = Analyzer.timeToString(record.duration)
-        score.text = "${record.score.toString()} 점"
+        //        groupTitle?.setOnClickListener {
+//            if (delv.isGroupExpanded(groupPosition))
+//                delv.collapseGroup(groupPosition)
+//            else
+//                delv.expandGroup(groupPosition)
+//        }
 
         return convertView
     }
 
     override fun getChildrenCount(groupPosition: Int): Int {
         //To change body of created functions use File | Settings | File Templates.
-        return 1            // 이래도 되나...????
+        return 1
     }
 
     override fun getChild(groupPosition: Int, childPosition: Int): Int {
@@ -85,7 +96,8 @@ class DayExpandableListAdapter (var context : Context, var delv : ExpandableList
         var indexChild = getChild(groupPosition, childPosition)
 
         val comment = convertView!!.findViewById<TextView>(R.id.tvComment)
-        comment.text = DataCenter.records[indexChild].comment
+//        comment.text = DataCenter.records[indexChild].comment
+        comment.text = ">>나온다<<"
 
         return convertView
     }
