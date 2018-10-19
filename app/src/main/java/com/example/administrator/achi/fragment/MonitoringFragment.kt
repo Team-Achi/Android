@@ -101,7 +101,7 @@ class MonitoringFragment : Fragment(){
 
                 scene.colorTeeth(ctr.toString(), Color.WHITE)
             }
-            else ctr += 3
+            else ctr += 2
         } else ctr = 11
 
         ctr++
