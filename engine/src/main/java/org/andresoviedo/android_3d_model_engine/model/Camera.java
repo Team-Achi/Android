@@ -28,7 +28,7 @@ public class Camera {
 	public static final float STRAFE_LEFT = -0.5f; // Left straft speed.
 	public static final float STRAFE_RIGHT = 0.5f; // Right straft speed.
 
-	public static final int ANIMATION_COUNTER = 50;
+	public static final int ANIMATION_COUNTER = 10;
 
 	public static final int AIM = 10;
 	public static final int CAMERA_MAX_ZOOM = 40;
@@ -402,13 +402,17 @@ public class Camera {
 	}
 
 	public void setHorizontalRotation(float angle) {
+//		if (this.horizontalPosition == angle) {
+//			return;
+//		}
+
 		float goalAngle = angle;
 		float currentAngle = this.horizontalPosition;
 
 		float rotate = goalAngle - currentAngle;
 		this.horizontalPosition = goalAngle;
 
-		lastAction = new Object[]{"translate",angle/ANIMATION_COUNTER, 0f};
+		lastAction = new Object[]{"translate", rotate/ANIMATION_COUNTER, 0f};
 		translateCameraImpl(rotate, 0);
 
 		Log.i("Camera", "Goal angle: " + goalAngle);
