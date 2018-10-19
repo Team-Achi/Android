@@ -94,14 +94,18 @@ class MonitoringFragment : Fragment(){
      * in the order of the tooth number
      */
     private fun testHighlight() {
-        Log.i("MonitoringFragment", "ctr1: $ctr)")
+
         if (ctr in 11..47) {
 
-            if (ctr % 10 < 8 && ctr % 10 != 0) {
+            if (ctr % 10 == 8) {
+                ctr += 3
+            }
 
+            if (ctr % 10 < 8 && ctr % 10 != 0) {
+                Log.i("MonitoringFragment", "ctr1: $ctr)")
                 scene.colorTeeth(ctr.toString(), Color.WHITE)
             }
-            else ctr += 2
+
         } else ctr = 11
 
         ctr++
