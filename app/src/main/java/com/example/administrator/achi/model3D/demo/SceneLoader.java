@@ -189,24 +189,27 @@ public class SceneLoader implements LoaderTask.Callback {
         Log.i("SceneLoader", "Tooth index: " + toothIndex);
         objects.get(toothIndex).setColor(colorValues);
 
-        final float FRONT_TEETH_ANGLE = 0f;
-        final float MIDDLE_TEETH_ANGLE = 0.3f;
-        final float BACK_TEETH_ANGLE = 0.5f;
-
         // Rotate camera from range -0.5 ~ 0.5
-        if (b == 1 || b == 2) {                                     // front teeth
-            camera.setHorizontalRotation(FRONT_TEETH_ANGLE);
-        } else if (b == 3 || b == 4) {                              // 3, 4th teeth
-            if (num > 20 && num < 40) {                             // left
-                camera.setHorizontalRotation(-MIDDLE_TEETH_ANGLE);
+//        if (num > 20 && num < 40) {     // right side of teeth
+//            float angle = -0.5f / (8 - b);
+//            camera.setHorizontalRotation(angle);
+//        } else {                                        // left side of teeth
+//            float angle = 0.5f / (8 - b);
+//            camera.setHorizontalRotation(angle);
+//        }
+        if (b == 1 || b == 2) {
+            camera.setHorizontalRotation(0f);
+        } else if (b == 3 || b == 4) {
+            if (num > 20 && num < 40) {
+                camera.setHorizontalRotation(-0.7f);
             } else {
-                camera.setHorizontalRotation(MIDDLE_TEETH_ANGLE);   // right
+                camera.setHorizontalRotation(0.7f);
             }
-        } else {                                                    // 5, 6, 7th teeth
-            if (num > 20 && num < 40) {                             // left
-                camera.setHorizontalRotation(-BACK_TEETH_ANGLE);
-            } else {                                                // right
-                camera.setHorizontalRotation(BACK_TEETH_ANGLE);
+        } else {
+            if (num > 20 && num < 40) {
+                camera.setHorizontalRotation(-1f);
+            } else {
+                camera.setHorizontalRotation(1f);
             }
         }
     }
