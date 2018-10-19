@@ -87,14 +87,13 @@ class MonitoringFragment : Fragment(){
         })
     }
     var ctr = 11;
-
+    var color = Color.WHITE
     /**
      * test code to see if teeth model rotates properly
      * teeth model will rotate on clicking tvTime,
      * in the order of the tooth number
      */
     private fun testHighlight() {
-
         if (ctr in 11..47) {
 
             if (ctr % 10 == 8) {
@@ -103,10 +102,16 @@ class MonitoringFragment : Fragment(){
 
             if (ctr % 10 < 8 && ctr % 10 != 0) {
                 Log.i("MonitoringFragment", "ctr1: $ctr)")
-                scene.colorTeeth(ctr.toString(), Color.WHITE)
+                scene.colorTeeth(ctr.toString(), color)
             }
 
-        } else ctr = 11
+        } else {
+            ctr = 10
+            if (color == Color.WHITE)
+                color = Color.YELLOW
+            else
+                color = Color.WHITE
+        }
 
         ctr++
     }

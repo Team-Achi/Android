@@ -402,9 +402,9 @@ public class Camera {
 	}
 
 	public void setHorizontalRotation(float angle) {
-//		if (this.horizontalPosition == angle) {
-//			return;
-//		}
+		if (this.horizontalPosition == angle) {
+			return;
+		}
 
 		float goalAngle = angle;
 		float currentAngle = this.horizontalPosition;
