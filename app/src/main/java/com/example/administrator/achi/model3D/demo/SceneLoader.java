@@ -190,12 +190,27 @@ public class SceneLoader implements LoaderTask.Callback {
         objects.get(toothIndex).setColor(colorValues);
 
         // Rotate camera from range -0.5 ~ 0.5
-        if (num > 20 && num < 40) {     // right side of teeth
-            float angle = -0.5f / (8 - b);
-            camera.setHorizontalRotation(angle);
-        } else {                                        // left side of teeth
-            float angle = 0.5f / (8 - b);
-            camera.setHorizontalRotation(angle);
+//        if (num > 20 && num < 40) {     // right side of teeth
+//            float angle = -0.5f / (8 - b);
+//            camera.setHorizontalRotation(angle);
+//        } else {                                        // left side of teeth
+//            float angle = 0.5f / (8 - b);
+//            camera.setHorizontalRotation(angle);
+//        }
+        if (b == 1 || b == 2) {
+            camera.setHorizontalRotation(0f);
+        } else if (b == 3 || b == 4) {
+            if (num > 20 && num < 40) {
+                camera.setHorizontalRotation(-0.7f);
+            } else {
+                camera.setHorizontalRotation(0.7f);
+            }
+        } else {
+            if (num > 20 && num < 40) {
+                camera.setHorizontalRotation(-1f);
+            } else {
+                camera.setHorizontalRotation(1f);
+            }
         }
     }
 
