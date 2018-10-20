@@ -1,6 +1,7 @@
 package com.example.administrator.achi.expandableList
 
 import android.content.Context
+import android.util.Log
 import android.view.*
 import android.widget.*
 import com.example.administrator.achi.R
@@ -35,6 +36,8 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
         val groupTitle = convertView!!.findViewById<TextView>(R.id.tvDateTitle)
         groupTitle?.text = getGroup(groupPosition)
 
+        Log.i("dExpandableListAdapter", "=== ${groupPosition} ===")
+
 //        groupTitle?.setOnClickListener {
 //            if (elv.isGroupExpanded(groupPosition))
 //                elv.collapseGroup(groupPosition)
@@ -47,7 +50,7 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
 
     override fun getChildrenCount(groupPosition: Int): Int {
         //To change body of created functions use File | Settings | File Templates.
-        return dayList[groupPosition].endIdx - dayList[groupPosition].startIdx + 1
+        return 1
     }
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
@@ -73,14 +76,15 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertView = inflater.inflate(R.layout.elv_onedayrecords, null)
         }
-        val dayExpandableListView = DayExpandableListView(context)
+//        val dayExpandableListView = DayExpandableListView(context)
 
-//        var elvOneDay = convertView!!.findViewById<ExpandableListView>(R.id.elvOneDay)
+        var elvOneDay = convertView!!.findViewById<ExpandableListView>(R.id.elvOneDay)
+
         var elva = DayExpandableListAdapter(this.context, getChild(groupPosition, childPosition))
 //        var test = convertView!!.findViewById<TextView>(R.id.tvTest)
 //        test.text = "왜 얘는 나오는가....???"
 //
-//        elvOneDay.setAdapter(elva)
+        elvOneDay.setAdapter(elva)
 
 //        dayExpandableListView.setAdapter(elva)
 //        dayExpandableListView.setGroupIndicator(null)
@@ -90,11 +94,9 @@ class ExpandableListAdapter(var context : Context, var elv: ExpandableListView, 
 //            }
 //        })
 
+//        dayExpandableListView.setAdapter(elva)
 
-
-        dayExpandableListView.setAdapter(elva)
-
-        return dayExpandableListView
+        return elvOneDay
     }
 
     override fun isChildSelectable(groupPosition: Int, childPosition: Int): Boolean {

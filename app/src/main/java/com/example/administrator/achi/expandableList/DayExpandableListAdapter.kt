@@ -26,6 +26,7 @@ class DayExpandableListAdapter (var context : Context, var groupList : ArrayList
 
     override fun getGroup(groupPosition: Int): Int {
         //To change body of created functions use File | Settings | File Templates.
+        Log.i("dExpandableListAdapter", "$groupPosition /// ${groupList[groupPosition]} /// $groupCount")
         return groupList[groupPosition]
     }
 
@@ -37,28 +38,22 @@ class DayExpandableListAdapter (var context : Context, var groupList : ArrayList
             convertView = inflater.inflate(R.layout.elv_record, null)
         }
 
-//        var indexGroup = getGroup(groupPosition)
-//        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-//        var record = DataCenter.records[indexGroup]
-//
-//        println("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-//        println("${record.date}, ${record.score}, ${record.duration}")
-//        println("<<<<<<<<<<<<<<<<<<<<<<<<<<<")
-//
-//        Log.i("ExpandableListAdapter", "${record.date}, ${record.score}, ${record.duration}")
-//        val comment = convertView!!.findViewById<TextView>(R.id.tvComment)
-//        comment.text = "${record.date}, ${record.score}, ${record.duration}"
+        var indexGroup = getGroup(groupPosition)
+        var timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        var record = DataCenter.records[indexGroup]
 
-//        val groupTitle = convertView!!.findViewById<LinearLayout>(R.id.layoutELV)
-//        val startTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
-//        val duration = convertView.findViewById<TextView>(R.id.tvDuration)
-//        val score = convertView.findViewById<TextView>(R.id.tvScore)
-//
-//        startTime.text = record.date.format(timeFormatter)
-//        duration.text = Analyzer.timeToString(record.duration)
-//        score.text = "${record.score.toString()} 점"
+//        Log.i("dExpandableListAdapter", "$groupPosition /// $indexGroup /// $groupCount")
 
-        //        groupTitle?.setOnClickListener {
+        val groupTitle = convertView!!.findViewById<LinearLayout>(R.id.layoutELV)
+        val startTime = convertView!!.findViewById<TextView>(R.id.tvStartTime)
+        val duration = convertView.findViewById<TextView>(R.id.tvDuration)
+        val score = convertView.findViewById<TextView>(R.id.tvScore)
+
+        startTime.text = record.date.format(timeFormatter)
+        duration.text = Analyzer.timeToString(record.duration)
+        score.text = "${record.score.toString()} 점"
+
+//        groupTitle?.setOnClickListener {
 //            if (delv.isGroupExpanded(groupPosition))
 //                delv.collapseGroup(groupPosition)
 //            else
@@ -94,8 +89,7 @@ class DayExpandableListAdapter (var context : Context, var groupList : ArrayList
         var indexChild = getChild(groupPosition, childPosition)
 
         val comment = convertView!!.findViewById<TextView>(R.id.tvComment)
-//        comment.text = DataCenter.records[indexChild].comment
-        comment.text = ">>나온다<<"
+        comment.text = DataCenter.records[indexChild].comment
 
         return convertView
     }

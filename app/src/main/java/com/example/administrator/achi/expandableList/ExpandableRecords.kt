@@ -12,6 +12,8 @@ class ExpandableRecords {
         private set
     var endIdx : Int
         private set
+    var num : Int
+        private set
 
     private var formatter = DateTimeFormatter.ofPattern("MM/dd EEE", Locale.KOREAN)
 
@@ -19,5 +21,6 @@ class ExpandableRecords {
         this.startIdx = startIdx
         this.endIdx = lastIdx
         this.date = DataCenter.records[startIdx].date.format(formatter)
+        this.num = this.endIdx - this.startIdx + 1
     }
 }

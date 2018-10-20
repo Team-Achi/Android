@@ -44,7 +44,7 @@ class AnalyzeHabitFragment : Fragment(){
         super.onResume()
         Log.d(TAG, "onResume()")
 
-        for (i in 0 until expandableListAdapter.getGroupCount())
+        for (i in 0 until expandableListAdapter.groupCount)
             lvWeeklyHabit.expandGroup(i)
     }
 
@@ -73,7 +73,7 @@ class AnalyzeHabitFragment : Fragment(){
         expandableListAdapter = ExpandableListAdapter(this.context!!, lvWeeklyHabit, groupList, dayList)
         lvWeeklyHabit.setAdapter(expandableListAdapter)
 
-        for (i in 0 until expandableListAdapter.getGroupCount())
+        for (i in 0 until expandableListAdapter.groupCount)
             lvWeeklyHabit.expandGroup(i)
 
 //        rlvHabbit.adapter = RecyclerAdapter(dayList, context)
