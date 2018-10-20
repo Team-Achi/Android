@@ -8,10 +8,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.administrator.achi.MainViewModel
 import com.example.administrator.achi.R
 import com.example.administrator.achi.calendar.CalendarView
 import com.example.administrator.achi.calendar.Agenda
+import com.example.administrator.achi.dataModel.DataCenter
+import kotlinx.android.synthetic.main.fragment_calendar.*
 
 
 class CalendarFragment : Fragment(){
@@ -22,6 +25,10 @@ class CalendarFragment : Fragment(){
     private  var previousYear : Int = 0;
     private  var previousMonth : Int = 0;
     private  var previousDay : Int = 0;
+    private var onetime : Int = 0;
+    private var twotime : Int = 0;
+    private var threetime : Int = 0;
+    private var alltime : Int = 0;
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         mainViewModel = ViewModelProviders.of(activity!!).get(MainViewModel::class.java)
@@ -43,11 +50,42 @@ class CalendarFragment : Fragment(){
 
         }
 
+
         var calendarView = thisView!!.findViewById<CalendarView>(R.id.calendarView)
+        val agendaList = ArrayList<Agenda>()
 
         calendarView.onCalendarSwipedListener = (object : CalendarView.OnCalendarSwipedListener {
             override fun onCalendarSwiped(year: Int, month: Int) {
                 Log.i("swiped", year.toString() + "/" + month)
+                onetime = 0;
+                twotime = 0;
+                threetime = 0;
+                alltime = 0;
+
+                for (i in 0 until agendaList.size) {
+                    if (agendaList[i].year == year && agendaList[i].month == month) {
+                        if (agendaList[i].color == Color.parseColor("#1ABC9D")) {
+                            threetime++
+                        }
+                        if (agendaList[i].color == Color.parseColor("#3498DB")) {
+                            twotime++
+                        }
+                        if (agendaList[i].color == Color.parseColor("#E74C3C")) {
+                            onetime++
+                        }
+                    }
+                }
+                twotime = twotime - threetime
+                onetime = onetime - threetime - twotime
+                alltime = onetime + (2*twotime) + (3*threetime)
+
+                var comment = thisView!!.findViewById<TextView>(R.id.calendarcoment)
+                var three = "1일 3회 양치 횟수 : "
+                var two = "\n1일 2회 양치 횟수 : "
+                var all = "\n총 양치횟수 : "
+                var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
+                comment.text = comments
+                calendarView.agendaList = agendaList
             }
         })
 
@@ -71,107 +109,81 @@ class CalendarFragment : Fragment(){
                 }
             }
         })
-        val agendaList = ArrayList<Agenda>()
+
+        for (i in 0 until DataCenter.records.size) {
+            var record = DataCenter.records[i]
+            if(i == 0){
+                val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                agendaList.add(agenda);
+            }
+            else if(i ==1){
+                var prevrecord = DataCenter.records[i-1];
+                if(prevrecord.date.year == record.date.year && prevrecord.date.monthValue == record.date.monthValue && prevrecord.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#3498DB"));
+                    agendaList.add(agenda);
+                }
+               else{
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                    agendaList.add(agenda);
+                }
+            }
+            else{
+                var prevrecord = DataCenter.records[i-1];
+                var prev2record = DataCenter.records[i-2];
+                if(prev2record.date.year == record.date.year && prev2record.date.monthValue == record.date.monthValue && prev2record.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#1ABC9D"));
+                    agendaList.add(agenda);
+                }
+                else if(prevrecord.date.year == record.date.year && prevrecord.date.monthValue == record.date.monthValue && prevrecord.date.dayOfMonth == record.date.dayOfMonth){
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#3498DB"));
+                    agendaList.add(agenda);
+                }
+                else{
+                    val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+                    agendaList.add(agenda);
+                }
+
+
+
+            }
+            //val agenda = Agenda(record.date.year, record.date.monthValue, record.date.dayOfMonth, Color.parseColor("#E74C3C"));
+            //agendaList.add(agenda);
+        }
+   /*
         val agenda1 = Agenda(2018, 10, 1, Color.parseColor("#E74C3C"))
         val agenda2 = Agenda(2018, 10, 1, Color.parseColor("#3498DB"))
       //  val agenda3 = Agenda(2018, 10, 1, Color.parseColor("#1ABC9D"))
 
-        val agenda4 = Agenda(2018, 10, 2, Color.parseColor("#E74C3C"))
-        val agenda5 = Agenda(2018, 10, 2, Color.parseColor("#3498DB"))
-        val agenda6 = Agenda(2018, 10, 2, Color.parseColor("#1ABC9D"))
 
-        val agenda7 = Agenda(2018, 10, 3, Color.parseColor("#E74C3C"))
-        val agenda8 = Agenda(2018, 10, 3, Color.parseColor("#3498DB"))
-      //  val agenda9 = Agenda(2018, 10, 3, Color.parseColor("#1ABC9D"))
+*/
+        onetime = 0;
+        twotime = 0;
+        threetime = 0;
+        alltime = 0;
 
-        val agenda10 = Agenda(2018, 10, 4, Color.parseColor("#E74C3C"))
-        val agenda11 = Agenda(2018, 10, 4, Color.parseColor("#3498DB"))
-        val agenda12 = Agenda(2018, 10, 4, Color.parseColor("#1ABC9D"))
+        for (i in 0 until agendaList.size) {
+            if (agendaList[i].year == calendarView.getCurrentYear() && agendaList[i].month == calendarView.getCurrentMonth()) {
+                if (agendaList[i].color == Color.parseColor("#1ABC9D")) {
+                    threetime++
+                }
+                if (agendaList[i].color == Color.parseColor("#3498DB")) {
+                    twotime++
+                }
+                if (agendaList[i].color == Color.parseColor("#E74C3C")) {
+                    onetime++
+                }
+            }
+        }
+        twotime = twotime - threetime
+        onetime = onetime - threetime - twotime
+        alltime = onetime + (2*twotime) + (3*threetime)
 
-        val agenda13 = Agenda(2018, 10, 5, Color.parseColor("#E74C3C"))
-        val agenda14 = Agenda(2018, 10, 5, Color.parseColor("#3498DB"))
-      //  val agenda15 = Agenda(2018, 10, 5, Color.parseColor("#1ABC9D"))
-
-        val agenda16 = Agenda(2018, 10, 6, Color.parseColor("#E74C3C"))
-        val agenda17 = Agenda(2018, 10, 6, Color.parseColor("#3498DB"))
-        val agenda18 = Agenda(2018, 10, 6, Color.parseColor("#1ABC9D"))
-
-        val agenda19 = Agenda(2018, 10, 7, Color.parseColor("#E74C3C"))
-        val agenda20 = Agenda(2018, 10, 7, Color.parseColor("#3498DB"))
-        val agenda21 = Agenda(2018, 10, 7, Color.parseColor("#1ABC9D"))
-
-        val agenda22 = Agenda(2018, 10, 8, Color.parseColor("#E74C3C"))
-        val agenda23 = Agenda(2018, 10, 8, Color.parseColor("#3498DB"))
-        val agenda24 = Agenda(2018, 10, 8, Color.parseColor("#1ABC9D"))
-
-        val agenda25 = Agenda(2018, 10, 9, Color.parseColor("#E74C3C"))
-        val agenda26 = Agenda(2018, 10, 9, Color.parseColor("#3498DB"))
-      //  val agenda27 = Agenda(2018, 10, 9, Color.parseColor("#1ABC9D"))
-
-        val agenda28 = Agenda(2018, 10, 10, Color.parseColor("#E74C3C"))
-        val agenda29 = Agenda(2018, 10, 10, Color.parseColor("#3498DB"))
-    //    val agenda30 = Agenda(2018, 10, 10, Color.parseColor("#1ABC9D"))
-
-        val agenda31 = Agenda(2018, 10, 11, Color.parseColor("#E74C3C"))
-        val agenda32 = Agenda(2018, 10, 11, Color.parseColor("#3498DB"))
-        val agenda33 = Agenda(2018, 10, 11, Color.parseColor("#1ABC9D"))
-
-        val agenda34 = Agenda(2018, 10, 12, Color.parseColor("#E74C3C"))
-        val agenda35 = Agenda(2018, 10, 12, Color.parseColor("#3498DB"))
-        val agenda36 = Agenda(2018, 10, 12, Color.parseColor("#1ABC9D"))
-
-        val agenda37 = Agenda(2018, 10, 13, Color.parseColor("#E74C3C"))
-        val agenda38 = Agenda(2018, 10, 13, Color.parseColor("#3498DB"))
-        val agenda39 = Agenda(2018, 10, 13, Color.parseColor("#1ABC9D"))
-
-        val agenda40 = Agenda(2018, 10, 14, Color.parseColor("#E74C3C"))
-        val agenda41 = Agenda(2018, 10, 14, Color.parseColor("#3498DB"))
-       // val agenda42 = Agenda(2018, 10, 14, Color.parseColor("#1ABC9D"))
-
-//3 - 8    2 - 6
-
-        agendaList.add(agenda1)
-        agendaList.add(agenda2)
-    //    agendaList.add(agenda3)
-        agendaList.add(agenda4)
-        agendaList.add(agenda5)
-        agendaList.add(agenda6)
-        agendaList.add(agenda7)
-        agendaList.add(agenda8)
-    //    agendaList.add(agenda9)
-        agendaList.add(agenda10)
-        agendaList.add(agenda11)
-        agendaList.add(agenda12)
-        agendaList.add(agenda13)
-        agendaList.add(agenda14)
-   //     agendaList.add(agenda15)
-        agendaList.add(agenda16)
-        agendaList.add(agenda17)
-        agendaList.add(agenda18)
-        agendaList.add(agenda19)
-        agendaList.add(agenda20)
-        agendaList.add(agenda21)
-        agendaList.add(agenda22)
-        agendaList.add(agenda23)
-        agendaList.add(agenda24)
-        agendaList.add(agenda25)
-        agendaList.add(agenda26)
-     //   agendaList.add(agenda27)
-        agendaList.add(agenda28)
-        agendaList.add(agenda29)
-    //    agendaList.add(agenda30)
-        agendaList.add(agenda31)
-        agendaList.add(agenda32)
-        agendaList.add(agenda33)
-        agendaList.add(agenda34)
-        agendaList.add(agenda35)
-        agendaList.add(agenda36)
-        agendaList.add(agenda37)
-        agendaList.add(agenda38)
-        agendaList.add(agenda39)
-        agendaList.add(agenda40)
-        agendaList.add(agenda41)
-      //  agendaList.add(agenda42)
+        var comment = thisView!!.findViewById<TextView>(R.id.calendarcoment)
+        var three = "1일 3회 양치 횟수 : "
+        var two = "\n1일 2회 양치 횟수 : "
+        var all = "\n총 양치횟수 : "
+        var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
+        comment.text = comments
 
         calendarView.agendaList = agendaList
             return thisView

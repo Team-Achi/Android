@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.administrator.achi.model3D.demo.SceneLoader.Color.BLUE;
+
 /**
  * This class loads a 3D scena as an example of what can be done with the app
  *
@@ -27,10 +29,18 @@ import java.util.List;
  */
 public class SceneLoader implements LoaderTask.Callback {
 
+    public enum Color{
+        WHITE, YELLOW, BLUE
+    }
+
     /**
-     * Default model color: yellow
+     * Default shades for highlighting purpose.
      */
-    private static float[] DEFAULT_COLOR = {1.0f, 1.0f, 0, 1.0f};
+    final float[] COLOR_WHITE   = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
+    final float[] COLOR_YELLOW  = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
+    final float[] COLOR_BLUE    = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
+    final float[] COLOR_PINK    = new float[]{1.0f, 0.639f, 0.639f, 1.0f};
+
     /**
      * Parent component
      */
@@ -44,21 +54,9 @@ public class SceneLoader implements LoaderTask.Callback {
      */
     private Camera camera;
     /**
-     * Whether to draw objects as wireframes
-     */
-    private boolean drawWireframe = false;
-    /**
      * Whether to draw using points
      */
     private boolean drawingPoints = false;
-    /**
-     * Whether to draw bounding boxes around objects
-     */
-    private boolean drawBoundingBox = false;
-    /**
-     * Whether to draw face normals. Normally used to debug models
-     */
-    private boolean drawNormals = false;
     /**
      * Whether to draw using textures
      */
@@ -75,43 +73,23 @@ public class SceneLoader implements LoaderTask.Callback {
      * Animate model (dae only) or not
      */
     private boolean animateModel = true;
-    /**
-     * Draw skeleton or not
-     */
-    private boolean drawSkeleton = false;
-    /**
-     * Toggle collision detection
-     */
-    private boolean isCollision = false;
+
     /**
      * Toggle 3d anaglyph
      */
     private boolean isAnaglyph = false;
     /**
-     * Object selected by the user
-     */
-    private Object3DData selectedObject = null;
-    /**
      * Initial light position
      */
-    private final float[] lightPosition = new float[]{0, 0, 6, 1};
+    private final float[] lightPosition = new float[]{0, 0, 8, 1};
     /**
      * Light bulb 3d data
      */
     private final Object3DData lightPoint = Object3DBuilder.buildPoint(lightPosition).setId("light");
     /**
-     * Animator
-     */
-    /**
-     * Did the user touched the model for the first time?
-     */
-    private boolean userHasInteracted;
-    /**
      * time when model loading has started (for stats)
      */
     private long startTime;
-
-    private Object3DData[] boxes;
 
     public SceneLoader(MonitoringFragment main) {
         this.parent = main;
@@ -126,10 +104,7 @@ public class SceneLoader implements LoaderTask.Callback {
             return;
         }
 
-        boxes = new Object3DData[48];
-
         startTime = SystemClock.uptimeMillis();
-        ProgressDialog dialog = new ProgressDialog((MainActivity)parent.getActivity());
         List<Exception> errors = new ArrayList<>();
 
         try {
@@ -140,12 +115,11 @@ public class SceneLoader implements LoaderTask.Callback {
             // test loading object
             try {
                 String fileName;
-                for (int i = 11; i < 47; i++) {
+                for (int i = 11; i < 48; i++) {
                     fileName = new String("teeth" + i + ".obj");
                     addteethObject(fileName, i);
                 }
                 addteethObject("gum_and_tongue.obj", -1);
-//                addGumAndTongueObjct();
             } catch (Exception ex) {
                 errors.add(ex);
             }
@@ -163,15 +137,13 @@ public class SceneLoader implements LoaderTask.Callback {
         try {
             Object3DData box = Object3DBuilder.loadV5((MainActivity)parent.getActivity(), Uri.parse("assets://assets/" + name));
 
-            box.setScale(new float[]{3f, 2.5f, 2.5f});
+            box.setScale(new float[] {3.0f, 2.5f, 2.5f});
 
-            if (i != -1) {  // teeth
-                box.setColor(new float[]{1.0f, 1.0f, 1.0f, 1.0f});
-                boxes[i] = box;
-            } else {    // gum
-                box.setColor(new float[]{1.0f, 0.639f, 0.639f, 1.0f});
-                boxes[0] = box;
-            }
+            if (i != -1)   // teeth
+                box.setColor(COLOR_BLUE);
+            else           // gum
+                box.setColor(COLOR_PINK);
+
             addObject(box);
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,26 +152,63 @@ public class SceneLoader implements LoaderTask.Callback {
     }
 
     /**
-     * Call this method to color a specific tooth.
-     * @param toothNumberString
-     * @param colorString
+     * Colors a specific tooth and rotates camera to its angle.
+     * @param numString
+     * @param color
      */
-    public void colorTeeth(String toothNumberString, String colorString) {
-        int toothNumber = Integer.parseInt(toothNumberString);
-        int a = toothNumber%10;     // 10's
-        int b = toothNumber/10;     // 1's
+    public void colorTeeth(String numString, Color color) {
+        // Find out tooth's number
+        int num = Integer.parseInt(numString);
+        int a = num / 10;     // 10's
+        int b = num % 10;     // 1's
 
-        int index = (a-1)*7 + (b-1);
-        Log.i("Scene", "index: " + index);
-        float[] color;
-        if(colorString.equals("YELLOW"))
-            color = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
-        else if (colorString.equals("BLUE"))
-            color = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
-        else
-            color = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
+        /**
+         *      tooth number
+         * { 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27,         // upper teeth
+         *      47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37 }     // lower teeth
+         *
+         *      converts to
+         * {  6,  5,  4,  3,  2,  1,  0,  7,  8,  9, 10, 11, 12, 13,
+         *      27, 26, 25, 24, 23, 22, 21, 14, 15, 16, 17, 18, 19, 20 }
+         */
+        int toothIndex = (a - 1) * 7 + (b - 1);
+        Log.i("Scene", "index: " + toothIndex);
 
-        objects.get(index).setColor(color);
+        // Color tooth
+        float[] colorValues;
+        switch (color) {
+            case YELLOW:
+                colorValues = COLOR_YELLOW;
+                break;
+            case WHITE:
+                colorValues = COLOR_WHITE;
+                break;
+            default:
+                colorValues = COLOR_BLUE;
+        }
+        Log.i("SceneLoader", "Tooth index: " + toothIndex);
+        objects.get(toothIndex).setColor(colorValues);
+
+        final float FRONT_TEETH_ANGLE = 0f;
+        final float MIDDLE_TEETH_ANGLE = 0.3f;
+        final float BACK_TEETH_ANGLE = 0.5f;
+
+        // Rotate camera from range -0.5 ~ 0.5
+        if (b == 1 || b == 2) {                                     // front teeth
+            camera.setHorizontalRotation(FRONT_TEETH_ANGLE);
+        } else if (b == 3 || b == 4) {                              // 3, 4th teeth
+            if (num > 20 && num < 40) {                             // left
+                camera.setHorizontalRotation(-MIDDLE_TEETH_ANGLE);
+            } else {
+                camera.setHorizontalRotation(MIDDLE_TEETH_ANGLE);   // right
+            }
+        } else {                                                    // 5, 6, 7th teeth
+            if (num > 20 && num < 40) {                             // left
+                camera.setHorizontalRotation(-BACK_TEETH_ANGLE);
+            } else {                                                // right
+                camera.setHorizontalRotation(BACK_TEETH_ANGLE);
+            }
+        }
     }
 
     public Camera getCamera() {
@@ -218,16 +227,8 @@ public class SceneLoader implements LoaderTask.Callback {
      * Hook for animating the objects before the rendering
      */
     public void onDrawFrame() {
-
-//        animateLight();
-
         // smooth camera transition
         camera.animate();
-
-        // initial camera animation. animate if user didn't touch the screen
-        if (!userHasInteracted) {
-//            animateCamera();
-        }
 
         if (objects.isEmpty()) return;
     }
