@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <ExpandableListView
         android:id="@+id/elvOneDay"
@@ -10,8 +10,7 @@
         android:layout_height="wrap_content"
         android:divider="@null"
         android:dividerHeight="10dp"
-        android:groupIndicator="@null"
-        android:visibility="visible">
+        android:groupIndicator="@null">
     </ExpandableListView>
 
 </android.support.constraint.ConstraintLayout>

@@ -70,7 +70,7 @@ class AnalyzeHabitFragment : Fragment(){
         addToList()
 
         // Expandable List View
-        expandableListAdapter = ExpandableListAdapter(this.context!!, lvWeeklyHabit, groupList, dayList)
+        expandableListAdapter = ExpandableListAdapter(this.context!!, groupList, dayList)
         lvWeeklyHabit.setAdapter(expandableListAdapter)
 
         for (i in 0 until expandableListAdapter.groupCount)
