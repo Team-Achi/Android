@@ -62,18 +62,9 @@ class ExpandableListAdapter(var context : Context, var groupList : ArrayList<Str
     }
 
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, view: View?, parent: ViewGroup?): View? {
-
-        var convertView = view
-        if (convertView == null) {
-            val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertView = inflater.inflate(R.layout.elv_onedayrecords, null)
-        }
         val dayExpandableListView = DayExpandableListView(context)
 
-//        var elvOneDay = convertView!!.findViewById<ExpandableListView>(R.id.elvOneDay)
-
         elva = DayExpandableListAdapter(this.context, dayExpandableListView, getChild(groupPosition, childPosition))
-//        elvOneDay.setAdapter(elva)
 
         dayExpandableListView.setAdapter(elva)
         dayExpandableListView.setGroupIndicator(null)
