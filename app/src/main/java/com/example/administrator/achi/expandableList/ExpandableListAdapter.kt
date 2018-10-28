@@ -7,7 +7,7 @@ import com.example.administrator.achi.R
 
 
 class ExpandableListAdapter(var context : Context, var groupList : ArrayList<String>,
-                            var dayList : ArrayList<ExpandableRecords>) : BaseExpandableListAdapter() {
+                            var dayList : ArrayList<ExpandableListRecords>) : BaseExpandableListAdapter() {
 
     private lateinit var elva : DayExpandableListAdapter
 
@@ -52,7 +52,7 @@ class ExpandableListAdapter(var context : Context, var groupList : ArrayList<Str
 
     override fun getChild(groupPosition: Int, childPosition: Int): ArrayList<Int> {
 
-        var dayItem : ExpandableRecords = dayList[groupPosition]
+        var dayItem : ExpandableListRecords = dayList[groupPosition]
         var indices = ArrayList<Int>()
 
         for (i in dayItem.startIdx..dayItem.endIdx)

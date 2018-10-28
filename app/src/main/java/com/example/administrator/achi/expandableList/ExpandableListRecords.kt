@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 // 하루 record
-class ExpandableRecords {
+class ExpandableListRecords {
     var date: String
         private set
     var startIdx : Int

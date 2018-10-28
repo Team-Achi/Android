@@ -81,14 +81,14 @@ object Analyzer{
 
     private fun calculate_duration() {
         var minusScore : Int
-        if (duration < 170) { // 2분 50초
-            minusScore = (170 - duration)     // 초 차이
+        if (duration < 150) { // 2분 30초
+            minusScore = (150 - duration)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
         }
-        else if (duration > 190) {   // 3분 10초
-            minusScore = (duration - 190)     // 초 차이
+        else if (duration > 210) {   // 3분 30초
+            minusScore = (duration - 210)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore

@@ -6,12 +6,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.dataModel.Record
 import com.example.administrator.achi.expandableList.ExpandableListAdapter
-import com.example.administrator.achi.expandableList.ExpandableRecords
+import com.example.administrator.achi.expandableList.ExpandableListRecords
 import kotlinx.android.synthetic.main.fragment_analyzehabit.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -30,7 +29,7 @@ class AnalyzeHabitFragment : Fragment(){
 //    private var childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
 
 
-    private var dayList = ArrayList<ExpandableRecords>()                     // 하루 record
+    private var dayList = ArrayList<ExpandableListRecords>()                     // 하루 record
 
     private var today = LocalDateTime.now()
 
@@ -85,7 +84,7 @@ class AnalyzeHabitFragment : Fragment(){
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
 //        childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
 //        childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
-        dayList = ArrayList<ExpandableRecords>()                                 // 하루
+        dayList = ArrayList<ExpandableListRecords>()                                 // 하루
     }
 
     private fun getScore() {
@@ -123,7 +122,7 @@ class AnalyzeHabitFragment : Fragment(){
 
             if (record.date.format(checkFormatter).compareTo(curDateFormat) != 0) {
                 groupList.add(curDate.format(formatter))
-                dayList.add(ExpandableRecords(startIdx, i - 1))
+                dayList.add(ExpandableListRecords(startIdx, i - 1))
 
                 curDate = curDate.minusDays(1)
                 curDateFormat =curDate.format(checkFormatter)
@@ -131,12 +130,12 @@ class AnalyzeHabitFragment : Fragment(){
             }
         }
         groupList.add(curDate.format(formatter))
-        dayList.add(ExpandableRecords(startIdx, DataCenter.records.size - 1))
+        dayList.add(ExpandableListRecords(startIdx, DataCenter.records.size - 1))
     }
 
     private fun addToList2() {
         var checkFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        dayList = ArrayList<ExpandableRecords>()
+        dayList = ArrayList<ExpandableListRecords>()
 
         var curDate = DataCenter.records[0].date
         var curDateFormat = curDate.format(checkFormatter)
@@ -146,14 +145,14 @@ class AnalyzeHabitFragment : Fragment(){
 
         for(i in 0 until DataCenter.records.size) {
             if (DataCenter.records[i].date.format(checkFormatter).compareTo(curDateFormat) != 0) {
-                dayList.add(ExpandableRecords(startIdx, i - 1))
+                dayList.add(ExpandableListRecords(startIdx, i - 1))
 
                 curDate = curDate.minusDays(1)
                 curDateFormat =curDate.format(checkFormatter)
                 startIdx = i
             }
         }
-        dayList.add(ExpandableRecords(startIdx, DataCenter.records.size - 1))
+        dayList.add(ExpandableListRecords(startIdx, DataCenter.records.size - 1))
     }
 
 
