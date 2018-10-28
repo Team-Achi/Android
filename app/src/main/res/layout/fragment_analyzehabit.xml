@@ -38,17 +38,10 @@
         android:layout_marginBottom="60dp"
         android:divider="@null"
         android:dividerHeight="10dp"
-        android:groupIndicator="@null">
+        android:groupIndicator="@null"
+        android:overScrollMode="never">
 
     </ExpandableListView>
-
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/rlvHabbit"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="50dp">-->
-<!---->
-    <!--</android.support.v7.widget.RecyclerView>-->
 
 
 </LinearLayout>

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
+import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.demo.SceneLoader
 import com.example.administrator.achi.model3D.demo.SceneLoader.Color
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
@@ -26,18 +27,12 @@ class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
     private var thisView: View? = null
 
-    // Analyze
-    private lateinit var today : LocalDateTime
-
     // Stopwatch
     private var handler : Handler = Handler()
     private lateinit var runnable : Runnable
 
     private var curState : Boolean = INIT
     private var baseTime : Long = 0
-
-    // Fact
-    private val facts = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -78,7 +73,7 @@ class MonitoringFragment : Fragment(){
 
         // Initialize view
         stopWatch()
-        addFacts()
+        DataCenter.loadFacts()
         printFacts()
 
         // test
@@ -173,22 +168,11 @@ class MonitoringFragment : Fragment(){
     }
 
     // Facts
-    fun addFacts() {
-        facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 " +
-                "세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
-        facts.add("아치의 꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기! " +
-                " 음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 " +
-                "약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
-        facts.add("아치의 꿀팁 3: 어금니, 바깥쪽면, 안쪽면, 씹는면 순으로 닦기!" +
-                " 그리고 옆으로 닦아 내리는 것보다 칫솔을 회전시키면서 쓸어내리는 " +
-                "느낌으로 양치질하는 것이 좋습니다.")
-    }
-
     fun printFacts() {
         val random = Random()
-        val num = random.nextInt(facts.size)
+        val num = random.nextInt(DataCenter.facts.size)
 
-        tvFact.text = facts.get(num)
+        tvFact.text = DataCenter.facts[num]
     }
 
     companion object {

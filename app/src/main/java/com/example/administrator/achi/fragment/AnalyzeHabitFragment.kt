@@ -21,14 +21,8 @@ class AnalyzeHabitFragment : Fragment(){
     private val TAG = "AnalyzeHabitFragment"
     private var thisView: View? = null
 
-
     private lateinit var expandableListAdapter : ExpandableListAdapter
-
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
-//    private var childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
-//    private var childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
-
-
     private var dayList = ArrayList<ExpandableListRecords>()                     // 하루 record
 
     private var today = LocalDateTime.now()
@@ -75,15 +69,10 @@ class AnalyzeHabitFragment : Fragment(){
         for (i in 0 until expandableListAdapter.groupCount)
             lvWeeklyHabit.expandGroup(i)
 
-//        rlvHabbit.adapter = RecyclerAdapter(dayList, context)
-//        rlvHabbit.layoutManager = LinearLayoutManager(context)
-
     }
 
     private fun init() {
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
-//        childList = ArrayList<ArrayList<ChildContentFormat>>()              // 그룹 리스트 (subitem 목록), body, 하루 record
-//        childListContent = ArrayList<ArrayList<ChildContentFormat>>()     // subitem 내용들, record 하나
         dayList = ArrayList<ExpandableListRecords>()                                 // 하루
     }
 
@@ -101,7 +90,7 @@ class AnalyzeHabitFragment : Fragment(){
             else
                 break
         }
-        avg = avg / num
+        avg /= num
         tvWeeklyScore.text = avg.toString() + " / 100 점"
     }
 
@@ -132,30 +121,6 @@ class AnalyzeHabitFragment : Fragment(){
         groupList.add(curDate.format(formatter))
         dayList.add(ExpandableListRecords(startIdx, DataCenter.records.size - 1))
     }
-
-    private fun addToList2() {
-        var checkFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        dayList = ArrayList<ExpandableListRecords>()
-
-        var curDate = DataCenter.records[0].date
-        var curDateFormat = curDate.format(checkFormatter)
-        var startIdx = 0
-
-        DataCenter.printRecords()
-
-        for(i in 0 until DataCenter.records.size) {
-            if (DataCenter.records[i].date.format(checkFormatter).compareTo(curDateFormat) != 0) {
-                dayList.add(ExpandableListRecords(startIdx, i - 1))
-
-                curDate = curDate.minusDays(1)
-                curDateFormat =curDate.format(checkFormatter)
-                startIdx = i
-            }
-        }
-        dayList.add(ExpandableListRecords(startIdx, DataCenter.records.size - 1))
-    }
-
-
 
     companion object {
         @JvmStatic

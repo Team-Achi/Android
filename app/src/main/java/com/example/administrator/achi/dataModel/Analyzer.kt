@@ -1,5 +1,6 @@
 package com.example.administrator.achi.dataModel
 
+import org.andresoviedo.util.android.assets.Handler
 import java.time.LocalDateTime
 
 object Analyzer{
@@ -13,6 +14,10 @@ object Analyzer{
 
     private const val numOfTeeth : Int = 28
     private var diff_time_per_tooth : Array<Int> = Array<Int>(50,{0})
+
+    var start : Long = 0
+    var end : Long = 0
+    var currentTooth : Int = 0
 
 
     // 이 함수는 어디에다가 넣어야 좋을까,,,,
@@ -37,9 +42,26 @@ object Analyzer{
     }
 
     // TODO Analyzer에서 각각 이빨 하나하나 시간 측정
-    fun secPerTooth(time : Int, tooth_num : Int) {      // 치아 하나하나 접근
-        sec_per_tooth[tooth_num] = time
+//    fun secPerTooth(time : Int) {
+//        sec_per_tooth[currentTooth] += time
+//    }
+
+    fun startToothTime(toothNum : Int) {
+        if (currentTooth != 0) {
+            endToothTime()
+        }
+
+        start = System.currentTimeMillis()
+        currentTooth = toothNum
     }
+
+    fun endToothTime() {
+        end = System.currentTimeMillis()
+        var durationTooth : Int = ((end - start) / 1000).toInt()
+
+        sec_per_tooth[currentTooth] += durationTooth
+    }
+
 
     fun pressure() {
         bad_pressure++
@@ -98,9 +120,12 @@ object Analyzer{
     private fun calculate_sec_per_tooth() {
         var expected_sec_per_tooth : Int = duration / numOfTeeth
 
-        for (i in 0..sec_per_tooth.size - 1) {
+        for (i in 0 until sec_per_tooth.size) {
             diff_time_per_tooth[i] = sec_per_tooth[i] - expected_sec_per_tooth
         }
+
+
+
     }
 
     private fun calculate_pressure() {
