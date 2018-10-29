@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.dataModel.Record
+import com.example.administrator.achi.dataModel.WeeklyFeature
 import com.example.administrator.achi.expandableList.ExpandableListAdapter
 import com.example.administrator.achi.expandableList.ExpandableListRecords
 import kotlinx.android.synthetic.main.fragment_analyzehabit.*
@@ -23,7 +24,10 @@ class AnalyzeHabitFragment : Fragment(){
 
     private lateinit var expandableListAdapter : ExpandableListAdapter
     private var groupList = ArrayList<String>()                         // 그룹 이름(item), header
-    private var dayList = ArrayList<ExpandableListRecords>()                     // 하루 record
+    private var dayList = ArrayList<ExpandableListRecords>()             // 하루 record
+
+    private lateinit var thisWeek : WeeklyFeature
+    private lateinit var lastWeek : WeeklyFeature
 
     private var today = LocalDateTime.now()
 
@@ -55,9 +59,12 @@ class AnalyzeHabitFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         getScore()
+        compareWeeks()
 
         init()
         addToList()
+
+
 
         // Expandable List View
         expandableListAdapter = ExpandableListAdapter(this.context!!, groupList, dayList)
@@ -89,6 +96,71 @@ class AnalyzeHabitFragment : Fragment(){
         }
         avg /= num
         tvWeeklyScore.text = avg.toString() + " / 100 점"
+    }
+
+    // 횟수, 시간 평균, 평균 점수
+    private fun getWeeklyFeature(weekNum : Int) {
+        var firstWeekDate = today
+        var lastWeekDate = today
+
+        if (weekNum == 1) {
+            firstWeekDate = today.plusDays(1)
+            lastWeekDate = today.minusDays(7)
+        }
+        else if (weekNum == 2) {
+            firstWeekDate = today.minusDays(6)
+            lastWeekDate = today.minusDays(14)
+        }
+
+        var avgScore = 0
+        var avgTime = 0
+        var num = 0
+        var check = false
+
+        for (i in 0 until DataCenter.records.size) {
+            var record = DataCenter.records[i]
+            if (record.date.isBefore(firstWeekDate) && record.date.isAfter(lastWeekDate)) {
+                avgScore += record.score
+                avgTime += record.duration
+                num++
+                check = true
+            }
+            else if (check)
+                break
+        }
+        avgScore /= num
+        avgTime /= num
+
+        if (weekNum == 1) {
+            thisWeek = WeeklyFeature(num, avgScore, avgTime)
+        }
+        else if (weekNum == 2) {
+            lastWeek = WeeklyFeature(num, avgScore, avgTime)
+        }
+    }
+
+    private fun compareWeeks() {
+        var comment : String = ""
+        getWeeklyFeature(1)
+        getWeeklyFeature(2)
+
+        when {
+            thisWeek.avgScore < lastWeek.avgScore -> comment += "올바른 양치 횟수가 줄었어요.\n"
+            else -> comment += "올바른 양치 횟수가 늘고 있네요!\n"
+        }
+
+        when {
+            thisWeek.num < thisWeek.num -> comment += "저번주보다 양치 횟수가 줄었네요."
+            else -> comment += "저번주보다 양치 횟수가 늘었어요."
+        }
+
+        when {
+            thisWeek.avgTime < lastWeek.avgTime -> comment += ""
+            else -> comment += ""
+        }
+
+        tvWeeklyComment.text = comment
+
     }
 
     private fun addToList() {
