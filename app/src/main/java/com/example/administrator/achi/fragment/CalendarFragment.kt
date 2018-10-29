@@ -85,6 +85,25 @@ class CalendarFragment : Fragment(){
                 var all = "\n총 양치횟수 : "
                 var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
                 comment.text = comments
+
+                var monthly = thisView!!.findViewById<TextView>(R.id.title_title)
+
+
+                var monthly_text = ""
+                if(alltime <= 30){
+                    monthly_text = "양치질이 필요해요!! 화이팅~!!"
+                }
+                else if(alltime <= 70){
+                    monthly_text = "건강한 치아까지 얼마 남지 않았어요!!"
+                }
+                else if(twotime >= threetime){
+                    monthly_text = "좀 더 3일 3양치를 실천하세요!!"
+                }
+                else if(threetime >= 25){
+                    monthly_text = "완벽한 치아! 완벽한 양치습관!"
+                }
+                monthly.text = monthly_text
+
                 calendarView.agendaList = agendaList
             }
         })
@@ -184,6 +203,24 @@ class CalendarFragment : Fragment(){
         var all = "\n총 양치횟수 : "
         var comments = three + threetime.toString()+"회" + two + twotime.toString()+"회" + all + alltime.toString()+"회"
         comment.text = comments
+
+        var monthly = thisView!!.findViewById<TextView>(R.id.title_title)
+
+
+        var monthly_text = ""
+        if(alltime <= 30){
+            monthly_text = "양치질이 필요해요!! 화이팅~!!"
+        }
+        else if(alltime <= 70){
+            monthly_text = "건강한 치아까지 얼마 남지 않았어요!!"
+        }
+        else if(twotime >= threetime){
+            monthly_text = "좀 더 3일 3양치를 실천하세요!!"
+        }
+        else if(threetime >= 25){
+            monthly_text = "완벽한 치아! 완벽한 양치습관!"
+        }
+        monthly.text = monthly_text
 
         calendarView.agendaList = agendaList
             return thisView

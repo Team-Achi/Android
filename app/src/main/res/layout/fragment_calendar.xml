@@ -63,7 +63,6 @@
                     android:background="#B0E0E6"
                     android:maxLines="1"
                     android:padding="5dp"
-                    android:text="이번달에는 조금 아쉬워요! 다음달에는 화이팅!"
                     android:textColor="#000000"
                     android:textSize="12sp" />
 
