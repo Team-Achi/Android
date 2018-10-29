@@ -54,9 +54,6 @@ class AnalyzeHabitFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var sample_record : Record = Record()
-        DataCenter.records.add(sample_record)
-
         getScore()
 
         init()
@@ -73,7 +70,7 @@ class AnalyzeHabitFragment : Fragment(){
 
     private fun init() {
         groupList = ArrayList<String>()                         // 그룹 이름(item), header
-        dayList = ArrayList<ExpandableListRecords>()                                 // 하루
+        dayList = ArrayList<ExpandableListRecords>()            // 하루
     }
 
     private fun getScore() {

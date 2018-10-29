@@ -1,25 +1,14 @@
 package com.example.administrator.achi.dataModel
 
+import java.time.LocalDateTime
+import java.util.*
+
 object DataCenter {
     var records = ArrayList<Record>()
     var facts = ArrayList<String>()
 
-    var i : Int = 0
-    var j : Int = 0
-
-
     fun saveData () {
         // 데이터 저장
-
-    }
-
-    // just for test
-    fun printRecords() {
-        for (i in 0 until records.size)
-            records[i].printRecord()
-    }
-
-    fun sampleRecords () {
 
     }
 
@@ -50,8 +39,64 @@ object DataCenter {
         facts.add("아치의 꿀팁 16: 너무 세게 칫솔질 하지 마세요. 칫솔질을 너무 세게 할 경우 치아 에나멜을 침식시킬 수 있습니다.")
         facts.add("아치의 꿀팁 17: 야식을 먹은 뒤에는 즉시 양치질! 밤에는 낮보다 침 분비량이 줄어 입안이 말라 세균이 번식하기 쉬워집니다.")
         facts.add("아치의 꿀팁 18: 치킨, 피장 등에 많이 함류된 기름은 치아 표면이나 칫솔이 잘 닿지 않는 곳에 들러붙어 충치를 유발하기 쉬운 성분이기도 하니 유의해서 양치하세요.")
-        facts.add("아치의 꿀팁 20: 커피나 홍차를 마신 뒤에는 즉시 양치하기! 커피나 홍차에 들어있는 검정 색소인 '타닌'성분은 치아를 변색시킬 수 있습니다."
-        )
+        facts.add("아치의 꿀팁 20: 커피나 홍차를 마신 뒤에는 즉시 양치하기! 커피나 홍차에 들어있는 검정 색소인 '타닌'성분은 치아를 변색시킬 수 있습니다.")
+    }
+
+    // just for test
+    fun printRecords() {
+        for (i in 0 until records.size)
+            records[i].printRecord()
+    }
+
+    // 오래된 게 더 뒤에 잇도록 - 오래된 것보다 현재 것이 더 규칙적
+    fun sampleRecords () {
+        // for sample data
+        var day = 0
+        var num = 3
+        var timeFactor = -3
+
+        val random: Random = Random()
+        var date : LocalDateTime
+        var duration = 0
+        var bad_pressure = 0
+        var sec_per_tooth = Array<Int>(50, {0})
+
+        var avgTime = 0
+        
+        for (it in 0..39) {
+
+            if (day <= 6 && num <= 0) {       // 최근 일주일
+                day++
+                num = 2
+                timeFactor = 0
+            }
+            else if (day > 6 && num <= 0) {   // 지난 일주일
+                day++
+                num = random.nextInt(3)
+                timeFactor = 0
+            }
+            else {
+                num--
+                timeFactor += 3
+            }
+
+            date = LocalDateTime.now().minusDays(day.toLong()).minusHours(timeFactor.toLong())
+            duration = random.nextInt(180) + 60
+            bad_pressure = random.nextInt(6)
+
+            avgTime = duration / 28
+
+            for (i in 11..47) {
+                if (i != 18 ||i != 19 ||i != 20 ||i != 28 ||i != 29 ||i != 30 ||i != 38 || i != 39 ||i != 40) {
+                    sec_per_tooth[i] = avgTime + (random.nextInt(7) - 3)
+                }
+            }
+
+            Analyzer.analyzeSample(date, duration, sec_per_tooth, bad_pressure)
+        }
+
+
+
     }
 
 }

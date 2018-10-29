@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager
 import android.widget.FrameLayout
 import android.support.design.widget.BottomNavigationView
 import android.util.Log
+import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.fragment.AnalyzeHabitFragment
 import com.example.administrator.achi.fragment.CalendarFragment
 import com.example.administrator.achi.fragment.MonitoringFragment
@@ -19,7 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     init {
         System.setProperty("java.protocol.handler.pkgs", "org.andresoviedo.util.android");
-        URL.setURLStreamHandlerFactory( AndroidURLStreamHandlerFactory());
+        URL.setURLStreamHandlerFactory( AndroidURLStreamHandlerFactory())
+        DataCenter.sampleRecords()
     }
 
     val TAG = "MainActivity"
