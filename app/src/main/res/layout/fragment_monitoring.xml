@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="20dp">
+    android:layout_marginTop="10dp">
 
     <TextView
         android:id="@+id/tvTime"
@@ -23,9 +23,8 @@
     <LinearLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="350dp"
+        android:layout_marginBottom="20dp"
         android:orientation="vertical"></LinearLayout>
 
     <TextView
@@ -36,7 +35,6 @@
         android:gravity="center"
         android:text="하루에 양치를 3번 해야해~~~~"
         android:textColor="@android:color/black"
-        android:layout_marginTop="20dp"
         android:textSize="17sp" />
 
 </LinearLayout>

@@ -19,6 +19,15 @@ class Record {
     var comment : String = "여기는 양치에 대한 코멘트입니당"
         private set
 
+    constructor() {
+        val random : Random = Random()
+
+        this.date = LocalDateTime.now()
+        this.duration = random.nextInt(240)
+        this.bad_pressure = random.nextInt(10)
+        this.score = random.nextInt(101)
+    }
+
     constructor(date : LocalDateTime, time : Int, spt : Array<Int>, st : Array<Int>, bp : Int, score : Int, comment : String) {
         this.date = date
         this.duration = time
@@ -28,6 +37,7 @@ class Record {
         this.score = score
         this.comment = comment
     }
+
 
     // just for test
     fun printRecord() {

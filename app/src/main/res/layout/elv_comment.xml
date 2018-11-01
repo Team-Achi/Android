@@ -11,11 +11,12 @@
     <TextView
         android:id="@+id/tvComment"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="8dp"
-        android:gravity="center"
+        android:layout_height="80dp"
+        android:layout_margin="20dp"
+        android:gravity="center_vertical"
         android:textColor="@android:color/black"
         android:textSize="18sp"
+        android:textAlignment="gravity"
         android:text="여기는 comment"/>
 
 </LinearLayout>

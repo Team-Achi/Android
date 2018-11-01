@@ -133,6 +133,8 @@ object Analyzer{
 
     }
 
+
+
     private fun calculate_duration() {
         var minusScore : Int
         if (duration < 150) { // 2분 30초
@@ -150,7 +152,7 @@ object Analyzer{
     }
 
     private fun calculate_pressure() {
-        score -= bad_pressure * 5
+        score -= bad_pressure * 3
     }
 
     private fun calculate_sec_per_tooth() {
