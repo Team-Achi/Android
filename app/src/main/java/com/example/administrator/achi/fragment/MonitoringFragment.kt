@@ -1,15 +1,22 @@
 package com.example.administrator.achi.fragment
 
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
+import android.content.ContentValues
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.SystemClock
+import android.os.*
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.example.administrator.achi.R
+import com.example.administrator.achi.calendar.CalendarView
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.demo.SceneLoader
@@ -17,11 +24,31 @@ import com.example.administrator.achi.model3D.demo.SceneLoader.Color
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
+import java.lang.StringBuilder
 import java.time.LocalDateTime
 import java.util.*
 
 private const val INIT : Boolean = true
 private const val RUN : Boolean = false
+private const val RECIEVE_MESSAGE = 1;
+private var btAdapter : BluetoothAdapter? = null
+private var btSocket : BluetoothSocket?= null
+private var sb : StringBuilder = StringBuilder()
+private var flag : Int = 0;
+private var h : Handler ?= null
+private var sbprint : String ?=null
+private var sbprint_prev : Int ?= null
+
+private var mConnectedThread : ConnectedThread ?= null
+private var toothThread : MonitoringFragment.ToothThread ?=null
+// SPP UUID service
+private val MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
+
+// MAC-address of Bluetooth module (you must edit this line)
+private var address = "98:D3:61:F9:29:CB"
 
 class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
@@ -43,6 +70,41 @@ class MonitoringFragment : Fragment(){
     override fun onResume(){
         super.onResume()
         Log.d(TAG, "onResume()")
+        var device: BluetoothDevice
+        device = btAdapter!!.getRemoteDevice(address)
+        try {
+            btSocket = createBluetoothSocket(device)
+        } catch (e: IOException) {
+            Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
+        }
+
+
+        // Discovery is resource intensive.  Make sure it isn't going on
+        // when you attempt to connect and pass your message.
+        btAdapter!!.cancelDiscovery()
+
+        // Establish the connection.  This will block until it connects.
+        Log.d(TAG, "...Connecting...")
+        try {
+            btSocket?.connect()
+            Log.d(TAG, "....Connection ok...")
+        } catch (e: IOException) {
+            try {
+                btSocket?.close()
+            } catch (e2: IOException) {
+                Log.d("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.message + ".")
+            }
+        }
+
+
+        // Create a data stream so we can talk to server.
+        Log.d(TAG, "...Create Socket...")
+
+        mConnectedThread = ConnectedThread(btSocket)
+        mConnectedThread!!.start()
+        var tThread : Thread = Thread(ToothThread(scene))
+        tThread.isDaemon;
+        tThread.start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -51,8 +113,56 @@ class MonitoringFragment : Fragment(){
         if(thisView == null) {
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
+        var bttest = thisView!!.findViewById<TextView>(R.id.bttest)
+
+        h = object : Handler() {
+            override fun handleMessage(msg: android.os.Message) {
+                when (msg.what) {
+                    RECIEVE_MESSAGE -> {
+                        val readBuf = msg.obj as ByteArray
+                        val strIncom = String(readBuf, 0, msg.arg1)
+                        sb.append(strIncom)
+                        val endOfLineIndex = sb.indexOf("\r\n")
+                        if (endOfLineIndex > 0) {
+                            sbprint = sb.substring(0, endOfLineIndex)
+                            sb.delete(0, sb.length)
+                            bttest.text= sbprint
+                        }
+                    }
+                }
+            }
+        }
+        btAdapter = BluetoothAdapter.getDefaultAdapter()       // get Bluetooth adapter
+        checkBTState()
 
         return thisView
+    }
+
+    @Throws(IOException::class)
+    private fun createBluetoothSocket(device: BluetoothDevice): BluetoothSocket {
+        if (Build.VERSION.SDK_INT >= 10) {
+            try {
+                val m = device.javaClass.getMethod("createInsecureRfcommSocketToServiceRecord", *arrayOf<Class<*>>(UUID::class.java))
+                return m.invoke(device, MY_UUID) as BluetoothSocket
+            } catch (e: Exception) {
+                Log.e(TAG, "Could not create Insecure RFComm Connection", e)
+            }
+
+        }
+        return device.createRfcommSocketToServiceRecord(MY_UUID)
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Log.d(TAG, "...In onPause()...")
+
+        try {
+            btSocket!!.close()
+        } catch (e2: IOException) {
+            Log.d("Fatal Error", "In onPause() and failed to close socket." + e2.message + ".")
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,7 +227,9 @@ class MonitoringFragment : Fragment(){
         runnable = object : Runnable {
             override fun run() {
                 tvTime.text = Analyzer.timeToString(getElapsedTime())
+                ////
 
+                ////
                 handler.postDelayed(this, 0)
             }
         }
@@ -213,6 +325,36 @@ class MonitoringFragment : Fragment(){
         return gLView
     }
 
+    class ToothThread(var scene : SceneLoader): Runnable{
+
+        // Thread 때와 마찬가지로 run() 메소드 구현
+
+        override fun run() {
+            while(true){
+                if (sbprint?.toInt() in 11..47) {
+                    if(sbprint_prev == null){
+                        Log.d("MonitoringFragment", sbprint)
+                        scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                        sbprint_prev = sbprint?.toInt()
+                    }
+                    else if (sbprint?.toInt() == sbprint_prev) {
+
+                    }
+                    else{
+                        Log.d("MonitoringFragment", sbprint)
+                        scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
+                        scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                        sbprint_prev = sbprint?.toInt()
+                    }
+                }
+                try {
+                    Thread.sleep(1000); // 1000ms 단위로 실행
+                } catch (e : InterruptedException ) {
+                    e.printStackTrace();
+                }
+            } // end while
+        } // end run()
+    }
 }
 
 
@@ -267,3 +409,68 @@ class MonitoringFragment : Fragment(){
 //                handler.removeCallbacks(runnable)
 //            }
 //        }
+
+private fun checkBTState() {
+    // Check for Bluetooth support and then check to make sure it is turned on
+    // Emulator doesn't support Bluetooth and will return null
+    if (btAdapter == null) {
+        Log.d("Fatal Error", "Bluetooth not support")
+    } else {
+        if (btAdapter!!.isEnabled()) {
+            Log.d(TAG, "...Bluetooth ON...")
+        } else {
+            Log.d(TAG, "...Bluetooth OFF...")
+        }
+    }
+}
+
+private class ConnectedThread() : Thread(){
+    private var mmInStream: InputStream? = null
+    private var mmOutStream: OutputStream? = null
+
+    constructor(socket: BluetoothSocket?) : this() {
+        var tmpIn: InputStream? = null
+        var tmpOut: OutputStream? = null
+
+        // Get the input and output streams, using temp objects because
+        // member streams are final
+        try {
+            tmpIn = socket?.inputStream
+            tmpOut = socket?.outputStream
+        }
+        catch (e: IOException) {
+        }
+
+        mmInStream = tmpIn
+        mmOutStream = tmpOut
+    }
+
+    override fun run() {
+        val buffer = ByteArray(256)  // buffer store for the stream
+        var bytes: Int // bytes returned from read()
+
+        // Keep listening to the InputStream until an exception occurs
+        while (true) {
+            try {
+                // Read from the InputStream
+                bytes = mmInStream!!.read(buffer)        // Get number of bytes and message in "buffer"
+                h?.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer)?.sendToTarget()     // Send to message queue Handler
+            } catch (e: IOException) {
+                break
+            }
+
+        }
+    }
+
+    /* Call this from the main activity to send data to the remote device */
+    fun write(message: String) {
+        Log.d(ContentValues.TAG, "...Data to send: $message...")
+        val msgBuffer = message.toByteArray()
+        try {
+            mmOutStream!!.write(msgBuffer)
+        } catch (e: IOException) {
+            Log.d(ContentValues.TAG, "...Error data send: " + e.message + "...")
+        }
+
+    }
+}
