@@ -71,13 +71,16 @@ class MonitoringFragment : Fragment(){
         super.onResume()
         Log.d(TAG, "onResume()")
         var device: BluetoothDevice
+        if (btAdapter == null) {
+            Log.i(TAG, "btAdapter is null")
+            return
+        }
         device = btAdapter!!.getRemoteDevice(address)
         try {
             btSocket = createBluetoothSocket(device)
         } catch (e: IOException) {
             Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
         }
-
 
         // Discovery is resource intensive.  Make sure it isn't going on
         // when you attempt to connect and pass your message.
@@ -414,7 +417,7 @@ private fun checkBTState() {
     // Check for Bluetooth support and then check to make sure it is turned on
     // Emulator doesn't support Bluetooth and will return null
     if (btAdapter == null) {
-        Log.d("Fatal Error", "Bluetooth not support")
+        Log.d("Fatal Error", "Bluetooth is not supported on this device.")
     } else {
         if (btAdapter!!.isEnabled()) {
             Log.d(TAG, "...Bluetooth ON...")
@@ -449,6 +452,11 @@ private class ConnectedThread() : Thread(){
         val buffer = ByteArray(256)  // buffer store for the stream
         var bytes: Int // bytes returned from read()
 
+        if (mmInStream == null) {
+            // TODO
+            Log.i("TODO", "mmInStream is null")
+            return
+        }
         // Keep listening to the InputStream until an exception occurs
         while (true) {
             try {
