@@ -106,6 +106,7 @@ object Analyzer{
         // record를 Record와 DataCenter에 저장
         var record = Record(today, duration, sec_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(0, record)
+        DataCenter.printRecords()
         init()
     }
 
@@ -132,8 +133,6 @@ object Analyzer{
         init()
 
     }
-
-
 
     private fun calculate_duration() {
         var minusScore : Int

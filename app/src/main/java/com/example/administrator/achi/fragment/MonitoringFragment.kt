@@ -226,7 +226,7 @@ class MonitoringFragment : Fragment(){
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
     // StopWatch
-    fun stopWatch() {
+    private fun stopWatch() {
         var today : LocalDateTime = LocalDateTime.now()
         var duration : Int = 0
         runnable = object : Runnable {
@@ -236,23 +236,23 @@ class MonitoringFragment : Fragment(){
             }
         }
 
-//        layout.setOnClickListener() {
-//            if (curState == INIT) {                         // 시작
-//                baseTime = SystemClock.elapsedRealtime()
-//                handler.postDelayed(runnable, 0)
-//
-//                curState = RUN
-//                today = LocalDateTime.now()
-//            }
-//
-//            else if (curState == RUN) {                    // 끝
-//                curState = INIT
-//                handler.removeCallbacks(runnable)
-//
-//                duration = getElapsedTime()
-//                Analyzer.analyze(today, duration)
-//            }
-//        }
+        layout.setOnClickListener() {
+            if (curState == INIT) {                         // 시작
+                baseTime = SystemClock.elapsedRealtime()
+                handler.postDelayed(runnable, 0)
+
+                curState = RUN
+                today = LocalDateTime.now()
+            }
+
+            else if (curState == RUN) {                    // 끝
+                curState = INIT
+                handler.removeCallbacksAndMessages(runnable)
+
+                duration = getElapsedTime()
+                Analyzer.analyze(today, duration)
+            }
+        }
     }
 
     fun getElapsedTime() : Int {
@@ -263,7 +263,7 @@ class MonitoringFragment : Fragment(){
     }
 
     // Facts
-    fun printFacts() {
+    private fun printFacts() {
         val random = Random()
         val num = random.nextInt(DataCenter.facts.size)
 
