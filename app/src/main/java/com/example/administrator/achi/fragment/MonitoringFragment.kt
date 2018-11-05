@@ -259,20 +259,6 @@ class MonitoringFragment : Fragment(){
 //
 //            }
 //        }
-
-        // for test
-//        btnRecord.setOnClickListener() {           // record
-//            if (curState == RUN) {
-//                var curTime = SystemClock.elapsedRealtime()
-//                var resultTime : Long = curTime - pauseTime
-//                var tooth_num : Int = 0
-//
-//                pauseTime = curTime
-//
-//                tvRecord.setText(resultTime.toString())
-//                Analyzer.pressure()
-//            }
-//        }
     }
 
     fun getElapsedTime() : Int {
@@ -328,6 +314,20 @@ class MonitoringFragment : Fragment(){
         return gLView
     }
 
+    private fun checkBTState() {
+        // Check for Bluetooth support and then check to make sure it is turned on
+        // Emulator doesn't support Bluetooth and will return null
+        if (btAdapter == null) {
+            Log.d("Fatal Error", "Bluetooth is not supported on this device.")
+        } else {
+            if (btAdapter!!.isEnabled()) {
+                Log.d(ContentValues.TAG, "...Bluetooth ON...")
+            } else {
+                Log.d(ContentValues.TAG, "...Bluetooth OFF...")
+            }
+        }
+    }
+
     class ToothThread(var scene : SceneLoader): Runnable{
 
         // Thread 때와 마찬가지로 run() 메소드 구현
@@ -357,73 +357,6 @@ class MonitoringFragment : Fragment(){
                 }
             } // end while
         } // end run()
-    }
-}
-
-
-
-//        btn_start.setOnClickListener() {thisView->
-//
-//
-//            if (curState == INIT) {         // RUN
-//                baseTime = SystemClock.elapsedRealtime()
-//                btn_start.setText("PAUSE")
-//                btn_record.setEnabled(true)
-//                curState = RUN
-//
-//                handler.postDelayed(runnable, 0)
-//
-//            }
-//            else if (curState == RUN) {     // PAUSE
-//                pauseTime = SystemClock.elapsedRealtime()
-//                btn_start.setText("START")
-//                btn_record.setText("RESET")
-//                curState = PAUSE
-//                handler.removeCallbacks(runnable)
-//            }
-//            else if (curState == PAUSE) {       // RUN
-//                var curTime : Long = SystemClock.elapsedRealtime()
-//                baseTime += curTime - pauseTime
-//                btn_start.setText("PAUSE")
-//                btn_record.setText("RECORD")
-//                curState = RUN
-//
-//                handler.postDelayed(runnable, 0)
-//            }
-//        }
-//
-//        btn_record.setOnClickListener() {thisView->
-//            if (curState == RUN) {      // Record
-//                second = getElapsedTime()
-//                minute = second / 60
-//                second = second % 60
-//
-////                handler.postDelayed(runnable, 0)
-//            }
-//            else if (curState == PAUSE) {   // Reset
-//                btn_start.setText("START")
-//                btn_record.setText("RECORD")
-//
-//                tv_minute.setText("00")
-//                tv_second.setText("00")
-//
-//                curState = INIT
-//                btn_record.setEnabled(false)
-//                handler.removeCallbacks(runnable)
-//            }
-//        }
-
-private fun checkBTState() {
-    // Check for Bluetooth support and then check to make sure it is turned on
-    // Emulator doesn't support Bluetooth and will return null
-    if (btAdapter == null) {
-        Log.d("Fatal Error", "Bluetooth is not supported on this device.")
-    } else {
-        if (btAdapter!!.isEnabled()) {
-            Log.d(TAG, "...Bluetooth ON...")
-        } else {
-            Log.d(TAG, "...Bluetooth OFF...")
-        }
     }
 }
 
@@ -482,3 +415,56 @@ private class ConnectedThread() : Thread(){
 
     }
 }
+
+
+
+//        btn_start.setOnClickListener() {thisView->
+//
+//
+//            if (curState == INIT) {         // RUN
+//                baseTime = SystemClock.elapsedRealtime()
+//                btn_start.setText("PAUSE")
+//                btn_record.setEnabled(true)
+//                curState = RUN
+//
+//                handler.postDelayed(runnable, 0)
+//
+//            }
+//            else if (curState == RUN) {     // PAUSE
+//                pauseTime = SystemClock.elapsedRealtime()
+//                btn_start.setText("START")
+//                btn_record.setText("RESET")
+//                curState = PAUSE
+//                handler.removeCallbacks(runnable)
+//            }
+//            else if (curState == PAUSE) {       // RUN
+//                var curTime : Long = SystemClock.elapsedRealtime()
+//                baseTime += curTime - pauseTime
+//                btn_start.setText("PAUSE")
+//                btn_record.setText("RECORD")
+//                curState = RUN
+//
+//                handler.postDelayed(runnable, 0)
+//            }
+//        }
+//
+//        btn_record.setOnClickListener() {thisView->
+//            if (curState == RUN) {      // Record
+//                second = getElapsedTime()
+//                minute = second / 60
+//                second = second % 60
+//
+////                handler.postDelayed(runnable, 0)
+//            }
+//            else if (curState == PAUSE) {   // Reset
+//                btn_start.setText("START")
+//                btn_record.setText("RECORD")
+//
+//                tv_minute.setText("00")
+//                tv_second.setText("00")
+//
+//                curState = INIT
+//                btn_record.setEnabled(false)
+//                handler.removeCallbacks(runnable)
+//            }
+//        }
