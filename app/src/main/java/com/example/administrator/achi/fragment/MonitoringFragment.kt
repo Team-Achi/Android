@@ -227,12 +227,11 @@ class MonitoringFragment : Fragment(){
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
     // StopWatch
     fun stopWatch() {
+        var today : LocalDateTime = LocalDateTime.now()
+        var duration : Int = 0
         runnable = object : Runnable {
             override fun run() {
                 tvTime.text = Analyzer.timeToString(getElapsedTime())
-                ////
-
-                ////
                 handler.postDelayed(this, 0)
             }
         }
@@ -242,21 +241,16 @@ class MonitoringFragment : Fragment(){
 //                baseTime = SystemClock.elapsedRealtime()
 //                handler.postDelayed(runnable, 0)
 //
-//                pauseTime = baseTime
 //                curState = RUN
-//
 //                today = LocalDateTime.now()
-//
 //            }
 //
 //            else if (curState == RUN) {                    // 끝
 //                curState = INIT
 //                handler.removeCallbacks(runnable)
 //
-//
-//                // Analyzer에 최종 전달
-//                Analyzer.analyze(today, getElapsedTime())
-//
+//                duration = getElapsedTime()
+//                Analyzer.analyze(today, duration)
 //            }
 //        }
     }
@@ -416,8 +410,9 @@ private class ConnectedThread() : Thread(){
     }
 }
 
-
-
+///////////////////////////////////////////////////////////////////////
+// stopwatch code
+///////////////////////////////////////////////////////////////////////
 //        btn_start.setOnClickListener() {thisView->
 //
 //
