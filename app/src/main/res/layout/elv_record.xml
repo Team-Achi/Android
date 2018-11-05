@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginLeft="10dp">
+        android:layout_marginLeft="5dp">
 
         <ImageView
             android:id="@+id/iv_recordIcon"
@@ -45,7 +45,7 @@
             android:text="양치\n시간"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 
         <TextView
