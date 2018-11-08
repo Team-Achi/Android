@@ -43,7 +43,7 @@ private var sbprint : String ?=null
 private var sbprint_prev : Int ?= null
 
 private var mConnectedThread : ConnectedThread ?= null
-private var toothThread : MonitoringFragment.ToothThread ?=null
+
 // SPP UUID service
 private val MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
@@ -105,9 +105,6 @@ class MonitoringFragment : Fragment(){
 
         mConnectedThread = ConnectedThread(btSocket)
         mConnectedThread!!.start()
-        var tThread : Thread = Thread(ToothThread(scene))
-        tThread.isDaemon;
-        tThread.start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -130,6 +127,23 @@ class MonitoringFragment : Fragment(){
                             sbprint = sb.substring(0, endOfLineIndex)
                             sb.delete(0, sb.length)
                             bttest.text= sbprint
+
+                            if (sbprint?.toInt() in 11..47) {
+                                if(sbprint_prev == null){
+                                    Log.d("MonitoringFragment", sbprint)
+                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                                    sbprint_prev = sbprint?.toInt()
+                                }
+                                else if (sbprint?.toInt() == sbprint_prev) {
+
+                                }
+                                else{
+                                    Log.d("MonitoringFragment", sbprint)
+                                    scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
+                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                                    sbprint_prev = sbprint?.toInt()
+                                }
+                            }
                         }
                     }
                 }
@@ -159,6 +173,11 @@ class MonitoringFragment : Fragment(){
         super.onPause()
 
         Log.d(TAG, "...In onPause()...")
+
+        if (btSocket == null) {
+            Log.d("Fatal Error", "btSocket is null.")
+            return;
+        }
 
         try {
             btSocket!!.close()
@@ -322,36 +341,6 @@ class MonitoringFragment : Fragment(){
         }
     }
 
-    class ToothThread(var scene : SceneLoader): Runnable{
-
-        // Thread 때와 마찬가지로 run() 메소드 구현
-
-        override fun run() {
-            while(true){
-                if (sbprint?.toInt() in 11..47) {
-                    if(sbprint_prev == null){
-                        Log.d("MonitoringFragment", sbprint)
-                        scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                        sbprint_prev = sbprint?.toInt()
-                    }
-                    else if (sbprint?.toInt() == sbprint_prev) {
-
-                    }
-                    else{
-                        Log.d("MonitoringFragment", sbprint)
-                        scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
-                        scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                        sbprint_prev = sbprint?.toInt()
-                    }
-                }
-                try {
-                    Thread.sleep(1000); // 1000ms 단위로 실행
-                } catch (e : InterruptedException ) {
-                    e.printStackTrace();
-                }
-            } // end while
-        } // end run()
-    }
 }
 
 private class ConnectedThread() : Thread(){
