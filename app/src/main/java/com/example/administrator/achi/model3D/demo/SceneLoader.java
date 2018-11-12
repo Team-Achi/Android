@@ -163,7 +163,7 @@ public class SceneLoader implements LoaderTask.Callback {
         int a = num / 10;     // 10's
         int b = num % 10;     // 1's
 
-        if (num < 0 || num > 27) {
+        if (num < 0 || num > 47) {
             Log.i("SceneLoader", "Tooth index out of bound.");
             return;
         }
