@@ -116,21 +116,30 @@ class MonitoringFragment : Fragment(){
                     RECIEVE_MESSAGE -> {
                         val readBuf = msg.obj as ByteArray
                         val strIncom = String(readBuf, 0, msg.arg1)
-                        var tooth : String
+                        var sbprint : String
 
                         sb.append(strIncom)
                         val endOfLineIndex = sb.indexOf("\r\n")
                         if (endOfLineIndex > 0) {
-                            tooth = sb.substring(0, endOfLineIndex)
+                            sbprint = sb.substring(0, endOfLineIndex)
                             sb.delete(0, sb.length)
-                            bttest.text= tooth
+                            bttest.text= sbprint
 
-                            if (Analyzer.isDone(tooth)) {                   // done brushing
-                                scene.colorTeeth(tooth, Color.WHITE)
-                            } else if (Analyzer.isHalfWayDone(tooth)) {     // half-way done brushing
-                                scene.colorTeeth(tooth, Color.LIGHTBLUE)
-                            } else {                                        // not done at all
-                                scene.colorTeeth(tooth, Color.WHITE)
+                            if (sbprint?.toInt() in 11..47) {
+                                if(sbprint_prev == null){
+                                    Log.d("MonitoringFragment", sbprint)
+                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                                    sbprint_prev = sbprint?.toInt()
+                                }
+                                else if (sbprint?.toInt() == sbprint_prev) {
+
+                                }
+                                else{
+                                    Log.d("MonitoringFragment", sbprint)
+                                    scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
+                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
+                                    sbprint_prev = sbprint?.toInt()
+                                }
                             }
                         }
                     }
