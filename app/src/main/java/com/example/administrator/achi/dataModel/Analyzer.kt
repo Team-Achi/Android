@@ -73,6 +73,14 @@ object Analyzer{
     }
     ////////////////////////////////////////////////////////////////////////
 
+    fun isDone(tooth:String) : Boolean {
+        return true
+    }
+
+    fun isHalfWayDone(tooth: String) : Boolean {
+        return true
+    }
+
     fun pressure() {
         bad_pressure++
     }

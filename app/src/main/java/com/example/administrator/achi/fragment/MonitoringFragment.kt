@@ -4,11 +4,8 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
-import android.content.ContentValues.TAG
-import android.content.Intent
 import android.net.Uri
 import android.os.*
-import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.administrator.achi.R
-import com.example.administrator.achi.calendar.CalendarView
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.dataModel.DataCenter
 import com.example.administrator.achi.model3D.demo.SceneLoader
@@ -39,7 +35,6 @@ private var btSocket : BluetoothSocket?= null
 private var sb : StringBuilder = StringBuilder()
 private var flag : Int = 0;
 private var h : Handler ?= null
-private var sbprint : String ?=null
 private var sbprint_prev : Int ?= null
 
 private var mConnectedThread : ConnectedThread ?= null
@@ -121,28 +116,21 @@ class MonitoringFragment : Fragment(){
                     RECIEVE_MESSAGE -> {
                         val readBuf = msg.obj as ByteArray
                         val strIncom = String(readBuf, 0, msg.arg1)
+                        var tooth : String
+
                         sb.append(strIncom)
                         val endOfLineIndex = sb.indexOf("\r\n")
                         if (endOfLineIndex > 0) {
-                            sbprint = sb.substring(0, endOfLineIndex)
+                            tooth = sb.substring(0, endOfLineIndex)
                             sb.delete(0, sb.length)
-                            bttest.text= sbprint
+                            bttest.text= tooth
 
-                            if (sbprint?.toInt() in 11..47) {
-                                if(sbprint_prev == null){
-                                    Log.d("MonitoringFragment", sbprint)
-                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                                    sbprint_prev = sbprint?.toInt()
-                                }
-                                else if (sbprint?.toInt() == sbprint_prev) {
-
-                                }
-                                else{
-                                    Log.d("MonitoringFragment", sbprint)
-                                    scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
-                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                                    sbprint_prev = sbprint?.toInt()
-                                }
+                            if (Analyzer.isDone(tooth)) {                   // done brushing
+                                scene.colorTeeth(tooth, Color.WHITE)
+                            } else if (Analyzer.isHalfWayDone(tooth)) {     // half-way done brushing
+                                scene.colorTeeth(tooth, Color.LIGHTBLUE)
+                            } else {                                        // not done at all
+                                scene.colorTeeth(tooth, Color.WHITE)
                             }
                         }
                     }

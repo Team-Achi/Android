@@ -30,7 +30,7 @@ import static com.example.administrator.achi.model3D.demo.SceneLoader.Color.BLUE
 public class SceneLoader implements LoaderTask.Callback {
 
     public enum Color{
-        WHITE, YELLOW, BLUE
+        WHITE, YELLOW, BLUE, LIGHTBLUE
     }
 
     /**
@@ -182,6 +182,9 @@ public class SceneLoader implements LoaderTask.Callback {
                 break;
             case WHITE:
                 colorValues = COLOR_WHITE;
+                break;
+            case LIGHTBLUE:
+                colorValues = COLOR_PINK;
                 break;
             default:
                 colorValues = COLOR_BLUE;
