@@ -2,6 +2,7 @@ package com.example.administrator.achi.model3D.demo;
 
 import android.app.ProgressDialog;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -162,6 +163,11 @@ public class SceneLoader implements LoaderTask.Callback {
         int a = num / 10;     // 10's
         int b = num % 10;     // 1's
 
+        if (num < 0 || num > 27) {
+            Log.i("SceneLoader", "Tooth index out of bound.");
+            return;
+        }
+        
         /**
          *      tooth number
          * { 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27,         // upper teeth

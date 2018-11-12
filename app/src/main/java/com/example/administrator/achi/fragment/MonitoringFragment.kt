@@ -91,7 +91,7 @@ class MonitoringFragment : Fragment(){
                 btSocket?.close()
             } catch (e2: IOException) {
                 Log.d("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.message + ".")
-            }
+        }
         }
 
 
