@@ -30,6 +30,7 @@ import static com.example.administrator.achi.model3D.demo.SceneLoader.Color.BLUE
  */
 public class SceneLoader implements LoaderTask.Callback {
 
+    static final String TAG = "SceneLoader";
     public enum Color{
         WHITE, YELLOW, BLUE, LIGHTBLUE
     }
@@ -153,21 +154,24 @@ public class SceneLoader implements LoaderTask.Callback {
     }
 
     /**
-     * Colors a specific tooth and rotates camera to its angle.
-     * @param numString
+     * Colors a specific tooth and rotates camera to its angle
+     * @param toothNumber
      * @param color
      */
-    public void colorTeeth(String numString, Color color) {
-        // Find out tooth's number
-        int num = Integer.parseInt(numString);
+    public void colorTeeth(int toothNumber, Color color) {
+        if (toothNumber < 11 || toothNumber > 47) {
+            Log.i(TAG, "Tooth index out of bound.");
+            return;
+        }
+
+        int num = toothNumber;
         int a = num / 10;     // 10's
         int b = num % 10;     // 1's
 
-        if (num < 0 || num > 47) {
-            Log.i("SceneLoader", "Tooth index out of bound.");
-            return;
+        if (b==8 || b==9 || b==0) {
+            Log.i(TAG, "Tooth index out of bound.");
         }
-        
+
         /**
          *      tooth number
          * { 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27,         // upper teeth
@@ -218,6 +222,24 @@ public class SceneLoader implements LoaderTask.Callback {
                 camera.setHorizontalRotation(BACK_TEETH_ANGLE);
             }
         }
+    }
+
+    /**
+     * Colors a specific tooth and rotates camera to its angle.
+     * @param numString
+     * @param color
+     */
+    public void colorTeeth(String numString, Color color) {
+        // Find out tooth's number
+        int num = 0;
+        try {
+            num = Integer.parseInt(numString);
+            Log.i(TAG, "number: " + num);
+        } catch (Exception e) {
+            Log.d(TAG, "Cannot parse numString: " + numString);
+        }
+        colorTeeth(num, color);
+
     }
 
     public Camera getCamera() {
