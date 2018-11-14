@@ -124,22 +124,17 @@ class MonitoringFragment : Fragment(){
                             sbprint = sb.substring(0, endOfLineIndex)
                             sb.delete(0, sb.length)
                             bttest.text= sbprint
+                            var toothNum = sbprint?.toInt()
 
-                            if (sbprint?.toInt() in 11..47) {
-                                if(sbprint_prev == null){
-                                    Log.d("MonitoringFragment", sbprint)
-                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                                    sbprint_prev = sbprint?.toInt()
-                                }
-                                else if (sbprint?.toInt() == sbprint_prev) {
+                            if (toothNum == sbprint_prev) {
 
-                                }
-                                else{
-                                    Log.d("MonitoringFragment", sbprint)
+                            }
+                            else {
+                                if (sbprint_prev != null)
                                     scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
-                                    scene.colorTeeth(sbprint.toString(), Color.YELLOW)
-                                    sbprint_prev = sbprint?.toInt()
-                                }
+                                Log.d("MonitoringFragment", sbprint)
+                                scene.colorTeeth(sbprint, Color.YELLOW)
+                                sbprint_prev = toothNum
                             }
                         }
                     }
