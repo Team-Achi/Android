@@ -1,13 +1,21 @@
 package com.example.administrator.achi.dataModel
 
+import android.util.Log
+import java.lang.Exception
 import java.time.LocalDateTime
+
+const val TAG = "Analyzer"
+
+private val THREE_MINUETS = 180
+private val ONE_MINUTE = 60
+private val NUMBER_OF_TEETH = 28
+
 
 const val LESS : Int = 0
 const val OKAY : Int = 1
 const val MORE : Int = 2
 
 object Analyzer{
-
     private lateinit var today : LocalDateTime
     private var duration : Int = -1
     private var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
@@ -74,11 +82,25 @@ object Analyzer{
     ////////////////////////////////////////////////////////////////////////
 
     fun isDone(tooth:String) : Boolean {
-        return true
+        var num = 0
+        try {
+            num = tooth.toInt()
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to parse String $tooth to integer.")
+        }
+
+        return num >= NUMBER_OF_TEETH
     }
 
     fun isHalfWayDone(tooth: String) : Boolean {
-        return true
+        var num = 0
+        try {
+            num = tooth.toInt()
+        } catch (e: Exception) {
+            Log.d(TAG, "Failed to parse String $tooth to integer.")
+        }
+
+        return num >= (NUMBER_OF_TEETH / 2)
     }
 
     fun pressure() {
