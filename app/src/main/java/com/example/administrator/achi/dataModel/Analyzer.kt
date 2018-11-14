@@ -67,26 +67,14 @@ object Analyzer{
     }
     ////////////////////////////////////////////////////////////////////////
 
-    fun isDone(tooth:String) : Boolean {
-        var num = 0
-        try {
-            num = tooth.toInt()
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to parse String $tooth to integer.")
-        }
+    fun isDone(tooth:Int) : Boolean {
 
-        return num >= NUMBER_OF_TEETH
+        return count_per_tooth[tooth] >= (THREE_MINUETS / NUMBER_OF_TEETH)
     }
 
-    fun isHalfWayDone(tooth: String) : Boolean {
-        var num = 0
-        try {
-            num = tooth.toInt()
-        } catch (e: Exception) {
-            Log.d(TAG, "Failed to parse String $tooth to integer.")
-        }
+    fun isHalfWayDone(tooth: Int) : Boolean {
 
-        return num >= (NUMBER_OF_TEETH / 2)
+        return count_per_tooth[tooth] >= ((THREE_MINUETS /NUMBER_OF_TEETH) / 2)
     }
 
     fun pressure() {
