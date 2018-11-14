@@ -1,7 +1,6 @@
 package com.example.administrator.achi.dataModel
 
 import android.util.Log
-import java.lang.Exception
 import java.time.LocalDateTime
 
 const val TAG = "Analyzer"
@@ -10,27 +9,29 @@ private val THREE_MINUETS = 180
 private val ONE_MINUTE = 60
 private val NUMBER_OF_TEETH = 28
 
-
 const val LESS : Int = 0
 const val OKAY : Int = 1
 const val MORE : Int = 2
 
+private const val UNITTIME : Int = 500
+private const val numOfTeeth : Int = 28
+
 object Analyzer{
+
     private lateinit var today : LocalDateTime
     private var duration : Int = -1
-    private var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
+    private var count_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var section_time : Array<Int> = Array<Int>(6,{0})
     private var bad_pressure : Int = 0
     private var score : Int = 100
     private var comment : String = ""
 
-    private const val numOfTeeth : Int = 28
-    private var expected_sec_per_tooth : Int = 0
+    private var expected_count_per_tooth : Int = 0
 
     var sumDiff : Array<Int> = Array<Int>(6, {0})
     var teethTimeComment : String = ""
     private val sectionName = arrayOf("위쪽 앞니", "위쪽 왼쪽 어금니", "위쪽 오른쪽 어금니",
-                                        "아래쪽 앞니", "아래쪽 왼쪽 어금니", "아래쪽 오른쪽 어금니")
+            "아래쪽 앞니", "아래쪽 왼쪽 어금니", "아래쪽 오른쪽 어금니")
 
     var start : Long = 0
     var end : Long = 0
@@ -58,26 +59,11 @@ object Analyzer{
         return "$strMin:$strSecond"
     }
 
-    // TODO Analyzer에서 각각 이빨 하나하나 시간 측정
-//    fun secPerTooth(time : Int) {
-//        sec_per_tooth[currentTooth] += time
-//    }
 
     //////////////////////////////////////////////////////////////////////
-    fun startToothTime(toothNum : Int) {
-        if (currentTooth != 0) {
-            endToothTime()
-        }
-
-        start = System.currentTimeMillis()
+    fun countTooth(toothNum : Int) {
         currentTooth = toothNum
-    }
-
-    fun endToothTime() {
-        end = System.currentTimeMillis()
-        var durationTooth : Int = ((end - start) / 1000).toInt()
-
-        sec_per_tooth[currentTooth] += durationTooth
+        count_per_tooth[toothNum]++
     }
     ////////////////////////////////////////////////////////////////////////
 
@@ -111,7 +97,7 @@ object Analyzer{
         today = date
         duration = time
 
-        expected_sec_per_tooth = duration / numOfTeeth
+        expected_count_per_tooth = duration / (numOfTeeth * UNITTIME)
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
@@ -134,7 +120,7 @@ object Analyzer{
 
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, duration, sec_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, duration, count_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(0, record)
         DataCenter.printRecords()
         init()
@@ -144,10 +130,10 @@ object Analyzer{
     fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int) {
         today = date
         duration = time
-        sec_per_tooth = spt
+        count_per_tooth = spt
         bad_pressure = bp
 
-        expected_sec_per_tooth = duration / numOfTeeth
+        expected_count_per_tooth = duration / (numOfTeeth * UNITTIME)
 
         calculate_duration()
         calculate_pressure()
@@ -158,7 +144,7 @@ object Analyzer{
             score = 0
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, duration, sec_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, duration, count_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(record)
         init()
 
@@ -188,24 +174,24 @@ object Analyzer{
         for (i in 11..47) {
             // 위
             if (i in 11..13 || i in 21..23) {
-                sumDiff[0] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[0] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 14..17) {
-                sumDiff[1] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[1] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 24..27) {
-                sumDiff[2] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[2] += count_per_tooth[i] - expected_count_per_tooth
             }
 
             // 아래
             else if (i in 31..33 || i in 41..43) {
-                sumDiff[3] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[3] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 34..37) {
-                sumDiff[4] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[4] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 44..47) {
-                sumDiff[5] += sec_per_tooth[i] - expected_sec_per_tooth
+                sumDiff[5] += count_per_tooth[i] - expected_count_per_tooth
             }
         }
         setCommentOfSection()
@@ -220,7 +206,7 @@ object Analyzer{
         var less : Boolean = false
 
         for (i in 0..5) {
-            if (sumDiff[i] > 6) {
+            if (sumDiff[i] > 10) {       // 수 정해야 함 - 지금은 5초
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -228,7 +214,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -6) {
+            else if (sumDiff[i] < -10) {     // 수 정해야함
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
@@ -267,7 +253,7 @@ object Analyzer{
     private fun init() {
         today = LocalDateTime.now()
         duration = -1
-        sec_per_tooth = Array<Int>(50,{0})
+        count_per_tooth = Array<Int>(50,{0})
         section_time = Array<Int>(6,{0})
         bad_pressure = 0
         score = 100
