@@ -234,7 +234,6 @@ public class SceneLoader implements LoaderTask.Callback {
         int num = 0;
         try {
             num = Integer.parseInt(numString);
-            Log.i(TAG, "number: " + num);
         } catch (Exception e) {
             Log.d(TAG, "Cannot parse numString: " + numString);
         }
