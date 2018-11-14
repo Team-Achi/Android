@@ -27,15 +27,18 @@ import java.lang.StringBuilder
 import java.time.LocalDateTime
 import java.util.*
 
-private const val INIT : Boolean = true
-private const val RUN : Boolean = false
+private const val INIT : Int = 0
+private const val RUN : Int = 1
+private const val PAUSE : Int = 2
+
 private const val RECIEVE_MESSAGE = 1;
+
 private var btAdapter : BluetoothAdapter? = null
 private var btSocket : BluetoothSocket?= null
 private var sb : StringBuilder = StringBuilder()
 private var flag : Int = 0;
-private var h : Handler ?= null
-private var sbprint_prev : Int ?= null
+private var bluetooth_handler : Handler ?= null
+private var toothNum_prev : Int ?= null
 
 private var mConnectedThread : ConnectedThread ?= null
 
@@ -50,11 +53,12 @@ class MonitoringFragment : Fragment(){
     private var thisView: View? = null
 
     // Stopwatch
-    private var handler : Handler = Handler()
+    private var stopwatch_handler : Handler = Handler()
     private lateinit var runnable : Runnable
 
-    private var curState : Boolean = INIT
+    private var curState : Int = INIT
     private var baseTime : Long = 0
+    private lateinit var today : LocalDateTime
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -81,25 +85,7 @@ class MonitoringFragment : Fragment(){
         // when you attempt to connect and pass your message.
         btAdapter!!.cancelDiscovery()
 
-        // Establish the connection.  This will block until it connects.
-        Log.d(TAG, "...Connecting...")
-        try {
-            btSocket?.connect()
-            Log.d(TAG, "....Connection ok...")
-        } catch (e: IOException) {
-            try {
-                btSocket?.close()
-            } catch (e2: IOException) {
-                Log.d("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.message + ".")
-        }
-        }
-
-
-        // Create a data stream so we can talk to server.
-        Log.d(TAG, "...Create Socket...")
-
-        mConnectedThread = ConnectedThread(btSocket)
-        mConnectedThread!!.start()
+//        startBluetooth()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,39 +94,8 @@ class MonitoringFragment : Fragment(){
         if(thisView == null) {
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
-        var bttest = thisView!!.findViewById<TextView>(R.id.bttest)
+        bluetoothHandler()
 
-        h = object : Handler() {
-            override fun handleMessage(msg: android.os.Message) {
-                when (msg.what) {
-                    RECIEVE_MESSAGE -> {
-                        val readBuf = msg.obj as ByteArray
-                        val strIncom = String(readBuf, 0, msg.arg1)
-                        var sbprint : String
-
-                        sb.append(strIncom)
-                        val endOfLineIndex = sb.indexOf("\r\n")
-                        if (endOfLineIndex > 0) {
-                            sbprint = sb.substring(0, endOfLineIndex)
-                            sb.delete(0, sb.length)
-                            bttest.text= sbprint
-                            var toothNum = sbprint?.toInt()
-
-                            if (toothNum == sbprint_prev) {
-
-                            }
-                            else {
-                                if (sbprint_prev != null)
-                                    scene.colorTeeth(sbprint_prev.toString(), Color.WHITE)
-                                Log.d("MonitoringFragment", sbprint)
-                                scene.colorTeeth(sbprint, Color.YELLOW)
-                                sbprint_prev = toothNum
-                            }
-                        }
-                    }
-                }
-            }
-        }
         btAdapter = BluetoothAdapter.getDefaultAdapter()       // get Bluetooth adapter
         checkBTState()
 
@@ -163,29 +118,18 @@ class MonitoringFragment : Fragment(){
 
     override fun onPause() {
         super.onPause()
-
         Log.d(TAG, "...In onPause()...")
 
-        if (btSocket == null) {
-            Log.d("Fatal Error", "btSocket is null.")
-            return;
-        }
-
-        try {
-            btSocket!!.close()
-        } catch (e2: IOException) {
-            Log.d("Fatal Error", "In onPause() and failed to close socket." + e2.message + ".")
-        }
-
+//        endBluetooth()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (curState == RUN) {
-            handler.removeCallbacks(runnable)
-            curState = INIT
-        }
+//        if (curState == RUN) {
+//            stopwatch_handler.removeCallbacks(runnable)
+//            curState = INIT
+//        }
 
         // Create a 3D scenario
         scene = SceneLoader(this)
@@ -200,70 +144,121 @@ class MonitoringFragment : Fragment(){
         DataCenter.loadFacts()
         printFacts()
 
-        // test
-        tvTime.setOnClickListener({
-            testHighlight()
-        })
+        layout.setOnClickListener() {
+            if(curState == INIT) {
+                startBluetooth()
+                curState = RUN          // just for test
+                Log.i("esanghan", ">>>>>>>>>>>>>>> Bluetooth connected")
+            }
+            else if (curState == RUN || curState == PAUSE) {
+                endBluetooth()
+                curState = INIT        // just for test
+                Log.i("esanghan", ">>>>>>>>>>>>>>> Bluetooth disconnected")
+            }
+        }
     }
-    var ctr = 11;
-    var color = Color.WHITE
-    /**
-     * test code to see if teeth model rotates properly
-     * teeth model will rotate on clicking tvTime,
-     * in the order of the tooth number
-     */
-    private fun testHighlight() {
-        if (ctr in 11..47) {
 
-            if (ctr % 10 == 8) {
-                ctr += 3
+    // Bluetooth
+    fun bluetoothHandler() {
+        bluetooth_handler = object : Handler() {
+            override fun handleMessage(msg: android.os.Message) {
+                when (msg.what) {
+                    RECIEVE_MESSAGE -> {
+                        val readBuf = msg.obj as ByteArray
+                        val strIncom = String(readBuf, 0, msg.arg1)
+                        var sbprint : String
+
+                        sb.append(strIncom)
+                        val endOfLineIndex = sb.indexOf("\r\n")
+                        Log.i("esanghan", "sb : $sb     end : $endOfLineIndex")
+                        if (endOfLineIndex > 0) {
+                            sbprint = sb.substring(0, endOfLineIndex)
+                            Log.i("esanghan", "sb : $sb     sbprint : $sbprint     end : $endOfLineIndex")
+                            sb.delete(0, sb.length)
+                            bttest.text= sbprint
+                            var toothNum = sbprint?.toInt()
+
+                            if (toothNum == toothNum_prev) {
+
+                            }
+                            else {
+                                if (toothNum_prev != null)
+                                    scene.colorTeeth(toothNum_prev!!, Color.WHITE)
+                                Log.d("MonitoringFragment", sbprint)
+                                scene.colorTeeth(toothNum!!, Color.YELLOW)
+                                toothNum_prev = toothNum
+                            }
+                        }
+                    }
+                }
             }
+        }
+    }
 
-            if (ctr % 10 < 8 && ctr % 10 != 0) {
-                Log.i("MonitoringFragment", "ctr1: $ctr)")
-                scene.colorTeeth(ctr.toString(), color)
+    fun startBluetooth() {
+        // Establish the connection.  This will block until it connects.
+        Log.i("esanghan", "...Connecting...")
+        try {
+            btSocket?.connect()
+            Log.i("esanghan", "....Connection ok...")
+        } catch (e: IOException) {
+            Log.i("esanghan", e.message)
+            try {
+                btSocket?.close()
+                Log.i("esanghan", "....Connection not ok...")
+            } catch (e2: IOException) {
+                Log.d("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.message + ".")
             }
-
-        } else {
-            ctr = 10
-            if (color == Color.WHITE)
-                color = Color.YELLOW
-            else
-                color = Color.WHITE
         }
 
-        ctr++
+
+        // Create a data stream so we can talk to server.
+        Log.d(TAG, "...Create Socket...")
+
+        mConnectedThread = ConnectedThread(btSocket)
+        mConnectedThread!!.start()
+    }
+
+    fun endBluetooth() {
+        if (btSocket == null) {
+            Log.d("Fatal Error", "btSocket is null.")
+            return
+        }
+
+        try {
+            btSocket!!.close()
+        } catch (e2: IOException) {
+            Log.d("Fatal Error", "Failed to close socket." + e2.message + ".")
+        }
     }
 
     // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
     // StopWatch
     private fun stopWatch() {
-        var today : LocalDateTime = LocalDateTime.now()
-        var duration : Int = 0
         runnable = object : Runnable {
             override fun run() {
                 tvTime.text = Analyzer.timeToString(getElapsedTime())
-                handler.postDelayed(this, 0)
+                stopwatch_handler.postDelayed(this, 0)
             }
         }
 
-        layout.setOnClickListener() {
-            if (curState == INIT) {                         // 시작
-                baseTime = SystemClock.elapsedRealtime()
-                handler.postDelayed(runnable, 0)
-
-                curState = RUN
-                today = LocalDateTime.now()
-            }
-
-            else if (curState == RUN) {                    // 끝
-                curState = INIT
-                handler.removeCallbacksAndMessages(runnable)
-
-                duration = getElapsedTime()
-                Analyzer.analyze(today, duration)
-            }
-        }
+//        layout.setOnClickListener() {
+//            if (curState == INIT) {                         // 시작
+//                baseTime = SystemClock.elapsedRealtime()
+//                stopwatch_handler.postDelayed(runnable, 0)
+//
+//                curState = RUN
+//                today = LocalDateTime.now()
+//            }
+//
+//            else if (curState == RUN) {                    // 끝
+//                curState = INIT
+//                stopwatch_handler.removeCallbacksAndMessages(runnable)
+//
+//                duration = getElapsedTime()
+//                Analyzer.analyze(today, duration)
+//            }
+//        }
     }
 
     fun getElapsedTime() : Int {
@@ -325,7 +320,7 @@ class MonitoringFragment : Fragment(){
         if (btAdapter == null) {
             Log.d("Fatal Error", "Bluetooth is not supported on this device.")
         } else {
-            if (btAdapter!!.isEnabled()) {
+            if (btAdapter!!.isEnabled) {
                 Log.d(ContentValues.TAG, "...Bluetooth ON...")
             } else {
                 Log.d(ContentValues.TAG, "...Bluetooth OFF...")
@@ -370,7 +365,7 @@ private class ConnectedThread() : Thread(){
             try {
                 // Read from the InputStream
                 bytes = mmInStream!!.read(buffer)        // Get number of bytes and message in "buffer"
-                h?.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer)?.sendToTarget()     // Send to message queue Handler
+                bluetooth_handler?.obtainMessage(RECIEVE_MESSAGE, bytes, -1, buffer)?.sendToTarget()     // Send to message queue Handler
             } catch (e: IOException) {
                 break
             }
