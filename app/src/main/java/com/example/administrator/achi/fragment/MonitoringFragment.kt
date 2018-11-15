@@ -31,16 +31,9 @@ private const val INIT : Int = 0
 private const val RUN : Int = 1
 private const val PAUSE : Int = 2
 
-private const val RECIEVE_MESSAGE = 1;
+private const val RECIEVE_MESSAGE = 1
 
-private var btAdapter : BluetoothAdapter? = null
-private var btSocket : BluetoothSocket?= null
-private var sb : StringBuilder = StringBuilder()
-private var flag : Int = 0;
 private var bluetooth_handler : Handler ?= null
-private var toothNum_prev : Int ?= null
-
-private var mConnectedThread : ConnectedThread ?= null
 
 // SPP UUID service
 private val MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
@@ -59,6 +52,15 @@ class MonitoringFragment : Fragment(){
     private var curState : Int = INIT
     private var baseTime : Long = 0
     private lateinit var today : LocalDateTime
+
+    // Bluetooth
+    private var btAdapter : BluetoothAdapter? = null
+    private var btSocket : BluetoothSocket?= null
+    private var mConnectedThread : ConnectedThread ?= null
+
+    private var sb : StringBuilder = StringBuilder()
+    private var toothNum_prev : Int ?= null
+    private var flag : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -120,7 +122,7 @@ class MonitoringFragment : Fragment(){
         super.onPause()
         Log.d(TAG, "...In onPause()...")
 
-//        endBluetooth()
+        endBluetooth()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
