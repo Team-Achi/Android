@@ -57,6 +57,7 @@ class MonitoringFragment : Fragment(){
     private var btAdapter : BluetoothAdapter? = null
     private var btSocket : BluetoothSocket?= null
     private var mConnectedThread : ConnectedThread ?= null
+    private lateinit var device: BluetoothDevice
 
     private var sb : StringBuilder = StringBuilder()
     private var toothNum_prev : Int ?= null
@@ -66,28 +67,6 @@ class MonitoringFragment : Fragment(){
         super.onCreate(savedInstanceState)
 
         this.paramUri = Uri.parse("nothing")
-    }
-
-    override fun onResume(){
-        super.onResume()
-        Log.d(TAG, "onResume()")
-        var device: BluetoothDevice
-        if (btAdapter == null) {
-            Log.i(TAG, "btAdapter is null")
-            return
-        }
-        device = btAdapter!!.getRemoteDevice(address)
-        try {
-            btSocket = createBluetoothSocket(device)
-        } catch (e: IOException) {
-            Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
-        }
-
-        // Discovery is resource intensive.  Make sure it isn't going on
-        // when you attempt to connect and pass your message.
-        btAdapter!!.cancelDiscovery()
-
-//        startBluetooth()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -104,25 +83,26 @@ class MonitoringFragment : Fragment(){
         return thisView
     }
 
-    @Throws(IOException::class)
-    private fun createBluetoothSocket(device: BluetoothDevice): BluetoothSocket {
-        if (Build.VERSION.SDK_INT >= 10) {
-            try {
-                val m = device.javaClass.getMethod("createInsecureRfcommSocketToServiceRecord", *arrayOf<Class<*>>(UUID::class.java))
-                return m.invoke(device, MY_UUID) as BluetoothSocket
-            } catch (e: Exception) {
-                Log.e(TAG, "Could not create Insecure RFComm Connection", e)
-            }
+    override fun onResume(){
+        super.onResume()
+        Log.d(TAG, "onResume()")
 
+        if (btAdapter == null) {
+            Log.i(TAG, "btAdapter is null")
+            return
         }
-        return device.createRfcommSocketToServiceRecord(MY_UUID)
-    }
+        device = btAdapter!!.getRemoteDevice(address)
+        try {
+            btSocket = createBluetoothSocket(device)
+        } catch (e: IOException) {
+            Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
+        }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "...In onPause()...")
+        // Discovery is resource intensive.  Make sure it isn't going on
+        // when you attempt to connect and pass your message.
+        btAdapter!!.cancelDiscovery()
 
-        endBluetooth()
+//        startBluetooth()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -156,12 +136,33 @@ class MonitoringFragment : Fragment(){
                 endBluetooth()
                 curState = INIT        // just for test
                 Log.i("esanghan", ">>>>>>>>>>>>>>> Bluetooth disconnected")
+                bttest.text = "Communication Ended"
             }
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "...In onPause()...")
+
+        endBluetooth()
+    }
+
+    @Throws(IOException::class)
+    private fun createBluetoothSocket(device: BluetoothDevice): BluetoothSocket {
+        if (Build.VERSION.SDK_INT >= 10) {
+            try {
+                val m = device.javaClass.getMethod("createInsecureRfcommSocketToServiceRecord", *arrayOf<Class<*>>(UUID::class.java))
+                return m.invoke(device, MY_UUID) as BluetoothSocket
+            } catch (e: Exception) {
+                Log.e(TAG, "Could not create Insecure RFComm Connection", e)
+            }
+        }
+        return device.createRfcommSocketToServiceRecord(MY_UUID)
+    }
+
     // Bluetooth
-    fun bluetoothHandler() {
+    private fun bluetoothHandler() {
         bluetooth_handler = object : Handler() {
             override fun handleMessage(msg: android.os.Message) {
                 when (msg.what) {
@@ -197,7 +198,7 @@ class MonitoringFragment : Fragment(){
         }
     }
 
-    fun startBluetooth() {
+    private fun startBluetooth() {
         // Establish the connection.  This will block until it connects.
         Log.i("esanghan", "...Connecting...")
         try {
@@ -209,19 +210,17 @@ class MonitoringFragment : Fragment(){
                 btSocket?.close()
                 Log.i("esanghan", "....Connection not ok...")
             } catch (e2: IOException) {
-                Log.d("Fatal Error", "In onResume() and unable to close socket during connection failure" + e2.message + ".")
+                Log.d("Fatal Error", "Unable to close socket during connection failure" + e2.message + ".")
             }
         }
 
-
         // Create a data stream so we can talk to server.
         Log.d(TAG, "...Create Socket...")
-
         mConnectedThread = ConnectedThread(btSocket)
         mConnectedThread!!.start()
     }
 
-    fun endBluetooth() {
+    private fun endBluetooth() {
         if (btSocket == null) {
             Log.d("Fatal Error", "btSocket is null.")
             return
@@ -231,6 +230,20 @@ class MonitoringFragment : Fragment(){
             btSocket!!.close()
         } catch (e2: IOException) {
             Log.d("Fatal Error", "Failed to close socket." + e2.message + ".")
+        }
+    }
+
+    private fun checkBTState() {
+        // Check for Bluetooth support and then check to make sure it is turned on
+        // Emulator doesn't support Bluetooth and will return null
+        if (btAdapter == null) {
+            Log.d("Fatal Error", "Bluetooth is not supported on this device.")
+        } else {
+            if (btAdapter!!.isEnabled) {
+                Log.d(ContentValues.TAG, "...Bluetooth ON...")
+            } else {
+                Log.d(ContentValues.TAG, "...Bluetooth OFF...")
+            }
         }
     }
 
@@ -315,21 +328,6 @@ class MonitoringFragment : Fragment(){
     fun getGLView(): ModelSurfaceView {
         return gLView
     }
-
-    private fun checkBTState() {
-        // Check for Bluetooth support and then check to make sure it is turned on
-        // Emulator doesn't support Bluetooth and will return null
-        if (btAdapter == null) {
-            Log.d("Fatal Error", "Bluetooth is not supported on this device.")
-        } else {
-            if (btAdapter!!.isEnabled) {
-                Log.d(ContentValues.TAG, "...Bluetooth ON...")
-            } else {
-                Log.d(ContentValues.TAG, "...Bluetooth OFF...")
-            }
-        }
-    }
-
 }
 
 private class ConnectedThread() : Thread(){
