@@ -190,14 +190,15 @@ class MonitoringFragment : Fragment(){
                             bttest.text= sbprint
                             var toothNum = sbprint?.toInt()
 
-                            if (toothNum == toothNum_prev) {
+                            if (toothNum == null)
+                                return
 
-                            }
-                            else {
-                                if (toothNum_prev != null)
-                                    scene.colorTeeth(toothNum_prev!!, Color.WHITE)
-                                Log.d("MonitoringFragment", sbprint)
-                                scene.colorTeeth(toothNum!!, Color.YELLOW)
+                            if (Analyzer.TEETH_INDICES.contains(toothNum!!)) {
+                                if (Analyzer.isDone(toothNum))
+                                    scene.colorTeethAndRotate(toothNum, Color.WHITE)
+                                else if (Analyzer.isHalfWayDone(toothNum))
+                                    scene.colorTeethAndRotate(toothNum, Color.LIGHTBLUE)
+
                                 toothNum_prev = toothNum
                             }
                         }
