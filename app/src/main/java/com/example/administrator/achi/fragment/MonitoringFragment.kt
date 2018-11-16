@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
 import com.example.administrator.achi.dataModel.DataCenter
@@ -125,13 +126,15 @@ class MonitoringFragment : Fragment(){
             if(curState == INIT) {
                 startBluetooth()
                 curState = RUN          // just for test
-                Log.i("esanghan", ">>>>>>>>>>>>>>> Bluetooth connected")
+                Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth connected")
+                Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
             }
             else if (curState == RUN || curState == PAUSE) {
                 endBluetooth()
                 curState = INIT        // just for test
-                Log.i("esanghan", ">>>>>>>>>>>>>>> Bluetooth disconnected")
+                Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth disconnected")
                 bttest.text = "Communication Ended"
+                Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -171,7 +174,7 @@ class MonitoringFragment : Fragment(){
                         Log.i("esanghan", "sb : $sb     end : $endOfLineIndex")
                         if (endOfLineIndex > 0) {
                             sbprint = sb.substring(0, endOfLineIndex)
-                            Log.i("esanghan", "sb : $sb     sbprint : $sbprint     end : $endOfLineIndex")
+                            Log.i(TAG, "sb : $sb     sbprint : $sbprint     end : $endOfLineIndex")
                             sb.delete(0, sb.length)
                             bttest.text= sbprint
                             var toothNum = sbprint?.toInt()
@@ -201,15 +204,15 @@ class MonitoringFragment : Fragment(){
         }
 
         // Establish the connection.  This will block until it connects.
-        Log.i("esanghan", "...Connecting...")
+        Log.i(TAG, "...Connecting...")
         try {
             btSocket?.connect()
-            Log.i("esanghan", "....Connection ok...")
+            Log.i(TAG, "....Connection ok...")
         } catch (e: IOException) {
-            Log.i("esanghan", e.message)
+            Log.i(TAG, e.message)
             try {
                 btSocket?.close()
-                Log.i("esanghan", "....Connection not ok...")
+                Log.i(TAG, "....Connection not ok...")
             } catch (e2: IOException) {
                 Log.d("Fatal Error", "Unable to close socket during connection failure" + e2.message + ".")
             }
