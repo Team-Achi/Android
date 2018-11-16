@@ -51,11 +51,9 @@ class MonitoringFragment : Fragment(){
     private var thisView: View? = null
 
     // Stopwatch
-    private var stopwatch_handler : Handler = Handler()
-    private lateinit var runnable : Runnable
-
     private var curState : Int = INIT
     private var baseTime : Long = 0
+    private var pauseTime : Long = 0
     private lateinit var today : LocalDateTime
 
     // Bluetooth
@@ -65,7 +63,7 @@ class MonitoringFragment : Fragment(){
     private lateinit var device: BluetoothDevice
 
     private var sb : StringBuilder = StringBuilder()
-    private var toothNum_prev : Int ?= null
+    private var toothNum_prev : Int = 0
     private var flag : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?){
@@ -102,16 +100,10 @@ class MonitoringFragment : Fragment(){
         // when you attempt to connect and pass your message.
         btAdapter!!.cancelDiscovery()
 
-//        startBluetooth()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        if (curState == RUN) {
-//            stopwatch_handler.removeCallbacks(runnable)
-//            curState = INIT
-//        }
 
         // Create a 3D scenario
         scene = SceneLoader(this)
@@ -122,7 +114,6 @@ class MonitoringFragment : Fragment(){
         layout.addView(gLView)
 
         // Initialize view
-        stopWatch()
         DataCenter.loadFacts()
         printFacts()
 
@@ -135,7 +126,6 @@ class MonitoringFragment : Fragment(){
             }
             if(curState == INIT) {
                 startBluetooth()
-                curState = RUN          // just for test
                 Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth connected")
                 Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
             }
@@ -190,16 +180,35 @@ class MonitoringFragment : Fragment(){
                             bttest.text= sbprint
                             var toothNum = sbprint?.toInt()
 
+                            // TODO: error handling, do checksum here
                             if (toothNum == null)
                                 return
 
+                            // if tooth index is valid, update view
                             if (Analyzer.TEETH_INDICES.contains(toothNum!!)) {
-                                if (Analyzer.isDone(toothNum))
-                                    scene.colorTeethAndRotate(toothNum, Color.WHITE)
-                                else if (Analyzer.isHalfWayDone(toothNum))
-                                    scene.colorTeethAndRotate(toothNum, Color.LIGHTBLUE)
+                                // Update time
+                                Analyzer.countTooth(toothNum)
+                                tvTime.text = Analyzer.timeToString(Analyzer.getDuration())    // TODO change to mm:ss format
 
+                                // highlight current tooth
+                                scene.colorTeeth(toothNum, Color.YELLOW)
+
+                                // Check if
+                                if (toothNum != toothNum_prev) {
+                                    if (Analyzer.isDone(toothNum_prev))
+                                        scene.colorTeethAndRotate(toothNum_prev, Color.WHITE)
+                                    else if (Analyzer.isHalfWayDone(toothNum_prev))
+                                        scene.colorTeethAndRotate(toothNum_prev, Color.LIGHTBLUE)
+                                }
                                 toothNum_prev = toothNum
+                            }
+                            else if (toothNum == -1) {
+                                if (curState == RUN) {
+                                    pauseTime = SystemClock.elapsedRealtime()
+
+//                                    stopwatch_handler.removeCallbacks(runnable)
+                                    curState = PAUSE
+                                }
                             }
                         }
                     }
@@ -264,35 +273,6 @@ class MonitoringFragment : Fragment(){
                 Log.d(ContentValues.TAG, "...Bluetooth OFF...")
             }
         }
-    }
-
-    // TODO : stopwatch 키고 다른 페이지 갔다가 다시 와서 stop 하면 stop 안되고 시간 계속 감 but 한번 더 누르면 처음으로 돌아감
-    // StopWatch
-    private fun stopWatch() {
-        runnable = object : Runnable {
-            override fun run() {
-                tvTime.text = Analyzer.timeToString(getElapsedTime())
-                stopwatch_handler.postDelayed(this, 0)
-            }
-        }
-
-//        layout.setOnClickListener() {
-//            if (curState == INIT) {                         // 시작
-//                baseTime = SystemClock.elapsedRealtime()
-//                stopwatch_handler.postDelayed(runnable, 0)
-//
-//                curState = RUN
-//                today = LocalDateTime.now()
-//            }
-//
-//            else if (curState == RUN) {                    // 끝
-//                curState = INIT
-//                stopwatch_handler.removeCallbacksAndMessages(runnable)
-//
-//                duration = getElapsedTime()
-//                Analyzer.analyze(today, duration)
-//            }
-//        }
     }
 
     fun getElapsedTime() : Int {
@@ -404,57 +384,3 @@ private class ConnectedThread() : Thread(){
 
     }
 }
-
-///////////////////////////////////////////////////////////////////////
-// stopwatch code
-///////////////////////////////////////////////////////////////////////
-//        btn_start.setOnClickListener() {thisView->
-//
-//
-//            if (curState == INIT) {         // RUN
-//                baseTime = SystemClock.elapsedRealtime()
-//                btn_start.setText("PAUSE")
-//                btn_record.setEnabled(true)
-//                curState = RUN
-//
-//                handler.postDelayed(runnable, 0)
-//
-//            }
-//            else if (curState == RUN) {     // PAUSE
-//                pauseTime = SystemClock.elapsedRealtime()
-//                btn_start.setText("START")
-//                btn_record.setText("RESET")
-//                curState = PAUSE
-//                handler.removeCallbacks(runnable)
-//            }
-//            else if (curState == PAUSE) {       // RUN
-//                var curTime : Long = SystemClock.elapsedRealtime()
-//                baseTime += curTime - pauseTime
-//                btn_start.setText("PAUSE")
-//                btn_record.setText("RECORD")
-//                curState = RUN
-//
-//                handler.postDelayed(runnable, 0)
-//            }
-//        }
-//
-//        btn_record.setOnClickListener() {thisView->
-//            if (curState == RUN) {      // Record
-//                second = getElapsedTime()
-//                minute = second / 60
-//                second = second % 60
-//
-////                handler.postDelayed(runnable, 0)
-//            }
-//            else if (curState == PAUSE) {   // Reset
-//                btn_start.setText("START")
-//                btn_record.setText("RECORD")
-//
-//                tv_minute.setText("00")
-//                tv_second.setText("00")
-//
-//                curState = INIT
-//                btn_record.setEnabled(false)
-//                handler.removeCallbacks(runnable)
-//            }
-//        }

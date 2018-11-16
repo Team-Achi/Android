@@ -68,9 +68,13 @@ object Analyzer{
     fun countTooth(toothNum : Int) {
         currentTooth = toothNum
         count_per_tooth[toothNum]++
+        duration ++
     }
     ////////////////////////////////////////////////////////////////////////
 
+    fun getDuration() : Int {
+        return duration
+    }
     fun isDone(tooth:Int) : Boolean {
 
         return count_per_tooth[tooth] >= (THREE_MINUETS / NUMBER_OF_TEETH)
