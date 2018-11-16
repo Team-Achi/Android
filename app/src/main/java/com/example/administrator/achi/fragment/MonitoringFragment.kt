@@ -2,8 +2,10 @@ package com.example.administrator.achi.fragment
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothHeadset
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
+import android.content.Intent
 import android.net.Uri
 import android.os.*
 import android.support.v4.app.Fragment
@@ -44,6 +46,8 @@ private var address = "98:D3:61:F9:29:CB"
 
 class MonitoringFragment : Fragment(){
     private val TAG = "MonitoringFragment"
+    private val REQUEST_ENABLE_BT = 1
+
     private var thisView: View? = null
 
     // Stopwatch
@@ -123,12 +127,19 @@ class MonitoringFragment : Fragment(){
         printFacts()
 
         layout.setOnClickListener() {
+            if (btAdapter != null) {
+                if (!btAdapter!!.isEnabled()) {
+                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                }
+            }
             if(curState == INIT) {
                 startBluetooth()
                 curState = RUN          // just for test
                 Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth connected")
                 Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
             }
+
             else if (curState == RUN || curState == PAUSE) {
                 endBluetooth()
                 curState = INIT        // just for test
