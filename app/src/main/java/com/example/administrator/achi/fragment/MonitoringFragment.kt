@@ -92,11 +92,6 @@ class MonitoringFragment : Fragment(){
             return
         }
         device = btAdapter!!.getRemoteDevice(address)
-        try {
-            btSocket = createBluetoothSocket(device)
-        } catch (e: IOException) {
-            Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
-        }
 
         // Discovery is resource intensive.  Make sure it isn't going on
         // when you attempt to connect and pass your message.
@@ -199,6 +194,12 @@ class MonitoringFragment : Fragment(){
     }
 
     private fun startBluetooth() {
+        try {
+            btSocket = createBluetoothSocket(device)
+        } catch (e: IOException) {
+            Log.d("Fatal Error", "In onResume() and socket create failed: " + e.message + ".")
+        }
+
         // Establish the connection.  This will block until it connects.
         Log.i("esanghan", "...Connecting...")
         try {
@@ -230,6 +231,9 @@ class MonitoringFragment : Fragment(){
             btSocket!!.close()
         } catch (e2: IOException) {
             Log.d("Fatal Error", "Failed to close socket." + e2.message + ".")
+        }
+        finally {
+            btSocket = null
         }
     }
 
