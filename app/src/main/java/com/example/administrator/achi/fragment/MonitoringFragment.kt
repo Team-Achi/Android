@@ -62,7 +62,6 @@ class MonitoringFragment : Fragment(){
 
     private var sb : StringBuilder = StringBuilder()
     private var toothNum_prev : Int = 0
-    private var flag : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -76,11 +75,6 @@ class MonitoringFragment : Fragment(){
         if(thisView == null) {
             thisView = inflater.inflate(R.layout.fragment_monitoring, container, false)
         }
-        bluetoothHandler()
-
-        btAdapter = BluetoothAdapter.getDefaultAdapter()       // get Bluetooth adapter
-//        checkBTState()
-
         return thisView
     }
 
@@ -88,17 +82,14 @@ class MonitoringFragment : Fragment(){
         super.onResume()
         Log.d(TAG, "onResume()")
 
+        bluetoothHandler()
+        btAdapter = BluetoothAdapter.getDefaultAdapter()       // get Bluetooth adapter
+
         if (btAdapter == null) {
             Log.i(TAG, "btAdapter is null")
             return
         }
         device = btAdapter!!.getRemoteDevice(address)
-
-        // Discovery is resource intensive.  Make sure it isn't going on
-        // when you attempt to connect and pass your message.
-        btAdapter!!.cancelDiscovery()
-
-        tvTime.text = "00:00"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -180,7 +171,7 @@ class MonitoringFragment : Fragment(){
 
                         sb.append(strIncom)
                         val endOfLineIndex = sb.indexOf("\r\n")
-                        Log.i("bluetooth", "sb : $sb   end : $endOfLineIndex")
+                        Log.i("bluetooth", "sb : $sb  end : $endOfLineIndex")
                         if (endOfLineIndex > 0) {
                             sbprint = sb.substring(0, endOfLineIndex)
                             Log.i("bluetooth", "bprint : $sbprint")
@@ -190,7 +181,7 @@ class MonitoringFragment : Fragment(){
                             var inputs = sbprint.split("/")
                             var toothNum = 0
                             var yourCheckSum = 0
-                            var myCheckSum = 0
+                            var myCheckSum = -1
                             var pressure = 0
                             if (inputs.size == 3) {
                                 toothNum = inputs[0].toInt()
@@ -203,10 +194,11 @@ class MonitoringFragment : Fragment(){
                             if (toothNum == null)
                                 return
 
+                            Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                             // if tooth index is valid, update view
                             if (Analyzer.TEETH_INDICES.contains(toothNum!!) && (yourCheckSum == myCheckSum)) {
+                                Log.i("bluetooth", "Success")
                                 // Update time
-                                Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                                 Analyzer.countTooth(toothNum)
                                 tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time)
 
@@ -231,9 +223,6 @@ class MonitoringFragment : Fragment(){
                                         scene.colorTeeth(toothNum_prev, Color.BLUE)
                                 }
                                 toothNum_prev = toothNum
-                            }
-                            else {
-                                Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                             }
                         }
                         else if (endOfLineIndex == 1) {

@@ -1,6 +1,5 @@
 package com.example.administrator.achi.dataModel
 
-import android.util.Log
 import java.time.LocalDateTime
 
 const val TAG = "Analyzer"
@@ -35,8 +34,8 @@ object Analyzer{
     private var sumDiff : Array<Int> = Array<Int>(6,{0})
 
     var teethTimeComment : String = ""
-    private val sectionName = arrayOf("위쪽 앞니", "위쪽 왼쪽 어금니", "위쪽 오른쪽 어금니",
-            "아래쪽 앞니", "아래쪽 왼쪽 어금니", "아래쪽 오른쪽 어금니")
+    private val sectionName = arrayOf("윗 앞니", "위쪽 왼쪽 어금니", "위쪽 오른쪽 어금니",
+            "아래쪽 앞니", "오른쪽 아래 어금니", "왼쪽 아래 어금니")
 
 
     // 이 함수는 어디에다가 넣어야 좋을까,,,,
@@ -181,7 +180,6 @@ object Analyzer{
                 sumDiff[5] += count_per_tooth[i] - expected_count_per_tooth
             }
         }
-        Log.i("sumDiff", "${sumDiff[0]} ${sumDiff[1]} ${sumDiff[2]} ${sumDiff[3]} ${sumDiff[4]} ${sumDiff[5]}")
         setCommentOfSection()
 
     }
@@ -194,7 +192,7 @@ object Analyzer{
         var less : Boolean = false
 
         for (i in 0..5) {
-            if (sumDiff[i] > 6) {       // 수 정해야 함 - 지금은 10초
+            if (sumDiff[i] > 9) {       // 수 정해야 함 - 지금은 10초
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -202,7 +200,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -6) {     // 수 정해야함
+            else if (sumDiff[i] < -9) {     // 수 정해야함
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
