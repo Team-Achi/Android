@@ -81,7 +81,7 @@ object DataCenter {
             }
 
             date = LocalDateTime.now().minusDays(day.toLong()).minusHours(timeFactor.toLong())
-            duration = random.nextInt(180) + 60
+            duration = random.nextInt(150) + 90
             bad_pressure = random.nextInt(6)
 
             avgTime = duration / 28

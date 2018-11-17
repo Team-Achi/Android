@@ -1,5 +1,6 @@
 package com.example.administrator.achi.dataModel
 
+import android.util.Log
 import java.time.LocalDateTime
 
 const val TAG = "Analyzer"
@@ -31,8 +32,7 @@ object Analyzer{
 
     private var expected_time_per_tooth : Int = THREE_MINUETS / (NUMBER_OF_TEETH)
     private var expected_count_per_tooth : Int = 0
-    private var sumDiff : Array<Int> = Array<Int>(6, {0})
-    private var diff_per_tooth: Array<Int> = Array<Int>(50,{0})
+    private var sumDiff : Array<Int> = Array<Int>(6,{0})
 
     var teethTimeComment : String = ""
     private val sectionName = arrayOf("위쪽 앞니", "위쪽 왼쪽 어금니", "위쪽 오른쪽 어금니",
@@ -58,6 +58,17 @@ object Analyzer{
             strSecond = sec.toString()
 
         return "$strMin:$strSecond"
+    }
+
+    private fun init() {
+        today = LocalDateTime.now()
+        elapsed_time = -1
+        count_per_tooth = Array<Int>(50,{0})
+        section_time = Array<Int>(6,{0})
+        bad_pressure = 0
+        score = 100
+        comment = ""
+        teethTimeComment = ""
     }
 
 
@@ -96,7 +107,6 @@ object Analyzer{
         // record를 Record와 DataCenter에 저장
         var record = Record(today, elapsed_time, count_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(0, record)
-        printSection()
         init()
     }
 
@@ -104,6 +114,7 @@ object Analyzer{
     fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int) {
         today = date
         elapsed_time = time
+        expected_count_per_tooth = elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)
         count_per_tooth = spt
         bad_pressure = bp
 
@@ -120,23 +131,6 @@ object Analyzer{
         DataCenter.records.add(record)
         init()
 
-    }
-
-    private fun printSection() {
-        println("=====================================")
-        println("elapsed_time : $elapsed_time\t avg : $expected_count_per_tooth")
-        for(i in 11..47)
-            print("[$i] = ${count_per_tooth[i]}\n")
-        println()
-        for (i in 11..47)
-            print("[$i] = ${diff_per_tooth[i]}\n")
-        println()
-        for (i in 0..sumDiff.size -1)
-            print("[$i] = ${sumDiff[i]}\n")
-        println()
-        for (i in 0..section_time.size -1)
-            print("[$i] = ${section_time[i]}\n")
-        println("\n=====================================")
     }
 
     private fun calculate_duration() {
@@ -160,33 +154,34 @@ object Analyzer{
     }
 
     private fun calculate_sec_per_tooth() {
-        for (i in 11..47) {
-            diff_per_tooth[i] = count_per_tooth[i] - expected_count_per_tooth
+        for (i in 0..5) {
+            sumDiff[i] = 0
         }
 
         for (i in 11..47) {
             // 위
             if (i in 11..13 || i in 21..23) {
-                sumDiff[0] += diff_per_tooth[i]
+                sumDiff[0] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 14..17) {
-                sumDiff[1] += diff_per_tooth[i]
+                sumDiff[1] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 24..27) {
-                sumDiff[2] += diff_per_tooth[i]
+                sumDiff[2] += count_per_tooth[i] - expected_count_per_tooth
             }
 
             // 아래
             else if (i in 31..33 || i in 41..43) {
-                sumDiff[3] += diff_per_tooth[i]
+                sumDiff[3] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 34..37) {
-                sumDiff[4] += diff_per_tooth[i]
+                sumDiff[4] += count_per_tooth[i] - expected_count_per_tooth
             }
             else if (i in 44..47) {
-                sumDiff[5] += diff_per_tooth[i]
+                sumDiff[5] += count_per_tooth[i] - expected_count_per_tooth
             }
         }
+        Log.i("sumDiff", "${sumDiff[0]} ${sumDiff[1]} ${sumDiff[2]} ${sumDiff[3]} ${sumDiff[4]} ${sumDiff[5]}")
         setCommentOfSection()
 
     }
@@ -199,7 +194,7 @@ object Analyzer{
         var less : Boolean = false
 
         for (i in 0..5) {
-            if (sumDiff[i] > 10) {       // 수 정해야 함 - 지금은 10초
+            if (sumDiff[i] > 6) {       // 수 정해야 함 - 지금은 10초
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -207,7 +202,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -10) {     // 수 정해야함
+            else if (sumDiff[i] < -6) {     // 수 정해야함
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
@@ -241,17 +236,6 @@ object Analyzer{
 
         if (bad_pressure >= 5)
             comment += "양치를 세게 하는 경향이 있습니다. 살살 양치하세요. "
-    }
-
-    private fun init() {
-        today = LocalDateTime.now()
-        elapsed_time = -1
-        count_per_tooth = Array<Int>(50,{0})
-        section_time = Array<Int>(6,{0})
-        bad_pressure = 0
-        score = 100
-        comment = ""
-        teethTimeComment = ""
     }
 
 

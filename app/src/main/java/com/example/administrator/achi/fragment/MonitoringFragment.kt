@@ -183,7 +183,7 @@ class MonitoringFragment : Fragment(){
                         Log.i("bluetooth", "sb : $sb   end : $endOfLineIndex")
                         if (endOfLineIndex > 0) {
                             sbprint = sb.substring(0, endOfLineIndex)
-                            Log.i("bluetooth", "sb : $sb   sbprint : $sbprint   end : $endOfLineIndex")
+                            Log.i("bluetooth", "bprint : $sbprint")
                             sb.delete(0, sb.length)
                             bttest.text= sbprint
 
@@ -192,7 +192,6 @@ class MonitoringFragment : Fragment(){
                             var yourCheckSum = 0
                             var myCheckSum = 0
                             var pressure = 0
-                            Log.i("bluetooth", "${inputs.size}")
                             if (inputs.size == 3) {
                                 toothNum = inputs[0].toInt()
                                 yourCheckSum = inputs[1].toInt()
