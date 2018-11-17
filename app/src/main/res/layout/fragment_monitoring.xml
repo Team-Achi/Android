@@ -11,6 +11,7 @@
         android:id="@+id/bttest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
         android:text="TextView" />
 
     <TextView

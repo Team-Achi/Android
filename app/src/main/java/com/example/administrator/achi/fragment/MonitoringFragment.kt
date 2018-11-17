@@ -2,10 +2,11 @@ package com.example.administrator.achi.fragment
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothHeadset
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
 import android.content.Intent
+import android.media.AudioManager
+import android.media.SoundPool
 import android.net.Uri
 import android.os.*
 import android.support.v4.app.Fragment
@@ -13,7 +14,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
 import com.example.administrator.achi.R
 import com.example.administrator.achi.dataModel.Analyzer
@@ -30,10 +30,8 @@ import java.lang.StringBuilder
 import java.time.LocalDateTime
 import java.util.*
 
-private const val INIT : Int = 0
-private const val RUN : Int = 1
-private const val PAUSE : Int = 2
-
+private const val INIT : Boolean = false
+private const val RUN : Boolean = true
 private const val RECIEVE_MESSAGE = 1
 
 private var bluetooth_handler : Handler ?= null
@@ -51,10 +49,10 @@ class MonitoringFragment : Fragment(){
     private var thisView: View? = null
 
     // Stopwatch
-    private var curState : Int = INIT
-    private var baseTime : Long = 0
-    private var pauseTime : Long = 0
+    private var curState : Boolean = INIT
     private lateinit var today : LocalDateTime
+    private lateinit var soundPool : SoundPool
+    private var soundID : Int = 0
 
     // Bluetooth
     private var btAdapter : BluetoothAdapter? = null
@@ -81,7 +79,7 @@ class MonitoringFragment : Fragment(){
         bluetoothHandler()
 
         btAdapter = BluetoothAdapter.getDefaultAdapter()       // get Bluetooth adapter
-        checkBTState()
+//        checkBTState()
 
         return thisView
     }
@@ -100,6 +98,7 @@ class MonitoringFragment : Fragment(){
         // when you attempt to connect and pass your message.
         btAdapter!!.cancelDiscovery()
 
+        tvTime.text = "00:00"
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,8 +116,15 @@ class MonitoringFragment : Fragment(){
         DataCenter.loadFacts()
         printFacts()
 
+        // sound init
+        soundPool = SoundPool(2, AudioManager.STREAM_MUSIC, 0)
+        soundID = soundPool.load(context, R.raw.bamboo, 1)
+
+
         layout.setOnClickListener() {
-            if (btAdapter != null) {
+            if (btAdapter == null)
+                Log.d("Fatal Error", "Bluetooth is not supported on this device.")
+            else {
                 if (!btAdapter!!.isEnabled()) {
                     val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
@@ -126,16 +132,18 @@ class MonitoringFragment : Fragment(){
             }
             if(curState == INIT) {
                 startBluetooth()
-                Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth connected")
+                curState = RUN
+                today = LocalDateTime.now()
                 Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
             }
 
-            else if (curState == RUN || curState == PAUSE) {
+            else if (curState == RUN) {
                 endBluetooth()
-                curState = INIT        // just for test
-                Log.i(TAG, ">>>>>>>>>>>>>>> Bluetooth disconnected")
+                curState = INIT
                 bttest.text = "Communication Ended"
                 Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
+
+                Analyzer.analyze(today)
             }
         }
     }
@@ -188,28 +196,32 @@ class MonitoringFragment : Fragment(){
                             if (Analyzer.TEETH_INDICES.contains(toothNum!!)) {
                                 // Update time
                                 Analyzer.countTooth(toothNum)
-                                tvTime.text = Analyzer.timeToString(Analyzer.getDuration())    // TODO change to mm:ss format
+                                tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time)
+
+                                if (Analyzer.elapsed_time == 180) {
+                                    soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
+
+                                }
 
                                 // highlight current tooth
-                                scene.colorTeeth(toothNum, Color.YELLOW)
+                                scene.colorTeethAndRotate(toothNum, Color.YELLOW)
 
                                 // Check if
                                 if (toothNum != toothNum_prev) {
                                     if (Analyzer.isDone(toothNum_prev))
-                                        scene.colorTeethAndRotate(toothNum_prev, Color.WHITE)
+                                        scene.colorTeeth(toothNum_prev, Color.WHITE)
                                     else if (Analyzer.isHalfWayDone(toothNum_prev))
-                                        scene.colorTeethAndRotate(toothNum_prev, Color.LIGHTBLUE)
+                                        scene.colorTeeth(toothNum_prev, Color.LIGHTBLUE)
+                                    else
+                                        scene.colorTeeth(toothNum_prev, Color.BLUE)
                                 }
                                 toothNum_prev = toothNum
                             }
                             else if (toothNum == -1) {
-                                if (curState == RUN) {
-                                    pauseTime = SystemClock.elapsedRealtime()
-
-//                                    stopwatch_handler.removeCallbacks(runnable)
-                                    curState = PAUSE
-                                }
                             }
+                        }
+                        else if (endOfLineIndex == 0) {
+                            sb.delete(0, sb.length)
                         }
                     }
                 }
@@ -261,38 +273,12 @@ class MonitoringFragment : Fragment(){
         }
     }
 
-    private fun checkBTState() {
-        // Check for Bluetooth support and then check to make sure it is turned on
-        // Emulator doesn't support Bluetooth and will return null
-        if (btAdapter == null) {
-            Log.d("Fatal Error", "Bluetooth is not supported on this device.")
-        } else {
-            if (btAdapter!!.isEnabled) {
-                Log.d(ContentValues.TAG, "...Bluetooth ON...")
-            } else {
-                Log.d(ContentValues.TAG, "...Bluetooth OFF...")
-            }
-        }
-    }
-
-    fun getElapsedTime() : Int {
-        var curTime : Long = SystemClock.elapsedRealtime()
-        var resultTime : Long = curTime - baseTime
-        var sec = (resultTime / 1000).toInt()
-        return sec
-    }
-
     // Facts
     private fun printFacts() {
         val random = Random()
         val num = random.nextInt(DataCenter.facts.size)
 
         tvFact.text = DataCenter.facts[num]
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = MonitoringFragment()
     }
 
     //////////////////////////////////////////////////////////////
@@ -326,6 +312,11 @@ class MonitoringFragment : Fragment(){
 
     fun getGLView(): ModelSurfaceView {
         return gLView
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MonitoringFragment()
     }
 }
 

@@ -1,6 +1,5 @@
 package com.example.administrator.achi.dataModel
 
-import android.util.Log
 import java.time.LocalDateTime
 
 const val TAG = "Analyzer"
@@ -13,7 +12,7 @@ const val LESS : Int = 0
 const val OKAY : Int = 1
 const val MORE : Int = 2
 
-private const val UNITTIME : Int = 500
+private const val UNIT_TIME : Int = 1
 private const val numOfTeeth : Int = 28
 
 object Analyzer{
@@ -23,7 +22,8 @@ object Analyzer{
             41, 42, 43, 44, 45, 46, 47)
 
     private lateinit var today : LocalDateTime
-    private var duration : Int = -1
+    var elapsed_time : Int = -1
+        private set
     private var count_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var section_time : Array<Int> = Array<Int>(6,{0})
     private var bad_pressure : Int = 0
@@ -64,16 +64,10 @@ object Analyzer{
     }
 
 
-    //////////////////////////////////////////////////////////////////////
     fun countTooth(toothNum : Int) {
         currentTooth = toothNum
         count_per_tooth[toothNum]++
-        duration ++
-    }
-    ////////////////////////////////////////////////////////////////////////
-
-    fun getDuration() : Int {
-        return duration
+        elapsed_time += UNIT_TIME
     }
     fun isDone(tooth:Int) : Boolean {
 
@@ -89,11 +83,10 @@ object Analyzer{
         bad_pressure++
     }
 
-    fun analyze(date : LocalDateTime, time : Int) {
+    fun analyze(date : LocalDateTime) {
         today = date
-        duration = time
 
-        expected_count_per_tooth = duration / (numOfTeeth * UNITTIME)
+        expected_count_per_tooth = elapsed_time / numOfTeeth
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
@@ -116,20 +109,20 @@ object Analyzer{
 
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, duration, count_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, elapsed_time, count_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(0, record)
-        DataCenter.printRecords()
+        printSection()
         init()
     }
 
     // for sampleRecord
     fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int) {
         today = date
-        duration = time
+        elapsed_time = time
         count_per_tooth = spt
         bad_pressure = bp
 
-        expected_count_per_tooth = duration / (numOfTeeth * UNITTIME)
+        expected_count_per_tooth = elapsed_time / (numOfTeeth * UNIT_TIME)
 
         calculate_duration()
         calculate_pressure()
@@ -140,22 +133,36 @@ object Analyzer{
             score = 0
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, duration, count_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, elapsed_time, count_per_tooth, section_time, bad_pressure, score, comment)
         DataCenter.records.add(record)
         init()
 
     }
 
+    private fun printSection() {
+        println("=====================================")
+        println("elapsed_time : $elapsed_time\t avg : ${expected_count_per_tooth}")
+        for(i in 0..count_per_tooth.size -1)
+            print("[$i] = ${count_per_tooth[i]}\n")
+        println()
+        for (i in 0..section_time.size -1)
+            print("[$i] = ${sumDiff[i]}\n")
+        println()
+        for (i in 0..section_time.size -1)
+            print("[$i] = ${section_time[i]}\n")
+        println("\n=====================================")
+    }
+
     private fun calculate_duration() {
         var minusScore : Int
-        if (duration < 150) { // 2분 30초
-            minusScore = (150 - duration)     // 초 차이
+        if (elapsed_time < 150) { // 2분 30초
+            minusScore = (150 - elapsed_time)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
         }
-        else if (duration > 210) {   // 3분 30초
-            minusScore = (duration - 210)     // 초 차이
+        else if (elapsed_time > 210) {   // 3분 30초
+            minusScore = (elapsed_time - 210)     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
@@ -170,24 +177,24 @@ object Analyzer{
         for (i in 11..47) {
             // 위
             if (i in 11..13 || i in 21..23) {
-                sumDiff[0] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[0] += (count_per_tooth[i] - expected_count_per_tooth)
             }
             else if (i in 14..17) {
-                sumDiff[1] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[1] += (count_per_tooth[i] - expected_count_per_tooth)
             }
             else if (i in 24..27) {
-                sumDiff[2] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[2] += (count_per_tooth[i] - expected_count_per_tooth)
             }
 
             // 아래
             else if (i in 31..33 || i in 41..43) {
-                sumDiff[3] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[3] += (count_per_tooth[i] - expected_count_per_tooth)
             }
             else if (i in 34..37) {
-                sumDiff[4] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[4] += (count_per_tooth[i] - expected_count_per_tooth)
             }
             else if (i in 44..47) {
-                sumDiff[5] += count_per_tooth[i] - expected_count_per_tooth
+                sumDiff[5] += (count_per_tooth[i] - expected_count_per_tooth)
             }
         }
         setCommentOfSection()
@@ -202,7 +209,7 @@ object Analyzer{
         var less : Boolean = false
 
         for (i in 0..5) {
-            if (sumDiff[i] > 10) {       // 수 정해야 함 - 지금은 5초
+            if (sumDiff[i] > 10) {       // 수 정해야 함 - 지금은 10초
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -225,16 +232,16 @@ object Analyzer{
         if (more)
             moreTeeth += "를 오래 양치했습니다. "
         if (less)
-            lessTeeth += "를 상대적으로 짧게 양치했습니다. "
+            lessTeeth += "를 조금 더 집중적으로 양치해 주세요. "
 
         teethTimeComment = moreTeeth + lessTeeth
     }
 
     private fun set_comment() {
-        if(duration in 150..210) {
+        if(elapsed_time in 150..210) {
             comment += "양치를 적절한 시간 동안 했습니다. "
         }
-        else if (duration < 150) {
+        else if (elapsed_time < 150) {
             comment += "양치 시간이 부족하네요! 다음부터는 조금 더 구석구석 닦아 보도록 해봐요. "
         }
         else
@@ -248,7 +255,7 @@ object Analyzer{
 
     private fun init() {
         today = LocalDateTime.now()
-        duration = -1
+        elapsed_time = -1
         count_per_tooth = Array<Int>(50,{0})
         section_time = Array<Int>(6,{0})
         bad_pressure = 0

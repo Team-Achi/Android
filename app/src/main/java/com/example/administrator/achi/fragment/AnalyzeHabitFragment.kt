@@ -61,16 +61,16 @@ class AnalyzeHabitFragment : Fragment(){
 
 //        val random: Random = Random()
 //        var date : LocalDateTime
-//        var duration = 0
+//        var elapsed_time = 0
 //        var bad_pressure = 0
 //        var sec_per_tooth = Array<Int>(50, {0})
 //        var avgTime = 0
 //
 //        date = LocalDateTime.now()
-//        duration = random.nextInt(180) + 60
+//        elapsed_time = random.nextInt(180) + 60
 //        bad_pressure = random.nextInt(6)
 //
-//        avgTime = duration / 28
+//        avgTime = elapsed_time / 28
 //
 //        for (i in 11..47) {
 //            if (i != 18 ||i != 19 ||i != 20 ||i != 28 ||i != 29 ||i != 30 ||i != 38 || i != 39 ||i != 40) {
@@ -78,7 +78,7 @@ class AnalyzeHabitFragment : Fragment(){
 //            }
 //        }
 //
-//        Analyzer.analyzeSample(date, duration, sec_per_tooth, bad_pressure)
+//        Analyzer.analyzeSample(date, elapsed_time, sec_per_tooth, bad_pressure)
 
         getScore()
         compareWeeks()
