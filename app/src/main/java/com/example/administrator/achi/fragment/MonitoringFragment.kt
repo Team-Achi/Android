@@ -106,6 +106,7 @@ class MonitoringFragment : Fragment(){
         // Initialize view
         DataCenter.loadFacts()
         printFacts()
+        tvTime.text = "00:00"
 
         // sound init
         soundPool = SoundPool(2, AudioManager.STREAM_MUSIC, 0)
@@ -123,14 +124,12 @@ class MonitoringFragment : Fragment(){
             }
             if(curState == INIT) {
                 startBluetooth()
-                curState = RUN
                 today = LocalDateTime.now()
                 Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
             }
 
             else if (curState == RUN) {
                 endBluetooth()
-                curState = INIT
                 bttest.text = "Communication Ended"
                 Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
 
@@ -256,6 +255,8 @@ class MonitoringFragment : Fragment(){
             }
         }
 
+        curState = RUN
+
         // Create a data stream so we can talk to server.
         Log.d(TAG, "...Create Socket...")
         mConnectedThread = ConnectedThread(btSocket)
@@ -275,6 +276,7 @@ class MonitoringFragment : Fragment(){
         }
         finally {
             btSocket = null
+            curState = INIT
         }
     }
 

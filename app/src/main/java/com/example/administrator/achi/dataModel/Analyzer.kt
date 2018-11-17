@@ -190,9 +190,10 @@ object Analyzer{
 
         var more : Boolean = false
         var less : Boolean = false
+        var avg_section = elapsed_time / 6
 
         for (i in 0..5) {
-            if (sumDiff[i] > 9) {       // 수 정해야 함 - 지금은 10초
+            if (sumDiff[i] > avg_section*1.5) {       // 수 정해야 함
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -200,7 +201,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -9) {     // 수 정해야함
+            else if (sumDiff[i] < -avg_section*1.5) {     // 수 정해야함
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
