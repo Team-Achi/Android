@@ -1,6 +1,8 @@
 package com.example.administrator.achi.model3D.demo;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -19,6 +21,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.administrator.achi.model3D.demo.SceneLoader.Color.BLUE;
+
 /**
  * This class loads a 3D scena as an example of what can be done with the app
  *
@@ -34,10 +38,11 @@ public class SceneLoader implements LoaderTask.Callback {
     /**
      * Default shades for highlighting purpose.
      */
-    final float[] COLOR_WHITE   = new float[] {1.0f, 1.0f, 1.0f, 1.0f};
-    final float[] COLOR_YELLOW  = new float[] {1.0f, 0.909f, 0.0f, 1.0f};
-    final float[] COLOR_BLUE    = new float[] {0.439f, 0.631f, 1.0f, 1.0f};
-    final float[] COLOR_LIGHTBLUE = new float[]{0.8f, 0.866f, 1.0f, 1.0f};
+    final float[] COLOR_WHITE       = new float[] { 1.0f   , 1.0f  , 1.0f   , 1.0f};
+    final float[] COLOR_YELLOW      = new float[] { 1.0f   , 0.909f, 0.0f   , 1.0f};
+    final float[] COLOR_BLUE        = new float[] { 0.439f , 0.631f, 1.0f   , 1.0f};
+    final float[] COLOR_LIGHTBLUE   = new float[] { 0.623f , 0.752f, 0.996f , 1.0f};
+    final float[] COLOR_PINK        = new float[] { 1.0f   , 0.639f, 0.639f , 1.0f};
 
     /**
      * Parent component
@@ -140,7 +145,7 @@ public class SceneLoader implements LoaderTask.Callback {
             if (i != -1)   // teeth
                 box.setColor(COLOR_BLUE);
             else           // gum
-                box.setColor(COLOR_LIGHTBLUE);
+                box.setColor(COLOR_PINK);
 
             addObject(box);
         } catch (Exception e) {
