@@ -180,27 +180,43 @@ class MonitoringFragment : Fragment(){
 
                         sb.append(strIncom)
                         val endOfLineIndex = sb.indexOf("\r\n")
-                        Log.i("esanghan", "sb : $sb     end : $endOfLineIndex")
+                        Log.i("bluetooth", "sb : $sb   end : $endOfLineIndex")
                         if (endOfLineIndex > 0) {
                             sbprint = sb.substring(0, endOfLineIndex)
-                            Log.i(TAG, "sb : $sb     sbprint : $sbprint     end : $endOfLineIndex")
+                            Log.i("bluetooth", "sb : $sb   sbprint : $sbprint   end : $endOfLineIndex")
                             sb.delete(0, sb.length)
                             bttest.text= sbprint
-                            var toothNum = sbprint?.toInt()
+
+                            var inputs = sbprint.split("/")
+                            var toothNum = 0
+                            var yourCheckSum = 0
+                            var myCheckSum = 0
+                            var pressure = 0
+                            Log.i("bluetooth", "${inputs.size}")
+                            if (inputs.size == 3) {
+                                toothNum = inputs[0].toInt()
+                                yourCheckSum = inputs[1].toInt()
+                                myCheckSum = toothNum % 7
+                                pressure = inputs[2].toInt()
+                            }
 
                             // TODO: error handling, do checksum here
                             if (toothNum == null)
                                 return
 
                             // if tooth index is valid, update view
-                            if (Analyzer.TEETH_INDICES.contains(toothNum!!)) {
+                            if (Analyzer.TEETH_INDICES.contains(toothNum!!) && (yourCheckSum == myCheckSum)) {
                                 // Update time
+                                Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                                 Analyzer.countTooth(toothNum)
                                 tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time)
 
+                                if (pressure == 3)
+                                    Analyzer.pressure()
+
+                                // 3 minute
                                 if (Analyzer.elapsed_time == 180) {
                                     soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
-
                                 }
 
                                 // highlight current tooth
@@ -217,10 +233,11 @@ class MonitoringFragment : Fragment(){
                                 }
                                 toothNum_prev = toothNum
                             }
-                            else if (toothNum == -1) {
+                            else {
+                                Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                             }
                         }
-                        else if (endOfLineIndex == 0) {
+                        else if (endOfLineIndex == 1) {
                             sb.delete(0, sb.length)
                         }
                     }

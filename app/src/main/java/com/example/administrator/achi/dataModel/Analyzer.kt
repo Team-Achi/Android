@@ -7,13 +7,12 @@ const val TAG = "Analyzer"
 private val THREE_MINUETS = 180
 private val ONE_MINUTE = 60
 private val NUMBER_OF_TEETH = 28
-
-const val LESS : Int = 0
-const val OKAY : Int = 1
-const val MORE : Int = 2
-
 private const val UNIT_TIME : Int = 1
-private const val numOfTeeth : Int = 28
+
+const val LESS = 0
+const val OKAY = 1
+const val MORE = 2
+
 
 object Analyzer{
     val TEETH_INDICES = intArrayOf(11, 12, 13, 14, 15, 16, 17,
@@ -22,7 +21,7 @@ object Analyzer{
             41, 42, 43, 44, 45, 46, 47)
 
     private lateinit var today : LocalDateTime
-    var elapsed_time : Int = -1
+    var elapsed_time : Int = 0
         private set
     private var count_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var section_time : Array<Int> = Array<Int>(6,{0})
@@ -30,16 +29,14 @@ object Analyzer{
     private var score : Int = 100
     private var comment : String = ""
 
+    private var expected_time_per_tooth : Int = THREE_MINUETS / (NUMBER_OF_TEETH)
     private var expected_count_per_tooth : Int = 0
+    private var sumDiff : Array<Int> = Array<Int>(6, {0})
+    private var diff_per_tooth: Array<Int> = Array<Int>(50,{0})
 
-    var sumDiff : Array<Int> = Array<Int>(6, {0})
     var teethTimeComment : String = ""
     private val sectionName = arrayOf("위쪽 앞니", "위쪽 왼쪽 어금니", "위쪽 오른쪽 어금니",
             "아래쪽 앞니", "아래쪽 왼쪽 어금니", "아래쪽 오른쪽 어금니")
-
-    var start : Long = 0
-    var end : Long = 0
-    var currentTooth : Int = 0
 
 
     // 이 함수는 어디에다가 넣어야 좋을까,,,,
@@ -65,18 +62,15 @@ object Analyzer{
 
 
     fun countTooth(toothNum : Int) {
-        currentTooth = toothNum
         count_per_tooth[toothNum]++
         elapsed_time += UNIT_TIME
     }
     fun isDone(tooth:Int) : Boolean {
-
-        return count_per_tooth[tooth] >= (THREE_MINUETS / NUMBER_OF_TEETH)
+        return count_per_tooth[tooth] >= expected_time_per_tooth
     }
 
     fun isHalfWayDone(tooth: Int) : Boolean {
-
-        return count_per_tooth[tooth] >= ((THREE_MINUETS /NUMBER_OF_TEETH) / 2)
+        return count_per_tooth[tooth] >= (expected_time_per_tooth / 2)
     }
 
     fun pressure() {
@@ -85,24 +79,15 @@ object Analyzer{
 
     fun analyze(date : LocalDateTime) {
         today = date
-
-        expected_count_per_tooth = elapsed_time / numOfTeeth
+        expected_count_per_tooth = elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
 
-        // 총 양치 시간
-        calculate_duration()
-
-        // 각 이빨 계산
-        calculate_sec_per_tooth()
-
-        // 압력
-        calculate_pressure()
-
-        // comment 저장
-        set_comment()
-
+        calculate_duration()        // 총 양치 시간
+        calculate_sec_per_tooth()   // 각 이빨 계산
+        calculate_pressure()        // 압력
+        set_comment()               // comment 저장
 
         if (score < 0)
             score = 0
@@ -122,8 +107,6 @@ object Analyzer{
         count_per_tooth = spt
         bad_pressure = bp
 
-        expected_count_per_tooth = elapsed_time / (numOfTeeth * UNIT_TIME)
-
         calculate_duration()
         calculate_pressure()
         calculate_sec_per_tooth()
@@ -141,11 +124,14 @@ object Analyzer{
 
     private fun printSection() {
         println("=====================================")
-        println("elapsed_time : $elapsed_time\t avg : ${expected_count_per_tooth}")
-        for(i in 0..count_per_tooth.size -1)
+        println("elapsed_time : $elapsed_time\t avg : $expected_count_per_tooth")
+        for(i in 11..47)
             print("[$i] = ${count_per_tooth[i]}\n")
         println()
-        for (i in 0..section_time.size -1)
+        for (i in 11..47)
+            print("[$i] = ${diff_per_tooth[i]}\n")
+        println()
+        for (i in 0..sumDiff.size -1)
             print("[$i] = ${sumDiff[i]}\n")
         println()
         for (i in 0..section_time.size -1)
@@ -175,26 +161,30 @@ object Analyzer{
 
     private fun calculate_sec_per_tooth() {
         for (i in 11..47) {
+            diff_per_tooth[i] = count_per_tooth[i] - expected_count_per_tooth
+        }
+
+        for (i in 11..47) {
             // 위
             if (i in 11..13 || i in 21..23) {
-                sumDiff[0] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[0] += diff_per_tooth[i]
             }
             else if (i in 14..17) {
-                sumDiff[1] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[1] += diff_per_tooth[i]
             }
             else if (i in 24..27) {
-                sumDiff[2] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[2] += diff_per_tooth[i]
             }
 
             // 아래
             else if (i in 31..33 || i in 41..43) {
-                sumDiff[3] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[3] += diff_per_tooth[i]
             }
             else if (i in 34..37) {
-                sumDiff[4] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[4] += diff_per_tooth[i]
             }
             else if (i in 44..47) {
-                sumDiff[5] += (count_per_tooth[i] - expected_count_per_tooth)
+                sumDiff[5] += diff_per_tooth[i]
             }
         }
         setCommentOfSection()
