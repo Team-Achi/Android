@@ -41,7 +41,7 @@ public class SceneLoader implements LoaderTask.Callback {
     final float[] COLOR_WHITE       = new float[] { 1.0f   , 1.0f  , 1.0f   , 1.0f};
     final float[] COLOR_YELLOW      = new float[] { 1.0f   , 0.909f, 0.0f   , 1.0f};
     final float[] COLOR_BLUE        = new float[] { 0.439f , 0.631f, 1.0f   , 1.0f};
-    final float[] COLOR_LIGHTBLUE   = new float[] { 0.623f , 0.752f, 0.996f , 1.0f};
+    final float[] COLOR_LIGHTBLUE   = new float[] {0.619f, 0.749f , 1f   , 1.0f};
     final float[] COLOR_PINK        = new float[] { 1.0f   , 0.639f, 0.639f , 1.0f};
 
     /**
