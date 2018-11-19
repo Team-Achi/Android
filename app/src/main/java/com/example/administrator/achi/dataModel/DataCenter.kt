@@ -58,7 +58,8 @@ object DataCenter {
         val random: Random = Random()
         var date : LocalDateTime
         var duration = 0
-        var bad_pressure = 0
+        var high_pressure = 0
+        var low_pressure = 0
         var sec_per_tooth = Array<Int>(50, {0})
 
         var avgTime = 0
@@ -82,7 +83,8 @@ object DataCenter {
 
             date = LocalDateTime.now().minusDays(day.toLong()).minusHours(timeFactor.toLong())
             duration = random.nextInt(150) + 90
-            bad_pressure = random.nextInt(6)
+            high_pressure = random.nextInt(6)
+            low_pressure = random.nextInt(6)
 
             avgTime = duration / 28
 
@@ -92,7 +94,7 @@ object DataCenter {
                 }
             }
 
-            Analyzer.analyzeSample(date, duration, sec_per_tooth, bad_pressure)
+            Analyzer.analyzeSample(date, duration, sec_per_tooth, high_pressure, low_pressure)
         }
 
 

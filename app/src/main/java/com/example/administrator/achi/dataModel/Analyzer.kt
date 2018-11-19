@@ -25,7 +25,8 @@ object Analyzer{
         private set
     private var count_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var section_time : Array<Int> = Array<Int>(6,{0})
-    private var bad_pressure : Int = 0
+    private var high_pressure : Int = 0
+    private var low_pressure : Int = 0
     private var score : Int = 100
     private var comment : String = ""
 
@@ -64,10 +65,12 @@ object Analyzer{
         elapsed_time = -1
         count_per_tooth = Array<Int>(50,{0})
         section_time = Array<Int>(6,{0})
-        bad_pressure = 0
+        high_pressure = 0
+        low_pressure = 0
         score = 100
         comment = ""
         teethTimeComment = ""
+        sumDiff = Array(6, {0})
     }
 
 
@@ -83,8 +86,12 @@ object Analyzer{
         return count_per_tooth[tooth] >= (expected_time_per_tooth / 2)
     }
 
-    fun pressure() {
-        bad_pressure++
+    fun highPressure() {
+        high_pressure++
+    }
+
+    fun lowPressure() {
+        low_pressure++
     }
 
     fun analyze(date : LocalDateTime) {
@@ -95,7 +102,7 @@ object Analyzer{
            점수 매기고 comment 저장 */
 
         calculate_duration()        // 총 양치 시간
-        calculate_sec_per_tooth()   // 각 이빨 계산
+        calculate_cnt_per_tooth()   // 각 이빨 계산
         calculate_pressure()        // 압력
         set_comment()               // comment 저장
 
@@ -104,29 +111,30 @@ object Analyzer{
 
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, elapsed_time, count_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, elapsed_time, count_per_tooth, section_time, high_pressure, low_pressure, score, comment)
         DataCenter.records.add(0, record)
         init()
     }
 
     // for sampleRecord
-    fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, bp : Int) {
+    fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, hp : Int, lp : Int) {
         today = date
         elapsed_time = time
         expected_count_per_tooth = elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)
         count_per_tooth = spt
-        bad_pressure = bp
+        high_pressure = hp
+        low_pressure = lp
 
         calculate_duration()
         calculate_pressure()
-        calculate_sec_per_tooth()
+        calculate_cnt_per_tooth()
         set_comment()
 
         if (score < 0)
             score = 0
 
         // record를 Record와 DataCenter에 저장
-        var record = Record(today, elapsed_time, count_per_tooth, section_time, bad_pressure, score, comment)
+        var record = Record(today, elapsed_time, count_per_tooth, section_time, high_pressure, low_pressure, score, comment)
         DataCenter.records.add(record)
         init()
 
@@ -149,10 +157,11 @@ object Analyzer{
     }
 
     private fun calculate_pressure() {
-        score -= bad_pressure * 3
+        score -= high_pressure * 3
+        score -= low_pressure * 3
     }
 
-    private fun calculate_sec_per_tooth() {
+    private fun calculate_cnt_per_tooth() {
         for (i in 0..5) {
             sumDiff[i] = 0
         }
@@ -233,8 +242,12 @@ object Analyzer{
 
         comment += teethTimeComment
 
-        if (bad_pressure >= 5)
+        if (high_pressure >= 5 && low_pressure >= 5)
+            comment += "양치를 균일하게 골고루 하세요. "
+        else if (high_pressure >= 5)
             comment += "양치를 세게 하는 경향이 있습니다. 살살 양치하세요. "
+        else if (low_pressure >= 5)
+            comment += "조금 더 구석구석 양치하세요. "
     }
 
 

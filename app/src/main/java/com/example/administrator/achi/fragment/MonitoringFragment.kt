@@ -106,7 +106,7 @@ class MonitoringFragment : Fragment(){
         // Initialize view
         DataCenter.loadFacts()
         printFacts()
-        tvTime.text = "00:00"
+//        tvTime.text = "00:00"
 
         // sound init
         soundPool = SoundPool(2, AudioManager.STREAM_MUSIC, 0)
@@ -117,7 +117,7 @@ class MonitoringFragment : Fragment(){
             if (btAdapter == null)
                 Log.d("Fatal Error", "Bluetooth is not supported on this device.")
             else {
-                if (!btAdapter!!.isEnabled()) {
+                if (!btAdapter!!.isEnabled) {
                     val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
                 }
@@ -189,8 +189,7 @@ class MonitoringFragment : Fragment(){
                                 pressure = inputs[2].toInt()
                             }
 
-                            // TODO: error handling, do checksum here
-                            if (toothNum == null)
+                            if (toothNum == 0)
                                 return
 
                             Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
@@ -201,13 +200,22 @@ class MonitoringFragment : Fragment(){
                                 Analyzer.countTooth(toothNum)
                                 tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time)
 
+                                // pressure
                                 if (pressure == 3)
-                                    Analyzer.pressure()
+                                    Analyzer.highPressure()
+                                else if (pressure == 1)
+                                    Analyzer.lowPressure()
 
-                                // 3 minute
-                                if (Analyzer.elapsed_time == 180) {
+                                // sound alarm
+                                if (Analyzer.elapsed_time == 150)
                                     soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
-                                }
+
+                                if (Analyzer.elapsed_time == 180)
+                                    soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
+
+                                // fact
+                                if (Analyzer.elapsed_time % 10 == 0)
+                                    printFacts()
 
                                 // highlight current tooth
                                 scene.colorTeethAndRotate(toothNum, Color.YELLOW)
@@ -222,6 +230,9 @@ class MonitoringFragment : Fragment(){
                                         scene.colorTeeth(toothNum_prev, Color.BLUE)
                                 }
                                 toothNum_prev = toothNum
+                            }
+                            else if (yourCheckSum != myCheckSum) {
+
                             }
                         }
                         else if (endOfLineIndex == 1) {

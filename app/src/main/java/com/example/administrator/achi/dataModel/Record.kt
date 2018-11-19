@@ -8,11 +8,13 @@ class Record {
         private set
     var duration : Int = -1
         private set
-    var sec_per_tooth : Array<Int> = Array<Int>(50,{0})
+    var cnt_per_tooth : Array<Int> = Array<Int>(50,{0})
         private set
     var section_time : Array<Int> = Array<Int>(6,{0})
         private set
-    var bad_pressure : Int = 0
+    var high_pressure : Int = 0
+        private set
+    var low_pressure : Int = 0
         private set
     var score : Int = 100
         private set
@@ -24,16 +26,18 @@ class Record {
 
         this.date = LocalDateTime.now()
         this.duration = random.nextInt(240)
-        this.bad_pressure = random.nextInt(10)
+        this.high_pressure = random.nextInt(10)
+        this.low_pressure = random.nextInt(10)
         this.score = random.nextInt(101)
     }
 
-    constructor(date : LocalDateTime, time : Int, spt : Array<Int>, st : Array<Int>, bp : Int, score : Int, comment : String) {
+    constructor(date : LocalDateTime, time : Int, spt : Array<Int>, st : Array<Int>, hp : Int, lp : Int, score : Int, comment : String) {
         this.date = date
         this.duration = time
-        this.sec_per_tooth = spt
+        this.cnt_per_tooth = spt
         this.section_time = st
-        this.bad_pressure = bp
+        this.high_pressure = hp
+        this.low_pressure = lp
         this.score = score
         this.comment = comment
     }
@@ -44,8 +48,9 @@ class Record {
         println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
         println(this.date.toString())
         println(this.duration)
-        println(this.sec_per_tooth[21])
-        println(this.bad_pressure)
+        println(this.cnt_per_tooth[21])
+        println(this.high_pressure)
+        println(this.low_pressure)
         println(this.score)
         println(this.comment)
         println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
