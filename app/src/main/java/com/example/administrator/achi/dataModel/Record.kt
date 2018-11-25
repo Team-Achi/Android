@@ -33,6 +33,8 @@ class Record {
         this.low_pressure = lp
         this.score = score
         this.comment = comment
+
+        this.toString()
     }
 
     constructor(dataString: String) {
@@ -48,20 +50,21 @@ class Record {
         for (count in cnt_per_tooth) {
             s += "$count,"
         }
-        s.removeSuffix(",")
+        s= s.dropLast(1)
         s += "/"
 
 //        s += section_time.toString() + "/"
         for (time in section_time) {
             s += "$time,"
         }
-        s.removeSuffix(",")
+        s= s.dropLast(1)
         s += "/"
 
         s += high_pressure.toString() + "/"
         s += low_pressure.toString() + "/"
         s += score.toString() + "/"
-        s += comment.toString()
+        s += comment
+        
         Log.i(TAG, s)
 
         return s
