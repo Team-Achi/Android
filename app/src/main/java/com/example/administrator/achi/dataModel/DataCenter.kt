@@ -1,13 +1,86 @@
 package com.example.administrator.achi.dataModel
 
+import java.io.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
+
+
 
 object DataCenter {
     var records = ArrayList<Record>()
     var facts = ArrayList<String>()
 
-    fun saveData () {
+    fun readFile() {
+//        var fr: FileReader? = null
+//        var br: BufferedReader? = null
+//
+//        println("Read File")
+//        try {
+//            fr = FileReader("records.txt")
+//
+//            br = BufferedReader(fr)
+//
+//            var s = String()
+//
+//            while (true) {
+//                s = br!!.readLine()
+//                if (s == null)
+//                    break
+//
+//                s = s.replace(" ".toRegex(), "")
+//                s = s.replace("\t".toRegex(), "")
+//                s = s.replace("\\p{Z}".toRegex(), "")
+//
+//            }
+//
+//        } catch (e: FileNotFoundException) {
+//            println("Failed to read file.")
+//            e.printStackTrace()
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        } finally {
+//            if (br != null)
+//                try {
+//                    br!!.close()
+//                } catch (e: IOException) {
+//                }
+//
+//            if (fr != null)
+//                try {
+//                    fr!!.close()
+//                } catch (e: IOException) {
+//                }
+//
+//        }
+
+        var file : File = File("record.txt")
+        var input : Scanner = Scanner(file)
+
+        while (input.hasNext()) {
+            // input의 한 줄 line에 저장 후 공백 제거
+            var line = input.nextLine()
+            line = line.replace(" ".toRegex(), "")
+            line = line.replace("\t".toRegex(), "")
+            line = line.replace("\\p{Z}".toRegex(), "")
+
+            val array = line.split("/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
+
+            if (array.size == 8) {
+                var formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                var date : LocalDateTime = LocalDateTime.parse(array[0], formatter)
+
+                var cnt_per_tooth : Array<Int> = Array<Int>(50, {0})
+                var section_time : Array<Int> =  Array<Int>(6,{0})
+
+
+                var record = Record(date, array[1].toDouble(), cnt_per_tooth, section_time, array[4].toInt(), array[5].toInt(), array[6].toInt(), array[7])
+                DataCenter.records.add(record)
+            }
+        }
+    }
+
+    fun writeFile() {
         // 데이터 저장
 
     }
@@ -52,17 +125,17 @@ object DataCenter {
     fun sampleRecords () {
         // for sample data
         var day = 0
-        var num = 3
+        var num = 2
         var timeFactor = -3
 
         val random: Random = Random()
         var date : LocalDateTime
-        var duration = 0
+        var duration = 0.0
         var high_pressure = 0
         var low_pressure = 0
-        var sec_per_tooth = Array<Int>(50, {0})
+        var cnt_per_tooth = Array<Int>(50, {0})
 
-        var avgTime = 0
+        var avgTime = 180 / 28
         
         for (it in 0..39) {
 
@@ -82,23 +155,20 @@ object DataCenter {
             }
 
             date = LocalDateTime.now().minusDays(day.toLong()).minusHours(timeFactor.toLong())
-            duration = random.nextInt(150) + 90
             high_pressure = random.nextInt(6)
             low_pressure = random.nextInt(6)
-
-            avgTime = duration / 28
+            duration = 0.0
 
             for (i in 11..47) {
                 if (i != 18 ||i != 19 ||i != 20 ||i != 28 ||i != 29 ||i != 30 ||i != 38 || i != 39 ||i != 40) {
-                    sec_per_tooth[i] = avgTime + (random.nextInt(7) - 3)
+                    cnt_per_tooth[i] = (avgTime / UNIT_TIME + (random.nextInt(60) - 30)).toInt()
+                    duration += cnt_per_tooth[i] * UNIT_TIME
                 }
             }
 
-            Analyzer.analyzeSample(date, duration, sec_per_tooth, high_pressure, low_pressure)
+            Analyzer.analyzeSample(date, duration, cnt_per_tooth, high_pressure, low_pressure)
         }
-
-
+//        printRecords()
 
     }
-
 }

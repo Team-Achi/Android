@@ -6,7 +6,7 @@ import java.util.*
 class Record {
     var date : LocalDateTime
         private set
-    var duration : Int = -1
+    var duration : Double = 0.0
         private set
     var cnt_per_tooth : Array<Int> = Array<Int>(50,{0})
         private set
@@ -21,20 +21,10 @@ class Record {
     var comment : String = "여기는 양치에 대한 코멘트입니당"
         private set
 
-    constructor() {
-        val random : Random = Random()
-
-        this.date = LocalDateTime.now()
-        this.duration = random.nextInt(240)
-        this.high_pressure = random.nextInt(10)
-        this.low_pressure = random.nextInt(10)
-        this.score = random.nextInt(101)
-    }
-
-    constructor(date : LocalDateTime, time : Int, spt : Array<Int>, st : Array<Int>, hp : Int, lp : Int, score : Int, comment : String) {
+    constructor(date : LocalDateTime, time : Double, cpt : Array<Int>, st : Array<Int>, hp : Int, lp : Int, score : Int, comment : String) {
         this.date = date
         this.duration = time
-        this.cnt_per_tooth = spt
+        this.cnt_per_tooth = cpt
         this.section_time = st
         this.high_pressure = hp
         this.low_pressure = lp

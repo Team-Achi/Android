@@ -46,7 +46,7 @@ class DayExpandableListAdapter (var context : Context, var delv : ExpandableList
         val score = convertView.findViewById<TextView>(R.id.tvScore)
 
         startTime.text = record.date.format(timeFormatter)
-        duration.text = Analyzer.timeToString(record.duration)
+        duration.text = Analyzer.timeToString(record.duration.toInt())
         score.text = "${record.score.toString()} 점"
 
         groupTitle.setOnClickListener {

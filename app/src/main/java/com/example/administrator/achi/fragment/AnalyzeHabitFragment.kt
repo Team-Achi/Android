@@ -141,7 +141,7 @@ class AnalyzeHabitFragment : Fragment(){
             var record = DataCenter.records[i]
             if (record.date.isBefore(firstWeekDate) && record.date.isAfter(lastWeekDate)) {
                 avgScore += record.score
-                avgTime += record.duration
+                avgTime += record.duration.toInt()
                 num++
                 check = true
             }

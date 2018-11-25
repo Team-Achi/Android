@@ -7,7 +7,7 @@ const val TAG = "Analyzer"
 private val THREE_MINUETS = 180
 private val ONE_MINUTE = 60
 private val NUMBER_OF_TEETH = 28
-private const val UNIT_TIME : Int = 1
+const val UNIT_TIME : Double = 0.1
 
 const val LESS = 0
 const val OKAY = 1
@@ -21,7 +21,7 @@ object Analyzer{
             41, 42, 43, 44, 45, 46, 47)
 
     private lateinit var today : LocalDateTime
-    var elapsed_time : Int = 0
+    var elapsed_time : Double = 0.0
         private set
     private var count_per_tooth : Array<Int> = Array<Int>(50,{0})
     private var section_time : Array<Int> = Array<Int>(6,{0})
@@ -41,8 +41,8 @@ object Analyzer{
 
     // 이 함수는 어디에다가 넣어야 좋을까,,,,
     fun timeToString(time : Int) : String {
-        var min = time / 60
-        var sec =  time % 60
+        var min = (time / 60)
+        var sec =  (time % 60)
 
         var strMin : String
         var strSecond : String
@@ -60,9 +60,9 @@ object Analyzer{
         return "$strMin:$strSecond"
     }
 
-    private fun init() {
+    fun init() {
         today = LocalDateTime.now()
-        elapsed_time = -1
+        elapsed_time = 0.0
         count_per_tooth = Array<Int>(50,{0})
         section_time = Array<Int>(6,{0})
         high_pressure = 0
@@ -78,6 +78,11 @@ object Analyzer{
         count_per_tooth[toothNum]++
         elapsed_time += UNIT_TIME
     }
+
+    fun addTime() {
+        elapsed_time += UNIT_TIME
+    }
+
     fun isDone(tooth:Int) : Boolean {
         return count_per_tooth[tooth] >= expected_time_per_tooth
     }
@@ -96,7 +101,7 @@ object Analyzer{
 
     fun analyze(date : LocalDateTime) {
         today = date
-        expected_count_per_tooth = elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)
+        expected_count_per_tooth = (elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)).toInt()
 
         /* 인제 시간과 치아당 시간, bad_pressure을 기준으로
            점수 매기고 comment 저장 */
@@ -117,11 +122,11 @@ object Analyzer{
     }
 
     // for sampleRecord
-    fun analyzeSample(date : LocalDateTime, time : Int, spt : Array<Int>, hp : Int, lp : Int) {
+    fun analyzeSample(date : LocalDateTime, time : Double, cpt : Array<Int>, hp : Int, lp : Int) {
         today = date
         elapsed_time = time
-        expected_count_per_tooth = elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)
-        count_per_tooth = spt
+        expected_count_per_tooth = (elapsed_time / (NUMBER_OF_TEETH* UNIT_TIME)).toInt()
+        count_per_tooth = cpt
         high_pressure = hp
         low_pressure = lp
 
@@ -143,13 +148,13 @@ object Analyzer{
     private fun calculate_duration() {
         var minusScore : Int
         if (elapsed_time < 150) { // 2분 30초
-            minusScore = (150 - elapsed_time)     // 초 차이
+            minusScore = (150 - elapsed_time).toInt()     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore
         }
         else if (elapsed_time > 210) {   // 3분 30초
-            minusScore = (elapsed_time - 210)     // 초 차이
+            minusScore = (elapsed_time - 210).toInt()     // 초 차이
             minusScore = (minusScore / 10 + 1) * 5
 
             score -= minusScore

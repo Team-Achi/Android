@@ -23,6 +23,7 @@ import com.example.administrator.achi.model3D.demo.SceneLoader.Color
 import com.example.administrator.achi.model3D.view.ModelSurfaceView
 
 import kotlinx.android.synthetic.main.fragment_monitoring.*
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -62,6 +63,11 @@ class MonitoringFragment : Fragment(){
 
     private var sb : StringBuilder = StringBuilder()
     private var toothNum_prev : Int = 0
+
+    private var mmOutputStream : OutputStream = ByteArrayOutputStream(1024)
+
+    // fact
+    private var count : Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -118,8 +124,9 @@ class MonitoringFragment : Fragment(){
                 Log.d("Fatal Error", "Bluetooth is not supported on this device.")
             else {
                 if (!btAdapter!!.isEnabled) {
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+//                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+                    Toast.makeText(context, "블루투스를 키고 칫솔과 페어링 하세요.", Toast.LENGTH_LONG).show()
                 }
                 else {
                     if(curState == INIT) {
@@ -141,10 +148,17 @@ class MonitoringFragment : Fragment(){
     }
 
     override fun onPause() {
+        if (curState == INIT) {
+
+        }
+        else if (curState == RUN) {
+
+        }
         super.onPause()
         Log.d(TAG, "...In onPause()...")
 
         endBluetooth()
+        Analyzer.init()
     }
 
     @Throws(IOException::class)
@@ -194,13 +208,19 @@ class MonitoringFragment : Fragment(){
                             if (toothNum == 0)
                                 return
 
+                            if ((toothNum == -1) && (yourCheckSum == myCheckSum)) {
+                                Analyzer.addTime()
+                                tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time.toInt())
+                            }
+
                             Log.i("bluetooth", "toothNum : $toothNum   mine : $myCheckSum   yours : $yourCheckSum")
                             // if tooth index is valid, update view
                             if (Analyzer.TEETH_INDICES.contains(toothNum!!) && (yourCheckSum == myCheckSum)) {
                                 Log.i("bluetooth", "Success")
+
                                 // Update time
                                 Analyzer.countTooth(toothNum)
-                                tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time)
+                                tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time.toInt())
 
                                 // pressure
                                 if (pressure == 3)
@@ -209,15 +229,18 @@ class MonitoringFragment : Fragment(){
                                     Analyzer.lowPressure()
 
                                 // sound alarm
-                                if (Analyzer.elapsed_time == 150)
+                                if (Analyzer.elapsed_time == 150.0)
                                     soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
 
-                                if (Analyzer.elapsed_time == 180)
+                                if (Analyzer.elapsed_time == 180.0)
                                     soundPool.play(soundID, 1f, 1f, 0, 0,  0.5f)
 
                                 // fact
-                                if (Analyzer.elapsed_time % 10 == 0)
+                                count --
+                                if ((Analyzer.elapsed_time.toInt() % 10 == 0) && (count <= 0) ) {
                                     printFacts()
+                                    count = 10
+                                }
 
                                 // highlight current tooth
                                 scene.colorTeethAndRotate(toothNum, Color.YELLOW)
@@ -237,7 +260,7 @@ class MonitoringFragment : Fragment(){
 
                             }
                         }
-                        else if (endOfLineIndex == 1) {
+                        else if (endOfLineIndex == 0) {
                             sb.delete(0, sb.length)
                         }
                     }
@@ -268,12 +291,13 @@ class MonitoringFragment : Fragment(){
             }
         }
 
-        curState = RUN
-
         // Create a data stream so we can talk to server.
         Log.d(TAG, "...Create Socket...")
         mConnectedThread = ConnectedThread(btSocket)
         mConnectedThread!!.start()
+
+//        sendData()
+        curState = RUN
     }
 
     private fun endBluetooth() {
@@ -281,8 +305,9 @@ class MonitoringFragment : Fragment(){
             Log.d("Fatal Error", "btSocket is null.")
             return
         }
-
         try {
+//            sendData()
+            mmOutputStream.close()
             btSocket!!.close()
         } catch (e2: IOException) {
             Log.d("Fatal Error", "Failed to close socket." + e2.message + ".")
@@ -291,6 +316,25 @@ class MonitoringFragment : Fragment(){
             btSocket = null
             curState = INIT
         }
+    }
+
+    private fun sendData(){
+        mmOutputStream = btSocket!!.outputStream
+        var msg : String = ""
+
+        if (curState == INIT) {     // 통신 시작
+            msg += "start"
+        }
+        else if (curState == RUN) {     // 통신 끝
+            msg += "end"
+        }
+
+        try{
+            mmOutputStream.write(msg.toByteArray())
+        }catch (e : IOException) {
+            Log.i("Fatal Error", "Failed to send value to socket" + e.message)
+        }
+
     }
 
     // Facts
