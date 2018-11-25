@@ -4,13 +4,19 @@ import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import java.nio.file.Files.size
+
+
 
 
 
 object DataCenter {
     var records = ArrayList<Record>()
     var facts = ArrayList<String>()
+    var file : File = File("record.txt")
 
+    // 가장 최근 것이 0, 첫줄
+    // 시간/양치시간/cnt_per_tooth/section_time/highPressure/lowPressure/comment
     fun readFile() {
 //        var fr: FileReader? = null
 //        var br: BufferedReader? = null
@@ -54,7 +60,6 @@ object DataCenter {
 //
 //        }
 
-        var file : File = File("record.txt")
         var input : Scanner = Scanner(file)
 
         while (input.hasNext()) {
@@ -70,8 +75,10 @@ object DataCenter {
                 var formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                 var date : LocalDateTime = LocalDateTime.parse(array[0], formatter)
 
+                // TODO 요거 두개 parsing해서 넣어야 함
                 var cnt_per_tooth : Array<Int> = Array<Int>(50, {0})
                 var section_time : Array<Int> =  Array<Int>(6,{0})
+
 
 
                 var record = Record(date, array[1].toDouble(), cnt_per_tooth, section_time, array[4].toInt(), array[5].toInt(), array[6].toInt(), array[7])
@@ -82,7 +89,66 @@ object DataCenter {
 
     fun writeFile() {
         // 데이터 저장
+        var bw: BufferedWriter? = null
+        try {
+            bw = BufferedWriter(FileWriter(file))
+            for (i in 0 until records.size) {
+                bw.write(recordToString(i))        // 형식 변환
+                bw.newLine()
+            }
+            bw.flush()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close() // 파일 닫기
+                } catch (e: IOException) {
+                }
+            }
+        }
+    }
 
+    // 시간/양치시간/cnt_per_tooth/section_time/highPressure/lowPressure/comment
+    private fun recordToString(index : Int)  : String{
+        var line : String = ""
+        var record = records[index]
+
+        // date
+        line.plus(record.date)
+        line.plus("/")
+
+        // duration
+        line.plus(record.duration)
+        line.plus("/")
+
+        // cnt_per_tooth
+        for (i in record.cnt_per_tooth) {
+            line.plus("$i:")
+        }
+        // TODO 마지막 : 지워야 함
+        line.plus("/")
+
+        // section_time
+        for (i in record.section_time) {
+            line.plus("$i:")
+        }
+        // TODO 마지막 : 지워야 함
+        line.plus("/")
+
+
+        // high Pressure
+        line.plus(record.high_pressure)
+        line.plus("/")
+
+        // low Pressure
+        line.plus(record.low_pressure)
+        line.plus("/")
+
+        // comment
+        line.plus(record.comment)
+
+        return line
     }
 
     // Facts
