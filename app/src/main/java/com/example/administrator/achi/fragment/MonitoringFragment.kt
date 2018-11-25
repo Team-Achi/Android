@@ -1,5 +1,6 @@
 package com.example.administrator.achi.fragment
 
+import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
@@ -154,6 +155,15 @@ class MonitoringFragment : Fragment(){
         endBluetooth()
         Analyzer.init()
 
+        if (curState == RUN ) {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("알림")
+                    .setMessage("모니터링 화면에서 벗어나 모니터링이 중단되었습니다.")
+                    .setPositiveButton("확인") { _, _ -> }
+
+            val dialog = builder.create()
+            dialog.show()
+        }
 
     }
 
