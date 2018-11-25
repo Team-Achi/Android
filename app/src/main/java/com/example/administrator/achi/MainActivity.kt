@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         System.setProperty("java.protocol.handler.pkgs", "org.andresoviedo.util.android");
         URL.setURLStreamHandlerFactory( AndroidURLStreamHandlerFactory())
         DataCenter.sampleRecords()
+        DataCenter.loadFacts()
     }
 
     val TAG = "MainActivity"

@@ -5,7 +5,6 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.content.ContentValues
-import android.content.Intent
 import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
@@ -111,8 +110,7 @@ class MonitoringFragment : Fragment(){
         layout.addView(gLView)
 
         // Initialize view
-        DataCenter.loadFacts()
-        printFacts()
+        printFact()
         tvTime.text = "00:00"
 
         // sound init
@@ -244,7 +242,7 @@ class MonitoringFragment : Fragment(){
                                 // fact
                                 count --
                                 if ((Analyzer.elapsed_time.toInt() % 10 == 0) && (count <= 0) ) {
-                                    printFacts()
+                                    printFact()
                                     count = 10
                                 }
 
@@ -344,7 +342,7 @@ class MonitoringFragment : Fragment(){
     }
 
     // Facts
-    private fun printFacts() {
+    private fun printFact() {
         val random = Random()
         val num = random.nextInt(DataCenter.facts.size)
 
