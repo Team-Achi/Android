@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/monitoring_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,35 +10,40 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
+        android:layout_alignParentTop="true"
         android:text="TextView" />
+
 
     <TextView
         android:id="@+id/tvTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_above="@+id/layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="35dp"
         android:text="00:00"
         android:textColor="@android:color/black"
-        android:textSize="80sp"
-        />
+        android:textSize="70sp" />
 
 
     <LinearLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="350dp"
-        android:layout_marginBottom="20dp"
+        android:layout_centerVertical="true"
         android:orientation="vertical"></LinearLayout>
 
     <TextView
         android:id="@+id/tvFact"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="70dp"
+        android:padding="5dp"
         android:background="@drawable/tv_fact_border"
         android:gravity="center"
         android:text="하루에 양치를 3번 해야해~~~~"
         android:textColor="@android:color/black"
         android:textSize="17sp" />
 
-</LinearLayout>
+</RelativeLayout>

@@ -35,7 +35,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
@@ -67,6 +68,7 @@
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp"
             android:layout_marginRight="10dp"/>
+
 
         <TextView
             android:id="@+id/tvScore"

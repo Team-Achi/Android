@@ -121,19 +121,21 @@ class MonitoringFragment : Fragment(){
                     val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
                 }
-            }
-            if(curState == INIT) {
-                startBluetooth()
-                today = LocalDateTime.now()
-                Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
-            }
+                else {
+                    if(curState == INIT) {
+                        startBluetooth()
+                        today = LocalDateTime.now()
+                        Toast.makeText(context, "Bluetooth connected", Toast.LENGTH_SHORT).show()
+                    }
 
-            else if (curState == RUN) {
-                endBluetooth()
-                bttest.text = "Communication Ended"
-                Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
+                    else if (curState == RUN) {
+                        endBluetooth()
+                        bttest.text = "Communication Ended"
+                        Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
 
-                Analyzer.analyze(today)
+                        Analyzer.analyze(today)
+                    }
+                }
             }
         }
     }
