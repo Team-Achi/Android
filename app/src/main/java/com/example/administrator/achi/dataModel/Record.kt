@@ -1,10 +1,13 @@
 package com.example.administrator.achi.dataModel
 
+import android.util.Log
 import java.time.LocalDateTime
 import java.util.*
 
 class Record {
-    var date : LocalDateTime
+    val TAG = "RECORD"
+
+    var date : LocalDateTime = LocalDateTime.now()
         private set
     var duration : Double = 0.0
         private set
@@ -30,6 +33,38 @@ class Record {
         this.low_pressure = lp
         this.score = score
         this.comment = comment
+    }
+
+    constructor(dataString: String) {
+        // parse string data
+    }
+
+    override fun toString() : String {
+        var s = String()
+        s += date.toString() + "/"
+        s += duration.toString() + "/"
+
+//        s += cnt_per_tooth.toString() + "/"
+        for (count in cnt_per_tooth) {
+            s += "$count,"
+        }
+        s.removeSuffix(",")
+        s += "/"
+
+//        s += section_time.toString() + "/"
+        for (time in section_time) {
+            s += "$time,"
+        }
+        s.removeSuffix(",")
+        s += "/"
+
+        s += high_pressure.toString() + "/"
+        s += low_pressure.toString() + "/"
+        s += score.toString() + "/"
+        s += comment.toString()
+        Log.i(TAG, s)
+
+        return s
     }
 
 
