@@ -112,7 +112,7 @@ class MonitoringFragment : Fragment(){
         // Initialize view
         DataCenter.loadFacts()
         printFacts()
-//        tvTime.text = "00:00"
+        tvTime.text = "00:00"
 
         // sound init
         soundPool = SoundPool(2, AudioManager.STREAM_MUSIC, 0)
@@ -148,17 +148,13 @@ class MonitoringFragment : Fragment(){
     }
 
     override fun onPause() {
-        if (curState == INIT) {
-
-        }
-        else if (curState == RUN) {
-
-        }
         super.onPause()
         Log.d(TAG, "...In onPause()...")
 
         endBluetooth()
         Analyzer.init()
+
+
     }
 
     @Throws(IOException::class)
