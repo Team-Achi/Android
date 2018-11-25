@@ -1,14 +1,11 @@
 package com.example.administrator.achi.dataModel
 
+import android.util.Log
 import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 import java.nio.file.Files.size
-
-
-
-
 
 object DataCenter {
     var records = ArrayList<Record>()
@@ -151,10 +148,46 @@ object DataCenter {
         return line
     }
 
+    fun saveData() {
+        var bw: BufferedWriter? = null
+        try {
+            bw = BufferedWriter(FileWriter(file))
+            for (record in records) {
+                bw.write(record.toString())        // 형식 변환
+                bw.newLine()
+            }
+            bw.flush()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close() // 파일 닫기
+                } catch (e: IOException) {
+
+                }
+            }
+        }
+
+    }
+
+    fun loadData() {
+        var input : Scanner = Scanner(file)
+
+        while (input.hasNext()) {
+            // input의 한 줄 line에 저장 후 공백 제거
+            var line = input.nextLine()
+            Log.i(TAG, line)
+
+            val record = Record.instance(line)
+            if (record != null)
+                DataCenter.records.add(record)
+        }
+    }
     // Facts
     fun loadFacts() {
         facts.add("아치의 꿀팁 1: 칫솔에 물을 묻히지 마세요! 치약에 물이 묻게 되면 " +
-                "세마제의 농도가 떨어지기 때문에 양치질 효과가 줄어들게 된답니다.")
+                "세마제의 농도가 떨어지기 때문에 양치질 효  과가 줄어들게 된답니다.")
         facts.add("아치의 꿀팁 2: 탄산음료, 커피 등을 마신 후 30분 후에 양치하기! " +
                 "음료에 포함된 산성물질이 치아 표면의 얇은 막을 부식시키기 때문에 " +
                 "약간의 시간이 지난 후에 양치하는 것이 좋습니다.")
