@@ -1,9 +1,6 @@
 package com.example.administrator.achi.dataModel
 
-import android.util.Log
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 data class Record(var date : LocalDateTime, var duration : Double, var cnt_per_tooth : Array<Int>,
                   var section_time : Array<Int>, var high_pressure: Int, var low_pressure : Int,

@@ -1,5 +1,6 @@
 package com.example.administrator.achi.dataModel
 
+import android.content.Context
 import android.util.Log
 import java.io.*
 import java.time.LocalDateTime
@@ -10,101 +11,9 @@ import java.nio.file.Files.size
 object DataCenter {
     var records = ArrayList<Record>()
     var facts = ArrayList<String>()
-    var file : File = File("record.txt")
+    var filename = "record.txt"
 
-    // 가장 최근 것이 0, 첫줄
-    // 시간/양치시간/cnt_per_tooth/section_time/highPressure/lowPressure/comment
-    fun readFile() {
-//        var fr: FileReader? = null
-//        var br: BufferedReader? = null
-//
-//        println("Read File")
-//        try {
-//            fr = FileReader("records.txt")
-//
-//            br = BufferedReader(fr)
-//
-//            var s = String()
-//
-//            while (true) {
-//                s = br!!.readLine()
-//                if (s == null)
-//                    break
-//
-//                s = s.replace(" ".toRegex(), "")
-//                s = s.replace("\t".toRegex(), "")
-//                s = s.replace("\\p{Z}".toRegex(), "")
-//
-//            }
-//
-//        } catch (e: FileNotFoundException) {
-//            println("Failed to read file.")
-//            e.printStackTrace()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        } finally {
-//            if (br != null)
-//                try {
-//                    br!!.close()
-//                } catch (e: IOException) {
-//                }
-//
-//            if (fr != null)
-//                try {
-//                    fr!!.close()
-//                } catch (e: IOException) {
-//                }
-//
-//        }
-
-        var input : Scanner = Scanner(file)
-
-        while (input.hasNext()) {
-            // input의 한 줄 line에 저장 후 공백 제거
-            var line = input.nextLine()
-            line = line.replace(" ".toRegex(), "")
-            line = line.replace("\t".toRegex(), "")
-            line = line.replace("\\p{Z}".toRegex(), "")
-
-            val array = line.split("/".toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
-
-            if (array.size == 8) {
-                var formatter : DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                var date : LocalDateTime = LocalDateTime.parse(array[0], formatter)
-
-                // TODO 요거 두개 parsing해서 넣어야 함
-                var cnt_per_tooth : Array<Int> = Array<Int>(50, {0})
-                var section_time : Array<Int> =  Array<Int>(6,{0})
-
-
-
-                var record = Record(date, array[1].toDouble(), cnt_per_tooth, section_time, array[4].toInt(), array[5].toInt(), array[6].toInt(), array[7])
-                DataCenter.records.add(record)
-            }
-        }
-    }
-
-    fun writeFile() {
-        // 데이터 저장
-        var bw: BufferedWriter? = null
-        try {
-            bw = BufferedWriter(FileWriter(file))
-            for (i in 0 until records.size) {
-                bw.write(recordToString(i))        // 형식 변환
-                bw.newLine()
-            }
-            bw.flush()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } finally {
-            if (bw != null) {
-                try {
-                    bw.close() // 파일 닫기
-                } catch (e: IOException) {
-                }
-            }
-        }
-    }
+//    var filename : File = File("record.txt")
 
     // 시간/양치시간/cnt_per_tooth/section_time/highPressure/lowPressure/comment
     private fun recordToString(index : Int)  : String{
@@ -148,14 +57,22 @@ object DataCenter {
         return line
     }
 
-    fun saveData() {
+    fun saveData(context: Context) {
+        Log.i(TAG, "Saved data")
+        val path = context.filesDir
+        val directory = File(path, "ACHI")
+        directory.mkdirs()
+
+
         var bw: BufferedWriter? = null
         try {
-            bw = BufferedWriter(FileWriter(file))
+            val file = File(directory, filename)
+            bw = BufferedWriter(FileWriter(file,false))
             for (record in records) {
                 bw.write(record.toString())        // 형식 변환
                 bw.newLine()
             }
+
             bw.flush()
         } catch (e: IOException) {
             e.printStackTrace()
@@ -171,17 +88,36 @@ object DataCenter {
 
     }
 
-    fun loadData() {
-        var input : Scanner = Scanner(file)
+    fun loadData(context:Context) {
+        Log.i(TAG, "Load data")
+        val path = context.filesDir
+        val directory = File(path, "ACHI")
+        directory.mkdirs()
 
-        while (input.hasNext()) {
-            // input의 한 줄 line에 저장 후 공백 제거
-            var line = input.nextLine()
-            Log.i(TAG, line)
+        try {
+            val file = File(directory, filename)
+            var input: Scanner = Scanner(file)
 
-            val record = Record.instance(line)
-            if (record != null)
-                DataCenter.records.add(record)
+            while (input.hasNext()) {
+                // input의 한 줄 line에 저장 후 공백 제거
+                var line = input.nextLine()
+                Log.i(TAG, line)
+
+                val record = Record.instance(line)
+                if (record != null) {
+                    Log.i(TAG, "Record added")
+                    DataCenter.records.add(record)
+                }
+            }
+
+            if (records.size == 0)
+                sampleRecords()
+
+            Log.i(TAG, "Number of records: ${records.size}")
+
+        } catch (e: FileNotFoundException) {
+            Log.d(TAG, "File does not exist . . . Loading sample data")
+            sampleRecords()
         }
     }
     // Facts

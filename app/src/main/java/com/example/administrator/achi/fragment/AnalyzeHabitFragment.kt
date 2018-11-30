@@ -36,6 +36,9 @@ class AnalyzeHabitFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
+
+        DataCenter.loadData(this.activity!!.applicationContext)
+        DataCenter.saveData(this.activity!!.applicationContext)
     }
 
     override fun onResume(){
@@ -79,6 +82,8 @@ class AnalyzeHabitFragment : Fragment(){
 //        }
 //
 //        Analyzer.analyzeSample(date, elapsed_time, cnt_per_tooth, high_pressure)
+
+
 
         getScore()
         compareWeeks()
@@ -148,8 +153,13 @@ class AnalyzeHabitFragment : Fragment(){
             else if (check)
                 break
         }
-        avgScore /= num
-        avgTime /= num
+        if (num ==0) {
+            avgScore = 0
+            avgTime = 0
+        } else {
+            avgScore /= num
+            avgTime /= num
+        }
 
         if (weekNum == 1) {
             thisWeek = WeeklyFeature(num, avgScore, avgTime)

@@ -21,9 +21,11 @@ class MainActivity : AppCompatActivity() {
     init {
         System.setProperty("java.protocol.handler.pkgs", "org.andresoviedo.util.android");
         URL.setURLStreamHandlerFactory( AndroidURLStreamHandlerFactory())
-        DataCenter.sampleRecords()
+
         DataCenter.loadFacts()
     }
+
+
 
     val TAG = "MainActivity"
     lateinit var frameLayout : FrameLayout
@@ -83,6 +85,7 @@ class MainActivity : AppCompatActivity() {
         monitoringFragment = MonitoringFragment.newInstance()
 
         setFragmentManager()
+
     }
 
     override fun onResume() {
