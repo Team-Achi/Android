@@ -30,7 +30,7 @@ object Analyzer{
     private var score : Int = 100
     private var comment : String = ""
 
-    private var expected_time_per_tooth : Int = THREE_MINUETS / (NUMBER_OF_TEETH)
+    private var expected_time_per_tooth : Int = (THREE_MINUETS / (NUMBER_OF_TEETH * UNIT_TIME)).toInt()
     private var expected_count_per_tooth : Int = 0
     private var sumDiff : Array<Int> = Array<Int>(6,{0})
 
