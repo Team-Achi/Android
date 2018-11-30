@@ -72,6 +72,7 @@ class MonitoringFragment : Fragment(){
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
+        curState = RUN
         this.paramUri = Uri.parse("nothing")
     }
 
