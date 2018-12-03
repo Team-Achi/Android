@@ -111,6 +111,9 @@ object Analyzer{
         calculate_pressure()        // 압력
         set_comment()               // comment 저장
 
+        if (elapsed_time <= 20)
+            score = 0
+
         if (score < 0)
             score = 0
 
@@ -209,7 +212,7 @@ object Analyzer{
         var avg_section = elapsed_time / 6
 
         for (i in 0..5) {
-            if (sumDiff[i] > avg_section*1.5) {       // 수 정해야 함
+            if (sumDiff[i] > avg_section*1.5) {
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -217,7 +220,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -avg_section*1.5) {     // 수 정해야함
+            else if (sumDiff[i] < -avg_section*1.5) {
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
