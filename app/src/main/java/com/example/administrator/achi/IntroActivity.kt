@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.widget.ImageView
+import com.example.administrator.achi.dataModel.DataCenter
 
 class IntroActivity : AppCompatActivity(){
     private val TAG = this::class.java.simpleName
@@ -12,6 +13,9 @@ class IntroActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
+
+        DataCenter.loadData(this.applicationContext)
+        DataCenter.saveData(this.applicationContext)
     }
 
     override fun onResume() {

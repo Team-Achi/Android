@@ -35,7 +35,6 @@ class AnalyzeHabitFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onResume(){
@@ -114,7 +113,11 @@ class AnalyzeHabitFragment : Fragment(){
             else
                 break
         }
-        avg /= num
+        if (num == 0) {
+            avg = 0
+        } else {
+            avg /= num
+        }
         tvWeeklyScore.text = avg.toString() + " / 100 점"
     }
 
@@ -148,9 +151,18 @@ class AnalyzeHabitFragment : Fragment(){
             else if (check)
                 break
         }
-        avgScore /= num
-        avgTime /= num
+        if (num == 0) {
+            avgScore = 0
+            avgTime = 0
+        }
 
+        if (num == 0) {
+            avgScore = 0
+            avgTime = 0
+        } else {
+            avgScore /= num
+            avgTime /= num
+        }
         if (weekNum == 1) {
             thisWeek = WeeklyFeature(num, avgScore, avgTime)
         }
