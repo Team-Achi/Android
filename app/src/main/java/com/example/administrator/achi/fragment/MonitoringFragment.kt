@@ -142,6 +142,7 @@ class MonitoringFragment : Fragment(){
                         Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
 
                         Analyzer.analyze(today)
+                        DataCenter.saveData(this.activity!!.applicationContext)
                     }
                 }
             }
