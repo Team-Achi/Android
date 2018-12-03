@@ -51,30 +51,15 @@ object DataCenter {
     }
 
     fun loadData(context: Context) {
-        Log.i(TAG, "Load data")
+//        Log.i(TAG, "Load data")
         val path = context.filesDir
         val directory = File(path, "ACHI")
         directory.mkdirs()
 
         try {
-            val file = File(directory, filename)
-            var input: Scanner = Scanner(file)
-            records = ArrayList<Record>()
-            while (input.hasNext()) {
-                var line = input.nextLine()
-
-                val record = Record.instance(line)
-                if (record!= null) {
-                    DataCenter.records.add(record)
-                    Log.i(TAG, "Record Loaded: $record\n Record size: ${records.size}")
-
-                }
-            }
-
-            if (records.size == 0) {
+            // load sample data whatsoever
                 sampleRecords()
-                Log.i(TAG, "Record size is zero")
-            }
+                Log.i(TAG, "Loaded sampple data")
 
             Log.i(TAG, "Number of records: ${records.size}")
         } catch (e: FileNotFoundException) {
