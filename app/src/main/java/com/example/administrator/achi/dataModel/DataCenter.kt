@@ -24,14 +24,15 @@ object DataCenter {
         try {
             val file = File(directory, filename)
             bw = BufferedWriter(FileWriter(file))
-//            for (record in records) {
-//                bw.write(record.toString())
-//                bw.newLine()
-//            }
+            for (record in records) {
+                bw.write(record.toString())
+                Log.i(TAG, "Record Saved: $record")
+                bw.newLine()
+            }
 
-            bw.write(records[0].toString())
-            Log.i(TAG, "Record Saved: ${records[0]}")
-            bw.newLine()
+//            bw.write(records[0].toString())
+//            Log.i(TAG, "Record Saved: ${records[0]}")
+//            bw.newLine()
 
             bw.flush()
         } catch (e: IOException) {
