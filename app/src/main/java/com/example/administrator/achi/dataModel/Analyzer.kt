@@ -1,7 +1,7 @@
 package com.example.administrator.achi.dataModel
 
 import java.time.LocalDateTime
-
+import android.util.Log
 const val TAG = "Analyzer"
 
 private val THREE_MINUETS = 180
@@ -111,6 +111,9 @@ object Analyzer{
         calculate_pressure()        // 압력
         set_comment()               // comment 저장
 
+        if (elapsed_time <= 20)
+            score = 0
+
         if (score < 0)
             score = 0
 
@@ -142,6 +145,7 @@ object Analyzer{
 
         // record를 Record와 DataCenter에 저장
         var record = Record(today, elapsed_time, count_per_tooth, section_time, high_pressure, low_pressure, score, comment)
+        Log.i(TAG, "Sample data record : $record" )
         DataCenter.records.add(record)
         init()
 
@@ -209,7 +213,7 @@ object Analyzer{
         var avg_section = elapsed_time / 6
 
         for (i in 0..5) {
-            if (sumDiff[i] > avg_section*1.5) {       // 수 정해야 함
+            if (sumDiff[i] > avg_section*1.5) {
                 if (more)
                     moreTeeth += "와 "
                 moreTeeth += sectionName[i]
@@ -217,7 +221,7 @@ object Analyzer{
                 more = true
                 score -= 5
             }
-            else if (sumDiff[i] < -avg_section*1.5) {     // 수 정해야함
+            else if (sumDiff[i] < -avg_section*1.5) {
                 if(less)
                     lessTeeth += "와 "
                 lessTeeth += sectionName[i]
