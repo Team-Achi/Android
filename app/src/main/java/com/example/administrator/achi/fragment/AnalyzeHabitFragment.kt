@@ -84,14 +84,16 @@ class AnalyzeHabitFragment : Fragment(){
         compareWeeks()
 
         init()
-        addToList()
 
-        // Expandable List View
-        expandableListAdapter = ExpandableListAdapter(this.context!!, groupList, dayList)
-        lvWeeklyHabit.setAdapter(expandableListAdapter)
+        if (DataCenter.records.size != 0) {
+            addToList()
+        }
+            // Expandable List View
+            expandableListAdapter = ExpandableListAdapter(this.context!!, groupList, dayList)
+            lvWeeklyHabit.setAdapter(expandableListAdapter)
 
-        for (i in 0 until expandableListAdapter.groupCount)
-            lvWeeklyHabit.expandGroup(i)
+            for (i in 0 until expandableListAdapter.groupCount)
+                lvWeeklyHabit.expandGroup(i)
 
     }
 
@@ -114,7 +116,12 @@ class AnalyzeHabitFragment : Fragment(){
             else
                 break
         }
-        avg /= num
+
+        if (num != 0)
+            avg /= num
+        else
+            avg = 0
+
         tvWeeklyScore.text = avg.toString() + " / 100 점"
     }
 
@@ -131,6 +138,8 @@ class AnalyzeHabitFragment : Fragment(){
             firstWeekDate = today.minusDays(6)
             lastWeekDate = today.minusDays(14)
         }
+        println("**************"+firstWeekDate)
+        println("**************"+lastWeekDate)
 
         var avgScore = 0
         var avgTime = 0
@@ -148,14 +157,23 @@ class AnalyzeHabitFragment : Fragment(){
             else if (check)
                 break
         }
-        avgScore /= num
-        avgTime /= num
 
-        if (weekNum == 1) {
-            thisWeek = WeeklyFeature(num, avgScore, avgTime)
+        if (num != 0) {
+            avgScore /= num
+            avgTime /= num
+
+            if (weekNum == 1) {
+                thisWeek = WeeklyFeature(num, avgScore, avgTime)
+            } else if (weekNum == 2) {
+                lastWeek = WeeklyFeature(num, avgScore, avgTime)
+            }
         }
-        else if (weekNum == 2) {
-            lastWeek = WeeklyFeature(num, avgScore, avgTime)
+        else {
+            if (weekNum == 1) {
+                thisWeek = WeeklyFeature(0, 0, 0)
+            } else if (weekNum == 2) {
+                lastWeek = WeeklyFeature(0, 0, 0)
+            }
         }
     }
 
@@ -164,19 +182,25 @@ class AnalyzeHabitFragment : Fragment(){
         getWeeklyFeature(1)
         getWeeklyFeature(2)
 
-        when {
-            thisWeek.avgScore < lastWeek.avgScore -> comment += "올바른 양치 횟수가 줄었어요.\n"
-            else -> comment += "올바른 양치 횟수가 늘고 있네요!\n"
-        }
+        if (thisWeek.num != 0 && lastWeek.num != 0) {       // 모두 데이터가 존재함
+            when {
+                thisWeek.avgScore < lastWeek.avgScore -> comment += "올바른 양치 횟수가 줄었어요.\n"
+                else -> comment += "올바른 양치 횟수가 늘고 있네요!\n"
+            }
 
-        when {
-            thisWeek.num < thisWeek.num -> comment += "저번주보다 양치 횟수가 줄었네요."
-            else -> comment += "저번주보다 양치 횟수가 늘었어요."
+            when {
+                thisWeek.num < thisWeek.num -> comment += "저번주보다 양치 횟수가 줄었네요."
+                else -> comment += "저번주보다 양치 횟수가 늘었어요."
+            }
         }
-
-        when {
-            thisWeek.avgTime < lastWeek.avgTime -> comment += ""
-            else -> comment += ""
+        else if (thisWeek.num != 0 && lastWeek.num == 0) {      // 지난주의 데이터가 없음
+            comment += "양치 데이터가 적어서 습관 분석을 할 수가 없어요."
+        }
+        else if (thisWeek.num == 0 && lastWeek.num != 0) {      // 이번주의 데이터가 없음
+            comment += "양치 데이터가 적어서 습관 분석을 할 수가 없습니다.\n꾸준히 양치질을 해주세요"
+        }
+        else {                                                      // 모두 데이터가 없음
+            comment += "양치 데이터가 없어서 습관 분석을 할 수가 없어요.\n꾸준히 양치질을 해주세요"
         }
 
         tvWeeklyComment.text = comment
@@ -190,7 +214,6 @@ class AnalyzeHabitFragment : Fragment(){
 
 
         // 전체 기록 날짜별로 저장
-        var j = 0
         var curDate = today
         var curDateFormat = curDate.format(checkFormatter)
         var startIdx = 0
