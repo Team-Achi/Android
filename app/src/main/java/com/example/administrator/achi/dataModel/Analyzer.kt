@@ -79,7 +79,7 @@ object Analyzer{
         elapsed_time += UNIT_TIME
     }
 
-    fun addTime() {
+    fun addCount() {
         elapsed_time += UNIT_TIME
     }
 

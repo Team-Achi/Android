@@ -4,8 +4,6 @@ import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.ContentValues
-import android.content.Intent
 import android.media.AudioManager
 import android.media.SoundPool
 import android.net.Uri
@@ -202,7 +200,7 @@ class MonitoringFragment : Fragment(){
                             sbprint = sb.substring(0, endOfLineIndex)
                             Log.i("bluetooth", "bprint : $sbprint")
                             sb.delete(0, sb.length)
-                            bttest.text= sbprint
+//                            bttest.text= sbprint
 
                             var inputs = sbprint.split("/")
                             var toothNum = 0
@@ -220,7 +218,7 @@ class MonitoringFragment : Fragment(){
                                 return
 
                             if ((toothNum == -1) && (yourCheckSum == myCheckSum)) {
-                                Analyzer.addTime()
+                                Analyzer.addCount()
                                 tvTime.text = Analyzer.timeToString(Analyzer.elapsed_time.toInt())
                             }
 
@@ -268,7 +266,7 @@ class MonitoringFragment : Fragment(){
                                 toothNum_prev = toothNum
                             }
                             else if (yourCheckSum != myCheckSum) {
-
+                                Analyzer.addCount()
                             }
                         }
                         else if (endOfLineIndex == 0) {
