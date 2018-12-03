@@ -1,7 +1,7 @@
 package com.example.administrator.achi.dataModel
 
 import java.time.LocalDateTime
-
+import android.util.Log
 const val TAG = "Analyzer"
 
 private val THREE_MINUETS = 180
@@ -145,6 +145,7 @@ object Analyzer{
 
         // record를 Record와 DataCenter에 저장
         var record = Record(today, elapsed_time, count_per_tooth, section_time, high_pressure, low_pressure, score, comment)
+        Log.i(TAG, "Sample data record : $record" )
         DataCenter.records.add(record)
         init()
 
