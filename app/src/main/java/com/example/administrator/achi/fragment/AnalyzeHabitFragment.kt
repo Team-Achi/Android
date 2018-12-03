@@ -58,27 +58,6 @@ class AnalyzeHabitFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        val random: Random = Random()
-//        var date : LocalDateTime
-//        var elapsed_time = 0
-//        var high_pressure = 0
-//        var cnt_per_tooth = Array<Int>(50, {0})
-//        var avgTime = 0
-//
-//        date = LocalDateTime.now()
-//        elapsed_time = random.nextInt(180) + 60
-//        high_pressure = random.nextInt(6)
-//
-//        avgTime = elapsed_time / 28
-//
-//        for (i in 11..47) {
-//            if (i != 18 ||i != 19 ||i != 20 ||i != 28 ||i != 29 ||i != 30 ||i != 38 || i != 39 ||i != 40) {
-//                cnt_per_tooth[i] = avgTime + (random.nextInt(7) - 3)
-//            }
-//        }
-//
-//        Analyzer.analyzeSample(date, elapsed_time, cnt_per_tooth, high_pressure)
-
         getScore()
         compareWeeks()
 
