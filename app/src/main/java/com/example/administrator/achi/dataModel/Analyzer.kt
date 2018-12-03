@@ -119,6 +119,8 @@ object Analyzer{
         var record = Record(today, elapsed_time, count_per_tooth, section_time, high_pressure, low_pressure, score, comment)
         DataCenter.records.add(0, record)
         init()
+
+
     }
 
     // for sampleRecord

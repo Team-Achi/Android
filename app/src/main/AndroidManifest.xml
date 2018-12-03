@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:icon="@drawable/achi_pink"
         android:label="@string/app_name"

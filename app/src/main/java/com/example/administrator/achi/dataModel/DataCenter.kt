@@ -24,13 +24,15 @@ object DataCenter {
         try {
             val file = File(directory, filename)
             bw = BufferedWriter(FileWriter(file))
-//            for (record in records) {
-//                bw.write(record.toString())
-//                bw.newLine()
-//            }
+            for (record in records) {
+                bw.write(record.toString())
+                Log.i(TAG, "Record Saved: $record")
+                bw.newLine()
+            }
 
-            bw.write(records[0].toString())
-            bw.newLine()
+//            bw.write(records[0].toString())
+//            Log.i(TAG, "Record Saved: ${records[0]}")
+//            bw.newLine()
 
             bw.flush()
         } catch (e: IOException) {
@@ -57,19 +59,22 @@ object DataCenter {
         try {
             val file = File(directory, filename)
             var input: Scanner = Scanner(file)
-
+            records = ArrayList<Record>()
             while (input.hasNext()) {
                 var line = input.nextLine()
 
                 val record = Record.instance(line)
                 if (record!= null) {
-                    Log.i(TAG, "Record added")
                     DataCenter.records.add(record)
+                    Log.i(TAG, "Record Loaded: $record\n Record size: ${records.size}")
+
                 }
             }
 
-            if (records.size == 0)
+            if (records.size == 0) {
                 sampleRecords()
+                Log.i(TAG, "Record size is zero")
+            }
 
             Log.i(TAG, "Number of records: ${records.size}")
         } catch (e: FileNotFoundException) {
@@ -129,7 +134,7 @@ object DataCenter {
         var cnt_per_tooth = Array<Int>(50, {0})
 
         var avgTime = 180 / 28
-        
+
         for (it in 0..39) {
 
             if (day <= 6 && num <= 0) {       // 최근 일주일

@@ -35,7 +35,6 @@ class AnalyzeHabitFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onResume(){
@@ -116,7 +115,6 @@ class AnalyzeHabitFragment : Fragment(){
             else
                 break
         }
-
         if (num != 0)
             avg /= num
         else

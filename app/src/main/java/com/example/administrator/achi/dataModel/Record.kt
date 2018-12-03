@@ -1,6 +1,7 @@
 package com.example.administrator.achi.dataModel
 
 import java.time.LocalDateTime
+import android.util.Log
 
 data class Record(var date : LocalDateTime, var duration : Double, var cnt_per_tooth : Array<Int>,
                   var section_time : Array<Int>, var high_pressure: Int, var low_pressure : Int,
@@ -66,6 +67,7 @@ data class Record(var date : LocalDateTime, var duration : Double, var cnt_per_t
         s += low_pressure.toString() + "/"
         s += score.toString() + "/"
         s += comment
+        Log.i(com.example.administrator.achi.dataModel.TAG, "comment: $comment")
 
         return s
     }
