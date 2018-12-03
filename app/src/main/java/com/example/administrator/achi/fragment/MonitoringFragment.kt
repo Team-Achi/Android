@@ -127,7 +127,13 @@ class MonitoringFragment : Fragment(){
                 if (!btAdapter!!.isEnabled) {
 //                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 //                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-                    Toast.makeText(context, "블루투스를 키고 칫솔과 페어링 하세요.", Toast.LENGTH_LONG).show()
+                    val builder = AlertDialog.Builder(context)
+                    builder.setTitle("알림")
+                            .setMessage("블루투스를 키고 칫솔과 페어링 하세요.")
+                            .setPositiveButton("확인") { _, _ -> }
+
+                    val dialog = builder.create()
+                    dialog.show()
                 }
                 else {
                     if(curState == INIT) {
@@ -138,7 +144,6 @@ class MonitoringFragment : Fragment(){
 
                     else if (curState == RUN) {
                         endBluetooth()
-                        bttest.text = "Communication Ended"
                         Toast.makeText(context, "Bluetooth disconnected", Toast.LENGTH_SHORT).show()
 
                         Analyzer.analyze(today)
@@ -302,7 +307,6 @@ class MonitoringFragment : Fragment(){
         mConnectedThread = ConnectedThread(btSocket)
         mConnectedThread!!.start()
 
-//        sendData()
         curState = RUN
     }
 
@@ -312,7 +316,6 @@ class MonitoringFragment : Fragment(){
             return
         }
         try {
-//            sendData()
             mmOutputStream.close()
             btSocket!!.close()
         } catch (e2: IOException) {
@@ -322,25 +325,6 @@ class MonitoringFragment : Fragment(){
             btSocket = null
             curState = INIT
         }
-    }
-
-    private fun sendData(){
-        mmOutputStream = btSocket!!.outputStream
-        var msg : String = ""
-
-        if (curState == INIT) {     // 통신 시작
-            msg += "start"
-        }
-        else if (curState == RUN) {     // 통신 끝
-            msg += "end"
-        }
-
-        try{
-            mmOutputStream.write(msg.toByteArray())
-        }catch (e : IOException) {
-            Log.i("Fatal Error", "Failed to send value to socket" + e.message)
-        }
-
     }
 
     // Facts
@@ -431,17 +415,5 @@ private class ConnectedThread() : Thread(){
             }
 
         }
-    }
-
-    /* Call this from the main activity to send data to the remote device */
-    fun write(message: String) {
-        Log.d(ContentValues.TAG, "...Data to send: $message...")
-        val msgBuffer = message.toByteArray()
-        try {
-            mmOutStream!!.write(msgBuffer)
-        } catch (e: IOException) {
-            Log.d(ContentValues.TAG, "...Error data send: " + e.message + "...")
-        }
-
     }
 }
